@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AquaBotAI Product Roadmap</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0f172a;--surface:#1e293b;--surface2:#334155;--border:#475569;
+  --text:#f1f5f9;--text2:#94a3b8;--accent:#3b82f6;--accent2:#6366f1;
+  --green:#22c55e;--yellow:#eab308;--orange:#f97316;--red:#ef4444;
+  --cyan:#06b6d4;--pink:#ec4899;--purple:#a855f7;
+}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+.container{max-width:1400px;margin:0 auto;padding:24px}
+
+/* Header */
+.header{text-align:center;padding:40px 24px;background:linear-gradient(135deg,#1e293b 0%,#0f172a 50%,#1e1b4b 100%);border-radius:16px;margin-bottom:32px;border:1px solid var(--border)}
+.header h1{font-size:2.2rem;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.header p{color:var(--text2);font-size:1rem;max-width:700px;margin:0 auto}
+.meta-row{display:flex;justify-content:center;gap:24px;margin-top:16px;flex-wrap:wrap}
+.meta-chip{background:var(--surface2);padding:6px 14px;border-radius:20px;font-size:0.8rem;color:var(--text2)}
+
+/* Tabs */
+.tabs{display:flex;gap:4px;margin-bottom:24px;background:var(--surface);padding:4px;border-radius:12px;overflow-x:auto}
+.tab{padding:10px 20px;border-radius:8px;cursor:pointer;font-size:0.85rem;font-weight:600;color:var(--text2);transition:all .2s;white-space:nowrap;border:none;background:none}
+.tab:hover{color:var(--text);background:var(--surface2)}
+.tab.active{background:var(--accent);color:#fff}
+
+/* Panels */
+.panel{display:none}
+.panel.active{display:block}
+
+/* Stats Row */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:28px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px}
+.stat-card .label{font-size:0.75rem;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+.stat-card .value{font-size:1.8rem;font-weight:800}
+.stat-card .sub{font-size:0.8rem;color:var(--text2);margin-top:4px}
+.blue .value{color:var(--accent)}.green .value{color:var(--green)}.yellow .value{color:var(--yellow)}.purple .value{color:var(--purple)}.cyan .value{color:var(--cyan)}.orange .value{color:var(--orange)}
+
+/* Timeline */
+.timeline-section{margin-bottom:32px}
+.phase-header{display:flex;align-items:center;gap:12px;margin-bottom:16px;padding:12px 16px;border-radius:10px;cursor:pointer}
+.phase-header.now{background:linear-gradient(90deg,rgba(34,197,94,0.15),transparent);border-left:4px solid var(--green)}
+.phase-header.next{background:linear-gradient(90deg,rgba(59,130,246,0.15),transparent);border-left:4px solid var(--accent)}
+.phase-header.later{background:linear-gradient(90deg,rgba(168,85,247,0.15),transparent);border-left:4px solid var(--purple)}
+.phase-header h2{font-size:1.1rem;font-weight:700;flex:1}
+.phase-header .phase-dates{font-size:0.8rem;color:var(--text2)}
+.phase-header .phase-badge{padding:4px 10px;border-radius:6px;font-size:0.7rem;font-weight:700;text-transform:uppercase}
+.now .phase-badge{background:rgba(34,197,94,0.2);color:var(--green)}
+.next .phase-badge{background:rgba(59,130,246,0.2);color:var(--accent)}
+.later .phase-badge{background:rgba(168,85,247,0.2);color:var(--purple)}
+
+/* Feature Cards */
+.features-grid{display:grid;gap:12px;margin-bottom:24px;padding-left:20px}
+.feature-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;transition:all .2s;cursor:pointer}
+.feature-card:hover{border-color:var(--accent);transform:translateY(-1px)}
+.feature-card.expanded .feature-details{display:block}
+.feature-top{display:flex;align-items:flex-start;gap:12px}
+.feature-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.feature-info{flex:1;min-width:0}
+.feature-info h3{font-size:0.95rem;font-weight:700;margin-bottom:2px}
+.feature-info p{font-size:0.8rem;color:var(--text2);line-height:1.4}
+.feature-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.tag{padding:2px 8px;border-radius:4px;font-size:0.7rem;font-weight:600}
+.tag-p0{background:rgba(239,68,68,0.15);color:var(--red)}
+.tag-p1{background:rgba(234,179,8,0.15);color:var(--yellow)}
+.tag-p2{background:rgba(168,85,247,0.15);color:var(--purple)}
+.tag-effort{background:rgba(59,130,246,0.1);color:var(--accent)}
+.tag-weeks{background:rgba(6,182,212,0.1);color:var(--cyan)}
+.tag-dep{background:rgba(241,245,249,0.08);color:var(--text2)}
+.feature-details{display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);font-size:0.82rem;color:var(--text2);line-height:1.6}
+.feature-details h4{color:var(--text);font-size:0.8rem;margin-bottom:4px;margin-top:10px}
+.feature-details h4:first-child{margin-top:0}
+.feature-details ul{padding-left:16px;margin-top:4px}
+.feature-details li{margin-bottom:2px}
+.feature-expand{color:var(--accent);font-size:0.75rem;cursor:pointer;margin-top:6px;display:inline-block}
+
+/* RICE Table */
+.rice-table{width:100%;border-collapse:separate;border-spacing:0;background:var(--surface);border-radius:12px;overflow:hidden;border:1px solid var(--border)}
+.rice-table th{background:var(--surface2);padding:12px 14px;text-align:left;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.5px;color:var(--text2);font-weight:700;position:sticky;top:0}
+.rice-table td{padding:10px 14px;border-top:1px solid var(--border);font-size:0.82rem;vertical-align:middle}
+.rice-table tr:hover td{background:rgba(59,130,246,0.05)}
+.rice-score{font-weight:800;font-size:1rem}
+.rice-high{color:var(--green)}.rice-med{color:var(--yellow)}.rice-low{color:var(--orange)}
+.rice-bar{height:6px;border-radius:3px;background:var(--surface2);overflow:hidden;min-width:60px}
+.rice-bar-fill{height:100%;border-radius:3px;transition:width .5s}
+
+/* Dependency Map */
+.dep-map{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:24px}
+.dep-map h3{font-size:1rem;font-weight:700;margin-bottom:16px}
+.dep-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.dep-node{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px}
+.dep-node h4{font-size:0.85rem;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.dep-node .dep-arrow{color:var(--accent);font-size:0.8rem}
+.dep-node ul{list-style:none;padding:0}
+.dep-node li{font-size:0.78rem;color:var(--text2);padding:3px 0;padding-left:14px;position:relative}
+.dep-node li::before{content:"→";position:absolute;left:0;color:var(--accent)}
+
+/* Gantt Chart */
+.gantt-container{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;overflow-x:auto;margin-bottom:24px}
+.gantt-header{display:grid;grid-template-columns:200px repeat(26,1fr);gap:0;margin-bottom:4px;position:sticky;top:0}
+.gantt-month{text-align:center;font-size:0.7rem;color:var(--text2);font-weight:600;padding:6px 0;border-bottom:1px solid var(--border)}
+.gantt-row{display:grid;grid-template-columns:200px repeat(26,1fr);gap:0;align-items:center;min-height:32px}
+.gantt-label{font-size:0.78rem;font-weight:600;padding:4px 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gantt-cell{height:24px;position:relative}
+.gantt-bar{position:absolute;height:20px;top:2px;border-radius:4px;min-width:4px;opacity:0.85}
+.gantt-bar.green{background:linear-gradient(90deg,var(--green),#16a34a)}
+.gantt-bar.blue{background:linear-gradient(90deg,var(--accent),#2563eb)}
+.gantt-bar.purple{background:linear-gradient(90deg,var(--purple),#7c3aed)}
+.gantt-bar.cyan{background:linear-gradient(90deg,var(--cyan),#0891b2)}
+.gantt-bar.orange{background:linear-gradient(90deg,var(--orange),#ea580c)}
+.gantt-bar.pink{background:linear-gradient(90deg,var(--pink),#db2777)}
+.gantt-divider{grid-column:1/-1;height:1px;background:var(--border);opacity:0.3}
+
+/* Milestones */
+.milestones{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-bottom:24px}
+.milestone{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px;position:relative;overflow:hidden}
+.milestone::before{content:"";position:absolute;top:0;left:0;right:0;height:3px}
+.milestone.m1::before{background:var(--green)}.milestone.m2::before{background:var(--accent)}.milestone.m3::before{background:var(--cyan)}.milestone.m4::before{background:var(--purple)}
+.milestone .m-date{font-size:0.72rem;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+.milestone h3{font-size:0.95rem;font-weight:700;margin-bottom:6px}
+.milestone p{font-size:0.8rem;color:var(--text2);line-height:1.4}
+.milestone .m-items{margin-top:8px;font-size:0.78rem;color:var(--text2)}
+.milestone .m-items span{display:block;padding:2px 0}
+
+/* Risk section */
+.risk-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.risk-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px}
+.risk-card h4{font-size:0.85rem;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.risk-card p{font-size:0.8rem;color:var(--text2);line-height:1.4}
+.risk-high{border-left:3px solid var(--red)}.risk-med{border-left:3px solid var(--yellow)}.risk-low{border-left:3px solid var(--green)}
+
+/* Responsive */
+@media(max-width:768px){
+  .container{padding:12px}
+  .header h1{font-size:1.5rem}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .tabs{flex-wrap:nowrap;overflow-x:auto}
+  .gantt-container{display:none}
+  .dep-grid,.risk-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="header">
+  <h1>AquaBotAI Product Roadmap</h1>
+  <p>AI-powered aquarium management platform — 6-month roadmap for solo vibe-coding development</p>
+  <div class="meta-row">
+    <span class="meta-chip">Feb 2026 — Aug 2026</span>
+    <span class="meta-chip">Solo Developer</span>
+    <span class="meta-chip">13 Feature Specs</span>
+    <span class="meta-chip">89 Decisions Resolved</span>
+  </div>
+</div>
+
+<div class="tabs" id="tabs">
+  <button class="tab active" data-tab="overview">Overview</button>
+  <button class="tab" data-tab="timeline">Timeline & Gantt</button>
+  <button class="tab" data-tab="rice">RICE Prioritization</button>
+  <button class="tab" data-tab="dependencies">Dependencies</button>
+  <button class="tab" data-tab="milestones">Milestones & Risks</button>
+</div>
+
+<!-- ============== OVERVIEW ============== -->
+<div class="panel active" id="overview">
+
+<div class="stats">
+  <div class="stat-card green"><div class="label">MVP Features (P0)</div><div class="value">8</div><div class="sub">Auth, Billing, PWA, AI Chat, Tanks, Params, Species, Maintenance</div></div>
+  <div class="stat-card blue"><div class="label">Fast Follow (P1)</div><div class="value">5</div><div class="sub">Photo Dx, Equipment, Dashboards, Reports, Admin v2</div></div>
+  <div class="stat-card yellow"><div class="label">MVP Target</div><div class="value">~14 wk</div><div class="sub">Late May 2026 (solo pace)</div></div>
+  <div class="stat-card cyan"><div class="label">Full v1 Target</div><div class="value">~24 wk</div><div class="sub">Late Jul 2026</div></div>
+  <div class="stat-card purple"><div class="label">MRR Goal</div><div class="value">$5K</div><div class="sub">Within 6 months of launch</div></div>
+  <div class="stat-card orange"><div class="label">User Target</div><div class="value">1,000</div><div class="sub">Within 90 days of launch</div></div>
+</div>
+
+<!-- NOW -->
+<div class="timeline-section">
+<div class="phase-header now" onclick="togglePhase(this)">
+  <span class="phase-badge">Now</span>
+  <h2>Phase 1 — Foundation & Core MVP</h2>
+  <span class="phase-dates">Feb — Apr 2026 (Weeks 1–10)</span>
+</div>
+<div class="features-grid phase-content">
+
+  <div class="feature-card" onclick="toggleCard(this)">
+    <div class="feature-top">
+      <div class="feature-icon" style="background:rgba(34,197,94,0.15);color:var(--green)">🔧</div>
+      <div class="feature-info">
+        <h3>Project Scaffolding & Infrastructure</h3>
+        <p>Next.js 14 + TypeScript + Tailwind + shadcn/ui. Supabase project, database schema (Phase 1 tables), RLS policies, Vercel deployment pipeline.</p>
+        <div class="feature-meta"><span class="tag tag-p0">P0</span><span class="tag tag-weeks">1.5 weeks</span><span class="tag tag-effort">Foundation</span></div>
+      </div>
+    </div>
+    <div class="feature-details">
+      <h4>Key Deliverables</h4>
+      <ul>
+        <li>Next.js project with TypeScript, Tailwind, shadcn/ui configured</li>
+        <li>Supabase project with 12 MVP tables from Spec 00</li>
+        <li>RLS policies for user data isolation</li>
+        <li>Vercel CI/CD with preview deployments</li>
+        <li>PWA manifest, service worker shell (Spec 08)</li>
+        <li>Environment variables and API key management</li>
+      </ul>
+      <h4>Spec Coverage</h4>
+      <ul><li>00_Data_Model_Schema (Phase 1 tables)</li><li>08_PWA_Shell_Spec (shell only)</li><li>12_API_Integration_Spec (project structure)</li></ul>
+    </div>
+  </div>
+
+  <div class="feature-card" onclick="toggleCard(this)">
+    <div class="feature-top">
+      <div class="feature-icon" style="background:rgba(59,130,246,0.15);color:var(--accent)">🔐</div>
+      <div class="feature-info">
+        <h3>Authentication & Onboarding</h3>
+        <p>Email/password + Google OAuth + magic link. Onboarding flow with tank creation. Session management with JWT. Protected routes.</p>
+        <div class="feature-meta"><span class="tag tag-p0">P0 — Blocker</span><span class="tag tag-weeks">2 weeks</span><span class="tag tag-dep">Blocks everything</span></div>
+      </div>
+    </div>
+    <div class="feature-details">
+      <h4>Spec: 06_Authentication_Onboarding</h4>
+      <ul>
+        <li>R-009: Multi-method auth (email/pass, Google, magic link)</li>
+        <li>R-012: Guided onboarding → first tank + first parameter</li>
+        <li>JWT session management (1hr access / 7-day refresh)</li>
+        <li>Rate limiting: 5 failed attempts → 15-min lockout</li>
+        <li>Auth context provider + protected route wrapper</li>
+      </ul>
+      <h4>Success Metric</h4>
+      <ul><li>Onboarding completion > 70%</li><li>Time to first value < 10 min</li></ul>
+    </div>
+  </div>
+
+  <div class="feature-card" onclick="toggleCard(this)">
+    <div class="feature-top">
+      <div class="feature-icon" style="background:rgba(6,182,212,0.15);color:var(--cyan)">🐠</div>
+      <div class="feature-info">
+        <h3>Tank Profile Management</h3>
+        <p>Tank CRUD with type, volume, dimensions, substrate, photo upload. Multi-tank support gated by tier. Tank switching UI.</p>
+        <div class="feature-meta"><span class="tag tag-p0">P0</span><span class="tag tag-weeks">1.5 weeks</span><span class="tag tag-dep">Needs: Auth</span></div>
+      </div>
+    </div>
+    <div class="feature-details">
+      <h4>Spec: 02_Tank_Profile_Management</h4>
+      <ul>
+        <li>R-002: Tank creation with validation (< 2 min target)</li>
+        <li>Photo upload (JPEG/PNG, 5MB max) to Supabase Storage</li>
+        <li>Tier enforcement: Starter 1 tank, Plus 5, Pro unlimited</li>
+        <li>Soft-delete with 30-sec undo</li>
+        <li>Imperial/metric unit preference</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="feature-card" onclick="toggleCard(this)">
+    <div class="feature-top">
+      <div class="feature-icon" style="background:rgba(234,179,8,0.15);color:var(--yellow)">💬</div>
+      <div class="feature-info">
+        <h3>AI Chat Engine (Core)</h3>
+        <p>Claude Sonnet 4.5 chat with per-tank context. Dynamic system prompts with tank/parameter/livestock data injection. Action execution via natural language.</p>
+        <div class="feature-meta"><span class="tag tag-p0">P0 — Core</span><span class="tag tag-weeks">3 weeks</span><span class="tag tag-dep">Needs: Auth, Tanks</span></div>
+      </div>
+    </div>
+    <div class="feature-details">
+      <h4>Spec: 01_AI_Chat_Engine</h4>
+      <ul>
+        <li>R-001: Conversational AI with persistent history per tank</li>
+        <li>Full tank context injection (profile, params, livestock, equipment)</li>
+        <li>Action execution: add livestock, schedule tasks, log params via chat</li>
+        <li>Skill-level adaptation (beginner vs advanced)</li>
+        <li>Usage tracking: message counts + token costs per tier</li>
+        <li>Rolling context summarization at 8K tokens</li>
+        <li>Non-streaming for v1 (streaming is P1)</li>
+        <li>Performance: < 3 sec P95 latency</li>
+      </ul>
+      <h4>Tier Limits</h4>
+      <ul><li>Free: 10 msg/day</li><li>Starter: 100/day</li><li>Plus: 200/day</li><li>Pro: Unlimited</li></ul>
+    </div>
+  </div>
+
+  <div class="feature-card" onclick="toggleCard(this)">
+    <div class="feature-top">
+      <div class="feature-icon" style="background:rgba(236,72,153,0.15);color:var(--pink)">💳</div>
+      <div class="feature-info">
+        <h3>Subscription & Billing</h3>
+        <p>Stripe Checkout + Customer Portal. 14-day free trial (no CC). 3-tier pricing ($3.99 / $7.99 / $14.99). Webhook handlers. Grace period for failed payments.</p>
+        <div class="feature-meta"><span class="tag tag-p0">P0 — Blocker</span><span class="tag tag-weeks">2 weeks</span><span class="tag tag-dep">Needs: Auth</span></div>
+      </div>
+    </div>
+    <div class="feature-details">
+      <h4>Spec: 07_Subscription_Billing</h4>
+      <ul>
+        <li>R-010: Stripe integration with 3 pricing tiers</li>
+        <li>14-day trial with full Pro access, no CC required</li>
+        <li>Stripe Checkout for payment + Customer Portal for management</li>
+        <li>Webhook handlers: subscription.created, invoice.paid, subscription.canceled</li>
+        <li>Tier enforcement middleware touching all features</li>
+        <li>7-day grace period + Stripe Smart Retries</li>
+        <li>USD only for v1</li>
+      </ul>
+      <h4>Revenue Targets</h4>
+      <ul><li>15% trial-to-paid within 30 days</li><li>$5K+ MRR within 6 months</li><li>ARPU $8.50/month</li></ul>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- NEXT -->
+<div class="timeline-section">
+<div class="phase-header next" onclick="togglePhase(this)">
+  <span class="phase-badge">Next</span>
+  <h2>Phase 2 — Feature Completeness & MVP Launch</h2>
+  <span class="phase-dates">Apr — May 2026 (Weeks 10–14)</span>
+</div>
+<div class="features-grid phase-content">
+
+  <div class="feature-card" onclick="toggleCard(this)">
+    <div class="feature-top">
+      <div class="feature-icon" style="background:rgba(34,197,94,0.15);color:var(--green)">🧪</div>
+      <div class="feature-info">
+        <h3>Water Parameters & Analysis</h3>
+        <p>Manual parameter entry (pH, ammonia, nitrite, nitrate, temp + saltwater params). Interactive charts (7/30/90-day). AI trend analysis and proactive alerts.</p>
+        <div class="feature-meta"><span class="tag tag-p0">P0</span><span class="tag tag-weeks">2 weeks</span><span class="tag tag-dep">Needs: Tanks, AI Chat</span></div>
+      </div>
+    </div>
+    <div class="feature-details">
+      <h4>Spec: 03_Water_Parameters_Analysis</h4>
+      <ul>
+        <li>R-003: Parameter logging form (freshwater + saltwater)</li>
+        <li>R-004: Interactive Recharts dashboards with safe/warning/danger zones</li>
+        <li>R-005: AI-powered trend detection and health summaries</li>
+        <li>Color-coded zones based on species requirements</li>
+        <li>Custom alert thresholds per parameter</li>
+        <li>Performance: chart render < 2 sec for 90 days of data</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="feature-card" onclick="toggleCard(this)">
+    <div class="feature-top">
+      <div class="feature-icon" style="background:rgba(99,102,241,0.15);color:var(--accent2)">🐟</div>
+      <div class="feature-info">
+        <h3>Species Database & Livestock Management</h3>
+        <p>500+ freshwater, 200+ saltwater, 100+ invert species with search. Livestock tracking per tank. AI compatibility checking and stocking recommendations.</p>
+        <div class="feature-meta"><span class="tag tag-p0">P0</span><span class="tag tag-weeks">2.5 weeks</span><span class="tag tag-dep">Needs: Tanks, AI Chat</span></div>
+      </div>
+    </div>
+    <div class="feature-details">
+      <h4>Spec: 04_Species_Database_Livestock</h4>
+      <ul>
+        <li>R-006: Species database with full-text search, filters, detail cards</li>
+        <li>R-007: Livestock management (add/remove with qty, date, nicknames)</li>
+        <li>AI compatibility checking on every livestock addition</li>
+        <li>AI stocking recommendations based on tank profile</li>
+        <li>GIN indexes for fast search queries</li>
+        <li>Soft-delete for removed livestock (retain for AI context)</li>
+        <li>Species seed data curation needed (800+ entries)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="feature-card" onclick="toggleCard(this)">
+    <div class="feature-top">
+      <div class="feature-icon" style="background:rgba(249,115,22,0.15);color:var(--orange)">📋</div>
+      <div class="feature-info">
+        <h3>Maintenance Scheduling & Push Notifications</h3>
+        <p>Recurring/one-time tasks with push notification reminders. Task overview across tanks. AI-suggested schedules based on tank profile and bioload.</p>
+        <div class="feature-meta"><span class="tag tag-p0">P0</span><span class="tag tag-weeks">2 weeks</span><span class="tag tag-dep">Needs: Tanks, AI, PWA</span></div>
+      </div>
+    </div>
+    <div class="feature-details">
+      <h4>Spec: 05_Maintenance_Scheduling</h4>
+      <ul>
+        <li>R-008: Task CRUD (water change, filter clean, feeding, dosing, custom)</li>
+        <li>Completion logging with optional notes</li>
+        <li>Push notifications via Web Push API + Service Worker</li>
+        <li>Configurable reminders (day before, morning of, 1hr before)</li>
+        <li>AI-suggested schedules generated from tank context</li>
+        <li>Cron job (every 15 min) for notification scheduling</li>
+        <li>Email fallback for iOS Safari limitations</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="feature-card" onclick="toggleCard(this)">
+    <div class="feature-top">
+      <div class="feature-icon" style="background:rgba(239,68,68,0.15);color:var(--red)">🛡️</div>
+      <div class="feature-info">
+        <h3>Admin Portal (Phase 1 — SQL/Studio)</h3>
+        <p>Basic admin via Supabase Studio + SQL scripts. User search, subscription management, account actions, audit logging. No custom UI yet.</p>
+        <div class="feature-meta"><span class="tag tag-p0">P0</span><span class="tag tag-weeks">1 week</span><span class="tag tag-dep">Needs: Auth, Billing</span></div>
+      </div>
+    </div>
+    <div class="feature-details">
+      <h4>Spec: 13_Admin_Portal (Phase 1 only)</h4>
+      <ul>
+        <li>Role-based access: Super Admin, Content Admin, Support Admin</li>
+        <li>SQL scripts for user lookup, subscription changes, account actions</li>
+        <li>Audit log table (immutable) for all admin actions</li>
+        <li>Feature flags table for runtime toggles</li>
+        <li>Tier config table for subscription limits</li>
+        <li>No custom UI — Supabase Studio is sufficient for solo dev at launch</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- LATER -->
+<div class="timeline-section">
+<div class="phase-header later" onclick="togglePhase(this)">
+  <span class="phase-badge">Later</span>
+  <h2>Phase 3 — Growth Features & Polish</h2>
+  <span class="phase-dates">Jun — Aug 2026 (Weeks 15–26)</span>
+</div>
+<div class="features-grid phase-content">
+
+  <div class="feature-card" onclick="toggleCard(this)">
+    <div class="feature-top">
+      <div class="feature-icon" style="background:rgba(236,72,153,0.15);color:var(--pink)">📸</div>
+      <div class="feature-info">
+        <h3>Photo Diagnosis</h3>
+        <p>Species ID from photos (>85% accuracy). Disease diagnosis with treatment plans. Confidence scoring. Claude Vision API. Plus/Pro only.</p>
+        <div class="feature-meta"><span class="tag tag-p1">P1</span><span class="tag tag-weeks">2 weeks</span><span class="tag tag-dep">Needs: AI Chat, Species DB</span></div>
+      </div>
+    </div>
+    <div class="feature-details">
+      <h4>Spec: 09_Photo_Diagnosis</h4>
+      <ul>
+        <li>R-101: Species identification via Claude Sonnet 4.5 vision</li>
+        <li>Disease diagnosis with visible symptom detection</li>
+        <li>Treatment plans with dosing calculated for tank volume</li>
+        <li>Client-side compression to 2MP before upload</li>
+        <li>Rate limits: Plus 10/day, Pro 30/day</li>
+        <li>Veterinary disclaimer on every result</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="feature-card" onclick="toggleCard(this)">
+    <div class="feature-top">
+      <div class="feature-icon" style="background:rgba(6,182,212,0.15);color:var(--cyan)">⚙️</div>
+      <div class="feature-info">
+        <h3>Equipment Tracking & AI Recommendations</h3>
+        <p>Equipment catalog per tank with lifespan tracking. Maintenance reminders. AI web search recommendations for gear (Pro-only, SerpAPI).</p>
+        <div class="feature-meta"><span class="tag tag-p1">P1</span><span class="tag tag-weeks">3 weeks</span><span class="tag tag-dep">Needs: Tanks, Maintenance</span></div>
+      </div>
+    </div>
+    <div class="feature-details">
+      <h4>Spec: 10_Equipment_Tracking_Recommendations</h4>
+      <ul>
+        <li>R-102: Equipment catalog with purchase date, lifespan, status badges</li>
+        <li>R-103: AI web search recommendations (Pro-only, SerpAPI)</li>
+        <li>Lifespan tracking with maintenance reminders</li>
+        <li>24-hour result caching for web search</li>
+        <li>Rate limits: Pro 10 searches/day</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="feature-card" onclick="toggleCard(this)">
+    <div class="feature-top">
+      <div class="feature-icon" style="background:rgba(99,102,241,0.15);color:var(--accent2)">📊</div>
+      <div class="feature-info">
+        <h3>Interactive Dashboards & Email Reports</h3>
+        <p>AI-generated daily/weekly health reports via email. Multi-tank comparison dashboard. Health score calculation. Pro-only features.</p>
+        <div class="feature-meta"><span class="tag tag-p1">P1</span><span class="tag tag-weeks">2 weeks</span><span class="tag tag-dep">Needs: Params, AI, Billing</span></div>
+      </div>
+    </div>
+    <div class="feature-details">
+      <h4>Spec: 11_Interactive_Dashboards_Reports</h4>
+      <ul>
+        <li>R-104: Email reports (daily AI summary, weekly digest)</li>
+        <li>R-105: Multi-tank comparison dashboard</li>
+        <li>Health score: 40% param stability + 30% maintenance + 20% alerts + 10% livestock</li>
+        <li>Resend email service with MJML templates</li>
+        <li>Timezone-aware delivery scheduling</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="feature-card" onclick="toggleCard(this)">
+    <div class="feature-top">
+      <div class="feature-icon" style="background:rgba(168,85,247,0.15);color:var(--purple)">🖥️</div>
+      <div class="feature-info">
+        <h3>Admin Portal v2 (Custom Dashboard)</h3>
+        <p>Custom admin UI with real-time analytics (DAU, MRR, churn). Content CRUD for species/equipment. Feature flags UI. 2FA for admins.</p>
+        <div class="feature-meta"><span class="tag tag-p1">P1</span><span class="tag tag-weeks">3 weeks</span><span class="tag tag-dep">Needs: Admin v1</span></div>
+      </div>
+    </div>
+    <div class="feature-details">
+      <h4>Spec: 13_Admin_Portal (Phase 2)</h4>
+      <ul>
+        <li>Custom React admin dashboard</li>
+        <li>Real-time analytics: DAU, MRR, churn, AI usage</li>
+        <li>Content CRUD: species, equipment defaults, AI prompts</li>
+        <li>Feature flags UI + tier limit configuration</li>
+        <li>2FA mandatory for admin accounts</li>
+        <li>User impersonation for support debugging</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="feature-card" onclick="toggleCard(this)">
+    <div class="feature-top">
+      <div class="feature-icon" style="background:rgba(234,179,8,0.15);color:var(--yellow)">✨</div>
+      <div class="feature-info">
+        <h3>Polish & P2 Explorations</h3>
+        <p>Streaming AI responses, voice input, annual billing, promo codes, CSV export, calendar sync, community features exploration.</p>
+        <div class="feature-meta"><span class="tag tag-p2">P2</span><span class="tag tag-weeks">Ongoing</span><span class="tag tag-effort">Backlog</span></div>
+      </div>
+    </div>
+    <div class="feature-details">
+      <h4>P2 Backlog Items</h4>
+      <ul>
+        <li>Streaming AI responses (from non-streaming v1)</li>
+        <li>Voice input/output for AI chat</li>
+        <li>Annual billing + promo codes</li>
+        <li>CSV/PDF data export</li>
+        <li>Calendar sync for maintenance</li>
+        <li>Community features exploration</li>
+        <li>IoT device integration research</li>
+        <li>Native mobile app evaluation</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+</div>
+
+</div><!-- /overview -->
+
+<!-- ============== TIMELINE & GANTT ============== -->
+<div class="panel" id="timeline">
+<h2 style="font-size:1.2rem;margin-bottom:16px">Visual Timeline — 26 Weeks (Feb–Aug 2026)</h2>
+
+<div class="gantt-container">
+  <div class="gantt-header">
+    <div class="gantt-month" style="font-weight:700">Feature</div>
+    <div class="gantt-month" style="grid-column:span 4;border-right:1px solid var(--border)">Feb</div>
+    <div class="gantt-month" style="grid-column:span 4;border-right:1px solid var(--border)">Mar</div>
+    <div class="gantt-month" style="grid-column:span 5;border-right:1px solid var(--border)">Apr</div>
+    <div class="gantt-month" style="grid-column:span 4;border-right:1px solid var(--border)">May</div>
+    <div class="gantt-month" style="grid-column:span 4;border-right:1px solid var(--border)">Jun</div>
+    <div class="gantt-month" style="grid-column:span 5">Jul–Aug</div>
+  </div>
+
+  <!-- Phase 1 -->
+  <div class="gantt-row"><div class="gantt-label" style="color:var(--green);font-weight:700">PHASE 1 — Foundation</div></div>
+
+  <div class="gantt-row">
+    <div class="gantt-label">🔧 Scaffolding</div>
+    <div class="gantt-cell" style="grid-column:2/4"><div class="gantt-bar green" style="width:100%"></div></div>
+  </div>
+  <div class="gantt-row">
+    <div class="gantt-label">🔐 Auth & Onboarding</div>
+    <div class="gantt-cell" style="grid-column:4/7"><div class="gantt-bar green" style="width:100%"></div></div>
+  </div>
+  <div class="gantt-row">
+    <div class="gantt-label">🐠 Tank Profiles</div>
+    <div class="gantt-cell" style="grid-column:6/8"><div class="gantt-bar green" style="width:100%"></div></div>
+  </div>
+  <div class="gantt-row">
+    <div class="gantt-label">💬 AI Chat Engine</div>
+    <div class="gantt-cell" style="grid-column:7/11"><div class="gantt-bar green" style="width:100%"></div></div>
+  </div>
+  <div class="gantt-row">
+    <div class="gantt-label">💳 Billing & Stripe</div>
+    <div class="gantt-cell" style="grid-column:8/11"><div class="gantt-bar green" style="width:100%"></div></div>
+  </div>
+
+  <div class="gantt-divider"></div>
+
+  <!-- Phase 2 -->
+  <div class="gantt-row"><div class="gantt-label" style="color:var(--accent);font-weight:700">PHASE 2 — MVP Complete</div></div>
+
+  <div class="gantt-row">
+    <div class="gantt-label">🧪 Water Parameters</div>
+    <div class="gantt-cell" style="grid-column:11/14"><div class="gantt-bar blue" style="width:100%"></div></div>
+  </div>
+  <div class="gantt-row">
+    <div class="gantt-label">🐟 Species & Livestock</div>
+    <div class="gantt-cell" style="grid-column:13/16"><div class="gantt-bar blue" style="width:100%"></div></div>
+  </div>
+  <div class="gantt-row">
+    <div class="gantt-label">📋 Maintenance & Push</div>
+    <div class="gantt-cell" style="grid-column:15/18"><div class="gantt-bar blue" style="width:100%"></div></div>
+  </div>
+  <div class="gantt-row">
+    <div class="gantt-label">🛡️ Admin v1 (SQL)</div>
+    <div class="gantt-cell" style="grid-column:17/19"><div class="gantt-bar blue" style="width:100%"></div></div>
+  </div>
+
+  <div class="gantt-divider"></div>
+
+  <!-- MVP Launch marker -->
+  <div class="gantt-row">
+    <div class="gantt-label" style="color:var(--yellow);font-weight:800">🚀 MVP LAUNCH</div>
+    <div class="gantt-cell" style="grid-column:18/19"><div style="width:3px;height:24px;background:var(--yellow);border-radius:2px;margin:0 auto"></div></div>
+  </div>
+
+  <div class="gantt-divider"></div>
+
+  <!-- Phase 3 -->
+  <div class="gantt-row"><div class="gantt-label" style="color:var(--purple);font-weight:700">PHASE 3 — Growth</div></div>
+
+  <div class="gantt-row">
+    <div class="gantt-label">📸 Photo Diagnosis</div>
+    <div class="gantt-cell" style="grid-column:19/21"><div class="gantt-bar purple" style="width:100%"></div></div>
+  </div>
+  <div class="gantt-row">
+    <div class="gantt-label">⚙️ Equipment Tracking</div>
+    <div class="gantt-cell" style="grid-column:21/24"><div class="gantt-bar purple" style="width:100%"></div></div>
+  </div>
+  <div class="gantt-row">
+    <div class="gantt-label">📊 Dashboards & Reports</div>
+    <div class="gantt-cell" style="grid-column:23/25"><div class="gantt-bar purple" style="width:100%"></div></div>
+  </div>
+  <div class="gantt-row">
+    <div class="gantt-label">🖥️ Admin v2</div>
+    <div class="gantt-cell" style="grid-column:24/27"><div class="gantt-bar purple" style="width:100%"></div></div>
+  </div>
+</div>
+
+<div class="stats" style="margin-top:24px">
+  <div class="stat-card green"><div class="label">Phase 1</div><div class="value">10 wk</div><div class="sub">Foundation: scaffolding, auth, tanks, AI chat, billing</div></div>
+  <div class="stat-card blue"><div class="label">Phase 2</div><div class="value">4 wk</div><div class="sub">MVP completion: params, species, maintenance, admin v1</div></div>
+  <div class="stat-card yellow"><div class="label">MVP Launch</div><div class="value">Wk 14</div><div class="sub">Late May 2026 — all P0 features shipped</div></div>
+  <div class="stat-card purple"><div class="label">Phase 3</div><div class="value">10 wk</div><div class="sub">Growth: photo dx, equipment, dashboards, admin v2</div></div>
+</div>
+
+<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-top:16px">
+  <h3 style="font-size:1rem;margin-bottom:12px">Quarterly Themes</h3>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px">
+    <div style="padding:14px;background:var(--bg);border-radius:8px;border-left:3px solid var(--green)">
+      <div style="font-size:0.72rem;color:var(--text2);text-transform:uppercase;letter-spacing:1px">Q1 2026 (Feb–Mar)</div>
+      <div style="font-weight:700;margin:4px 0">Build the Machine</div>
+      <div style="font-size:0.8rem;color:var(--text2)">Infrastructure, auth, core AI engine, billing — everything needed before users can arrive.</div>
+    </div>
+    <div style="padding:14px;background:var(--bg);border-radius:8px;border-left:3px solid var(--accent)">
+      <div style="font-size:0.72rem;color:var(--text2);text-transform:uppercase;letter-spacing:1px">Q2 2026 (Apr–Jun)</div>
+      <div style="font-weight:700;margin:4px 0">Ship & Learn</div>
+      <div style="font-size:0.8rem;color:var(--text2)">Complete MVP features, launch, get first 1,000 users, start learning from real usage data.</div>
+    </div>
+    <div style="padding:14px;background:var(--bg);border-radius:8px;border-left:3px solid var(--purple)">
+      <div style="font-size:0.72rem;color:var(--text2);text-transform:uppercase;letter-spacing:1px">Q3 2026 (Jul–Aug)</div>
+      <div style="font-weight:700;margin:4px 0">Differentiate & Grow</div>
+      <div style="font-size:0.8rem;color:var(--text2)">Photo diagnosis, equipment recs, dashboards — features that drive upgrades and retention.</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ============== RICE ============== -->
+<div class="panel" id="rice">
+<h2 style="font-size:1.2rem;margin-bottom:8px">RICE Prioritization Scorecard</h2>
+<p style="font-size:0.82rem;color:var(--text2);margin-bottom:20px">RICE = (Reach × Impact × Confidence) / Effort. Scored for a solo developer over 6 months. Reach = users affected per quarter. Impact: 3=massive, 2=high, 1=med. Confidence: 100%/80%/50%. Effort in person-weeks.</p>
+
+<div style="overflow-x:auto">
+<table class="rice-table">
+<thead>
+<tr><th>Feature</th><th>Reach</th><th>Impact</th><th>Confidence</th><th>Effort (wk)</th><th>RICE Score</th><th>Priority</th><th style="min-width:80px">Score Bar</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Auth & Onboarding</strong></td><td>1,000</td><td>3</td><td>100%</td><td>2</td><td class="rice-score rice-high">1,500</td><td><span class="tag tag-p0">P0</span></td><td><div class="rice-bar"><div class="rice-bar-fill" style="width:100%;background:var(--green)"></div></div></td></tr>
+<tr><td><strong>AI Chat Engine</strong></td><td>1,000</td><td>3</td><td>80%</td><td>3</td><td class="rice-score rice-high">800</td><td><span class="tag tag-p0">P0</span></td><td><div class="rice-bar"><div class="rice-bar-fill" style="width:53%;background:var(--green)"></div></div></td></tr>
+<tr><td><strong>Tank Profile Mgmt</strong></td><td>1,000</td><td>2</td><td>100%</td><td>1.5</td><td class="rice-score rice-high">1,333</td><td><span class="tag tag-p0">P0</span></td><td><div class="rice-bar"><div class="rice-bar-fill" style="width:89%;background:var(--green)"></div></div></td></tr>
+<tr><td><strong>Subscription & Billing</strong></td><td>1,000</td><td>3</td><td>100%</td><td>2</td><td class="rice-score rice-high">1,500</td><td><span class="tag tag-p0">P0</span></td><td><div class="rice-bar"><div class="rice-bar-fill" style="width:100%;background:var(--green)"></div></div></td></tr>
+<tr><td><strong>Water Parameters</strong></td><td>800</td><td>2</td><td>80%</td><td>2</td><td class="rice-score rice-high">640</td><td><span class="tag tag-p0">P0</span></td><td><div class="rice-bar"><div class="rice-bar-fill" style="width:43%;background:var(--green)"></div></div></td></tr>
+<tr><td><strong>Species & Livestock</strong></td><td>700</td><td>2</td><td>80%</td><td>2.5</td><td class="rice-score rice-med">448</td><td><span class="tag tag-p0">P0</span></td><td><div class="rice-bar"><div class="rice-bar-fill" style="width:30%;background:var(--yellow)"></div></div></td></tr>
+<tr><td><strong>Maintenance Scheduling</strong></td><td>600</td><td>2</td><td>80%</td><td>2</td><td class="rice-score rice-med">480</td><td><span class="tag tag-p0">P0</span></td><td><div class="rice-bar"><div class="rice-bar-fill" style="width:32%;background:var(--yellow)"></div></div></td></tr>
+<tr><td><strong>PWA Shell</strong></td><td>1,000</td><td>1</td><td>100%</td><td>1.5</td><td class="rice-score rice-med">667</td><td><span class="tag tag-p0">P0</span></td><td><div class="rice-bar"><div class="rice-bar-fill" style="width:44%;background:var(--yellow)"></div></div></td></tr>
+<tr><td><strong>Photo Diagnosis</strong></td><td>400</td><td>2</td><td>50%</td><td>2</td><td class="rice-score rice-med">200</td><td><span class="tag tag-p1">P1</span></td><td><div class="rice-bar"><div class="rice-bar-fill" style="width:13%;background:var(--orange)"></div></div></td></tr>
+<tr><td><strong>Equipment Tracking</strong></td><td>350</td><td>1</td><td>80%</td><td>3</td><td class="rice-score rice-low">93</td><td><span class="tag tag-p1">P1</span></td><td><div class="rice-bar"><div class="rice-bar-fill" style="width:6%;background:var(--orange)"></div></div></td></tr>
+<tr><td><strong>Dashboards & Reports</strong></td><td>300</td><td>1</td><td>80%</td><td>2</td><td class="rice-score rice-low">120</td><td><span class="tag tag-p1">P1</span></td><td><div class="rice-bar"><div class="rice-bar-fill" style="width:8%;background:var(--orange)"></div></div></td></tr>
+<tr><td><strong>Admin Portal v1</strong></td><td>5</td><td>3</td><td>100%</td><td>1</td><td class="rice-score rice-low">15</td><td><span class="tag tag-p0">P0</span></td><td><div class="rice-bar"><div class="rice-bar-fill" style="width:1%;background:var(--red)"></div></div></td></tr>
+<tr><td><strong>Admin Portal v2</strong></td><td>5</td><td>2</td><td>50%</td><td>3</td><td class="rice-score rice-low">2</td><td><span class="tag tag-p1">P1</span></td><td><div class="rice-bar"><div class="rice-bar-fill" style="width:1%;background:var(--red)"></div></div></td></tr>
+</tbody>
+</table>
+</div>
+
+<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-top:24px">
+<h3 style="font-size:1rem;margin-bottom:12px">MoSCoW Classification for MVP</h3>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px">
+  <div style="padding:14px;background:var(--bg);border-radius:8px;border-left:3px solid var(--red)">
+    <div style="font-weight:700;color:var(--red);margin-bottom:6px">Must Have</div>
+    <div style="font-size:0.82rem;color:var(--text2);line-height:1.6">Auth & Onboarding, AI Chat Engine, Tank Profiles, Water Parameters, Species DB, Maintenance Scheduling, Subscription & Billing, PWA Shell, Admin v1</div>
+  </div>
+  <div style="padding:14px;background:var(--bg);border-radius:8px;border-left:3px solid var(--yellow)">
+    <div style="font-weight:700;color:var(--yellow);margin-bottom:6px">Should Have</div>
+    <div style="font-size:0.82rem;color:var(--text2);line-height:1.6">Photo Diagnosis, Equipment Tracking, Email Reports, Multi-tank Comparison Dashboard</div>
+  </div>
+  <div style="padding:14px;background:var(--bg);border-radius:8px;border-left:3px solid var(--accent)">
+    <div style="font-weight:700;color:var(--accent);margin-bottom:6px">Could Have</div>
+    <div style="font-size:0.82rem;color:var(--text2);line-height:1.6">Admin v2 Custom UI, Streaming AI, Voice Input, AI Web Search Recommendations</div>
+  </div>
+  <div style="padding:14px;background:var(--bg);border-radius:8px;border-left:3px solid var(--text2)">
+    <div style="font-weight:700;color:var(--text2);margin-bottom:6px">Won't Have (v1)</div>
+    <div style="font-size:0.82rem;color:var(--text2);line-height:1.6">IoT Integration, Native Mobile Apps, Community Features, Annual Billing, Multi-currency, Admin Phase 3</div>
+  </div>
+</div>
+</div>
+</div>
+
+<!-- ============== DEPENDENCIES ============== -->
+<div class="panel" id="dependencies">
+<h2 style="font-size:1.2rem;margin-bottom:16px">Dependency Map & Critical Path</h2>
+
+<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:24px">
+<h3 style="font-size:1rem;margin-bottom:12px">Critical Build Path (Sequential — Solo Dev)</h3>
+<div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:0.82rem">
+  <span style="background:rgba(34,197,94,0.15);color:var(--green);padding:6px 12px;border-radius:6px;font-weight:600">Scaffolding</span>
+  <span style="color:var(--text2)">→</span>
+  <span style="background:rgba(34,197,94,0.15);color:var(--green);padding:6px 12px;border-radius:6px;font-weight:600">Auth</span>
+  <span style="color:var(--text2)">→</span>
+  <span style="background:rgba(34,197,94,0.15);color:var(--green);padding:6px 12px;border-radius:6px;font-weight:600">Tank Profiles</span>
+  <span style="color:var(--text2)">→</span>
+  <span style="background:rgba(34,197,94,0.15);color:var(--green);padding:6px 12px;border-radius:6px;font-weight:600">AI Chat</span>
+  <span style="color:var(--text2)">→</span>
+  <span style="background:rgba(59,130,246,0.15);color:var(--accent);padding:6px 12px;border-radius:6px;font-weight:600">Params + Species</span>
+  <span style="color:var(--text2)">→</span>
+  <span style="background:rgba(59,130,246,0.15);color:var(--accent);padding:6px 12px;border-radius:6px;font-weight:600">Maintenance</span>
+  <span style="color:var(--text2)">→</span>
+  <span style="background:rgba(234,179,8,0.3);color:var(--yellow);padding:6px 12px;border-radius:6px;font-weight:800">🚀 MVP</span>
+</div>
+<p style="font-size:0.78rem;color:var(--text2);margin-top:10px">Billing can be built in parallel with AI Chat (both depend on Auth, not on each other). This is the one opportunity for overlap.</p>
+</div>
+
+<div class="dep-map">
+<h3>Feature Dependencies</h3>
+<div class="dep-grid">
+
+  <div class="dep-node">
+    <h4>🔧 Scaffolding <span style="font-size:0.7rem;color:var(--green)">(no deps)</span></h4>
+    <ul>
+      <li>Next.js + Supabase + Vercel setup</li>
+      <li>Database schema (Phase 1 tables)</li>
+      <li>PWA manifest + service worker shell</li>
+    </ul>
+  </div>
+
+  <div class="dep-node">
+    <h4>🔐 Auth & Onboarding <span class="dep-arrow">← Scaffolding</span></h4>
+    <ul>
+      <li>Supabase Auth configuration</li>
+      <li>JWT session management</li>
+      <li>Protected route wrapper</li>
+      <li><strong>Blocks:</strong> Every other feature</li>
+    </ul>
+  </div>
+
+  <div class="dep-node">
+    <h4>🐠 Tank Profiles <span class="dep-arrow">← Auth</span></h4>
+    <ul>
+      <li>Tank CRUD with RLS policies</li>
+      <li>Photo upload to Supabase Storage</li>
+      <li><strong>Blocks:</strong> AI Chat, Params, Species, Maintenance, Equipment</li>
+    </ul>
+  </div>
+
+  <div class="dep-node">
+    <h4>💬 AI Chat Engine <span class="dep-arrow">← Auth, Tanks</span></h4>
+    <ul>
+      <li>Anthropic API integration</li>
+      <li>Dynamic system prompt with tank context</li>
+      <li>Action execution framework</li>
+      <li><strong>Blocks:</strong> Photo Dx, Equipment Recs, Dashboards</li>
+    </ul>
+  </div>
+
+  <div class="dep-node">
+    <h4>💳 Billing <span class="dep-arrow">← Auth</span></h4>
+    <ul>
+      <li>Stripe Checkout + Customer Portal</li>
+      <li>Tier enforcement middleware</li>
+      <li><strong>Blocks:</strong> All tier-gated features</li>
+      <li><em>Can build in parallel with AI Chat</em></li>
+    </ul>
+  </div>
+
+  <div class="dep-node">
+    <h4>🧪 Water Parameters <span class="dep-arrow">← Tanks, AI Chat</span></h4>
+    <ul>
+      <li>Parameter entry forms</li>
+      <li>Recharts dashboards</li>
+      <li>AI trend analysis via Edge Functions</li>
+      <li><strong>Blocks:</strong> Dashboards, Email Reports</li>
+    </ul>
+  </div>
+
+  <div class="dep-node">
+    <h4>🐟 Species & Livestock <span class="dep-arrow">← Tanks, AI Chat</span></h4>
+    <ul>
+      <li>Species seed data (800+ entries)</li>
+      <li>Full-text search with GIN indexes</li>
+      <li>AI compatibility checking</li>
+      <li><strong>Blocks:</strong> Photo Diagnosis</li>
+    </ul>
+  </div>
+
+  <div class="dep-node">
+    <h4>📋 Maintenance <span class="dep-arrow">← Tanks, AI, PWA</span></h4>
+    <ul>
+      <li>Task CRUD + recurring logic</li>
+      <li>Web Push API notifications</li>
+      <li>Cron job for notification scheduling</li>
+      <li><strong>Blocks:</strong> Equipment Tracking</li>
+    </ul>
+  </div>
+
+  <div class="dep-node">
+    <h4>📸 Photo Diagnosis <span class="dep-arrow">← AI, Species, Billing</span></h4>
+    <ul>
+      <li>Claude Vision API integration</li>
+      <li>Image compression pipeline</li>
+      <li>Plus/Pro tier gating</li>
+    </ul>
+  </div>
+
+</div>
+</div>
+
+<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px">
+<h3 style="font-size:1rem;margin-bottom:12px">External Dependencies</h3>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px">
+  <div style="padding:12px;background:var(--bg);border-radius:8px">
+    <div style="font-weight:700;font-size:0.85rem;margin-bottom:4px">Anthropic API</div>
+    <div style="font-size:0.78rem;color:var(--text2)">Claude Sonnet 4.5 for chat + vision. Need API key, billing setup, rate limit awareness. Cost target: < $2/user/month.</div>
+  </div>
+  <div style="padding:12px;background:var(--bg);border-radius:8px">
+    <div style="font-weight:700;font-size:0.85rem;margin-bottom:4px">Stripe</div>
+    <div style="font-size:0.78rem;color:var(--text2)">Checkout, Customer Portal, webhooks. Need Stripe account, product/price setup, webhook endpoint configuration.</div>
+  </div>
+  <div style="padding:12px;background:var(--bg);border-radius:8px">
+    <div style="font-weight:700;font-size:0.85rem;margin-bottom:4px">Supabase</div>
+    <div style="font-size:0.78rem;color:var(--text2)">Database, Auth, Storage, Edge Functions, Realtime. Central dependency — project creation is Day 1 task.</div>
+  </div>
+  <div style="padding:12px;background:var(--bg);border-radius:8px">
+    <div style="font-weight:700;font-size:0.85rem;margin-bottom:4px">SerpAPI (P1)</div>
+    <div style="font-size:0.78rem;color:var(--text2)">Equipment recommendations web search. Only needed for Phase 3. Pro-only feature with 24hr result caching.</div>
+  </div>
+  <div style="padding:12px;background:var(--bg);border-radius:8px">
+    <div style="font-weight:700;font-size:0.85rem;margin-bottom:4px">Resend (P1)</div>
+    <div style="font-size:0.78rem;color:var(--text2)">Email delivery for reports and notifications. Only needed for Phase 3 email reports feature.</div>
+  </div>
+  <div style="padding:12px;background:var(--bg);border-radius:8px">
+    <div style="font-weight:700;font-size:0.85rem;margin-bottom:4px">Species Data</div>
+    <div style="font-size:0.78rem;color:var(--text2)">800+ species entries need curation. High effort knowledge dependency. Start researching data sources in Phase 1.</div>
+  </div>
+</div>
+</div>
+</div>
+
+<!-- ============== MILESTONES & RISKS ============== -->
+<div class="panel" id="milestones">
+<h2 style="font-size:1.2rem;margin-bottom:16px">Key Milestones</h2>
+
+<div class="milestones">
+  <div class="milestone m1">
+    <div class="m-date">Week 5 — Mid-March 2026</div>
+    <h3>Foundation Complete</h3>
+    <p>Auth works, tanks can be created, AI chat responds with tank context. You can demo the core loop.</p>
+    <div class="m-items">
+      <span>✅ User can sign up and create a tank</span>
+      <span>✅ AI chat responds with tank-aware answers</span>
+      <span>✅ PWA installable on mobile</span>
+    </div>
+  </div>
+  <div class="milestone m2">
+    <div class="m-date">Week 10 — Mid-April 2026</div>
+    <h3>Billing Live</h3>
+    <p>Stripe integrated, tiers enforced, trial flow working. Product is monetization-ready.</p>
+    <div class="m-items">
+      <span>✅ 14-day free trial with full Pro access</span>
+      <span>✅ Stripe Checkout payment flow</span>
+      <span>✅ Tier limits enforced across features</span>
+    </div>
+  </div>
+  <div class="milestone m3">
+    <div class="m-date">Week 14 — Late May 2026</div>
+    <h3>🚀 MVP Public Launch</h3>
+    <p>All P0 features shipped. Parameters, species, maintenance, push notifications all working. Ready for first users.</p>
+    <div class="m-items">
+      <span>✅ Water parameter tracking + charts</span>
+      <span>✅ 800+ species searchable</span>
+      <span>✅ Maintenance tasks with push reminders</span>
+      <span>✅ Admin tools for user management</span>
+    </div>
+  </div>
+  <div class="milestone m4">
+    <div class="m-date">Week 24 — Late July 2026</div>
+    <h3>Full v1 Feature Complete</h3>
+    <p>All P1 growth features shipped. Photo diagnosis, equipment tracking, dashboards, admin v2. Focus shifts to retention and growth.</p>
+    <div class="m-items">
+      <span>✅ Photo diagnosis live (Plus/Pro)</span>
+      <span>✅ Equipment tracking with AI recs</span>
+      <span>✅ Email reports for Pro users</span>
+      <span>✅ Custom admin dashboard</span>
+    </div>
+  </div>
+</div>
+
+<h2 style="font-size:1.2rem;margin-top:32px;margin-bottom:16px">Risk Register</h2>
+
+<div class="risk-grid">
+  <div class="risk-card risk-high">
+    <h4>🔴 AI Cost Overruns</h4>
+    <p>Claude API costs could exceed $2/user/month target at scale, especially with vision features. <strong>Mitigation:</strong> Implement Haiku routing for simple queries, enforce daily message limits per tier, monitor token usage closely from Day 1.</p>
+  </div>
+  <div class="risk-card risk-high">
+    <h4>🔴 Species Data Curation</h4>
+    <p>800+ species entries is a massive data effort for a solo dev. Quality of data directly impacts AI recommendations. <strong>Mitigation:</strong> Start with top 200 most popular species for MVP. Use AI to help generate initial data from FishBase. Add species incrementally post-launch.</p>
+  </div>
+  <div class="risk-card risk-med">
+    <h4>🟡 Solo Dev Burnout</h4>
+    <p>14-week MVP timeline is aggressive for one person. Feature scope creep is the biggest threat. <strong>Mitigation:</strong> Strict P0-only for MVP. Defer all P1 features. Take 1-week buffer between phases. Use AI coding tools aggressively.</p>
+  </div>
+  <div class="risk-card risk-med">
+    <h4>🟡 PWA Push Notification Limitations</h4>
+    <p>iOS Safari has spotty PWA push support. Maintenance reminders are a core value prop. <strong>Mitigation:</strong> Email fallback for all notifications. Test on iOS early. Consider native app wrapper (Capacitor) as P2 if push reliability is poor.</p>
+  </div>
+  <div class="risk-card risk-med">
+    <h4>🟡 Stripe Webhook Reliability</h4>
+    <p>Missed webhooks can cause billing state drift (user pays but access isn't updated). <strong>Mitigation:</strong> Implement idempotent webhook handlers. Add periodic reconciliation job. Log all webhook events for debugging.</p>
+  </div>
+  <div class="risk-card risk-low">
+    <h4>🟢 AI Response Quality</h4>
+    <p>Claude's aquarium knowledge may have gaps for rare species or niche setups. <strong>Mitigation:</strong> Comprehensive system prompts with species data context injection. User feedback loop to flag bad responses. Confidence scoring on all recommendations.</p>
+  </div>
+</div>
+
+<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-top:24px">
+<h3 style="font-size:1rem;margin-bottom:12px">Success Metrics Dashboard (Post-Launch Targets)</h3>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px">
+  <div style="padding:12px;background:var(--bg);border-radius:8px;text-align:center">
+    <div style="font-size:0.7rem;color:var(--text2);text-transform:uppercase">Users (90 days)</div>
+    <div style="font-size:1.5rem;font-weight:800;color:var(--accent)">1,000</div>
+  </div>
+  <div style="padding:12px;background:var(--bg);border-radius:8px;text-align:center">
+    <div style="font-size:0.7rem;color:var(--text2);text-transform:uppercase">Trial→Paid (30d)</div>
+    <div style="font-size:1.5rem;font-weight:800;color:var(--green)">15%</div>
+  </div>
+  <div style="padding:12px;background:var(--bg);border-radius:8px;text-align:center">
+    <div style="font-size:0.7rem;color:var(--text2);text-transform:uppercase">MRR (6 months)</div>
+    <div style="font-size:1.5rem;font-weight:800;color:var(--yellow)">$5,000</div>
+  </div>
+  <div style="padding:12px;background:var(--bg);border-radius:8px;text-align:center">
+    <div style="font-size:0.7rem;color:var(--text2);text-transform:uppercase">AI Cost/User</div>
+    <div style="font-size:1.5rem;font-weight:800;color:var(--cyan)">< $2</div>
+  </div>
+  <div style="padding:12px;background:var(--bg);border-radius:8px;text-align:center">
+    <div style="font-size:0.7rem;color:var(--text2);text-transform:uppercase">AI Latency P95</div>
+    <div style="font-size:1.5rem;font-weight:800;color:var(--purple)">< 3s</div>
+  </div>
+  <div style="padding:12px;background:var(--bg);border-radius:8px;text-align:center">
+    <div style="font-size:0.7rem;color:var(--text2);text-transform:uppercase">Onboarding Rate</div>
+    <div style="font-size:1.5rem;font-weight:800;color:var(--orange)">> 70%</div>
+  </div>
+</div>
+</div>
+</div>
+
+</div><!-- /container -->
+
+<script>
+// Tab switching
+document.querySelectorAll('.tab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById(tab.dataset.tab).classList.add('active');
+  });
+});
+
+// Feature card expand/collapse
+function toggleCard(card){
+  card.classList.toggle('expanded');
+}
+
+// Phase collapse (optional)
+function togglePhase(header){
+  const content=header.nextElementSibling;
+  if(content)content.style.display=content.style.display==='none'?'grid':'none';
+}
+</script>
+</body>
+</html>
