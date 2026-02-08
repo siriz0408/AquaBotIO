@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AquaBotAI — Agent Team Architecture v3</title>
+<style>
+  :root {
+    --bg: #0f1117; --surface: #1a1d27; --surface2: #232735; --border: #2e3345;
+    --text: #e4e7ef; --dim: #8b90a5; --accent: #4f8eff; --accent2: #7c5cfc;
+    --green: #34d399; --amber: #fbbf24; --red: #f87171; --cyan: #22d3ee;
+    --pink: #f472b6; --orange: #fb923c;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Inter',-apple-system,system-ui,sans-serif; background:var(--bg); color:var(--text); line-height:1.65; }
+  .container { max-width:1200px; margin:0 auto; padding:40px 24px; }
+  h1 { font-size:2.2rem; font-weight:700; background:linear-gradient(135deg,var(--accent),var(--accent2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:6px; }
+  .header { text-align:center; margin-bottom:48px; padding:40px 32px; background:linear-gradient(135deg,rgba(79,142,255,.08),rgba(124,92,252,.08)); border:1px solid var(--border); border-radius:16px; }
+  .header .sub { color:var(--dim); font-size:1.05rem; margin-bottom:14px; }
+  .badges { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+  .badge { font-size:.78rem; padding:4px 12px; background:var(--surface); border:1px solid var(--border); border-radius:6px; color:var(--dim); }
+  .badge.new { border-color:var(--green); color:var(--green); }
+  .badge.hot { border-color:var(--red); color:var(--red); }
+
+  .sec { margin-bottom:52px; }
+  .sec-title { font-size:1.45rem; font-weight:600; display:flex; align-items:center; gap:10px; margin-bottom:6px; }
+  .sec-title .n { font-size:.78rem; background:var(--accent); color:#fff; width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; flex-shrink:0; }
+  .sec-desc { color:var(--dim); margin-bottom:20px; max-width:820px; }
+
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(340px,1fr)); gap:18px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:22px; transition:border-color .2s; }
+  .card:hover { border-color:var(--accent); }
+  .card-wide { grid-column:1/-1; }
+  .ch { display:flex; align-items:center; gap:12px; margin-bottom:10px; }
+  .ci { width:40px; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.3rem; flex-shrink:0; }
+  .ct { font-weight:600; font-size:1rem; }
+  .cr { font-size:.76rem; color:var(--dim); }
+  .card p { font-size:.88rem; color:var(--dim); margin-bottom:10px; }
+  .card ul { font-size:.84rem; color:var(--dim); padding-left:16px; }
+  .card li { margin-bottom:3px; }
+  .tag { display:inline-block; font-size:.68rem; padding:2px 8px; border-radius:4px; font-weight:600; margin-right:4px; margin-bottom:4px; }
+  .t-g { background:rgba(52,211,153,.15); color:var(--green); }
+  .t-a { background:rgba(251,191,36,.15); color:var(--amber); }
+  .t-r { background:rgba(248,113,113,.15); color:var(--red); }
+  .t-p { background:rgba(124,92,252,.15); color:var(--accent2); }
+  .t-b { background:rgba(79,142,255,.15); color:var(--accent); }
+  .t-c { background:rgba(34,211,238,.15); color:var(--cyan); }
+  .t-k { background:rgba(244,114,182,.15); color:var(--pink); }
+  .t-o { background:rgba(251,146,60,.15); color:var(--orange); }
+
+  .callout { border-left:3px solid var(--accent); border-radius:0 8px 8px 0; padding:14px 18px; margin:14px 0; background:rgba(79,142,255,.06); }
+  .callout.warn { border-color:var(--amber); background:rgba(251,191,36,.06); }
+  .callout.ok { border-color:var(--green); background:rgba(52,211,153,.06); }
+  .callout.hot { border-color:var(--red); background:rgba(248,113,113,.06); }
+  .callout.purple { border-color:var(--accent2); background:rgba(124,92,252,.06); }
+  .callout b { font-size:.9rem; }
+  .callout p { font-size:.86rem; color:var(--dim); margin-top:4px; }
+
+  table { width:100%; border-collapse:collapse; margin:14px 0; }
+  th,td { padding:9px 12px; text-align:left; border-bottom:1px solid var(--border); font-size:.86rem; }
+  th { color:var(--dim); font-weight:600; font-size:.76rem; text-transform:uppercase; letter-spacing:.05em; }
+  tr:hover td { background:rgba(79,142,255,.03); }
+
+  .flow { display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin:14px 0; }
+  .fs { background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:7px 14px; font-size:.84rem; font-weight:500; }
+  .fa { color:var(--dim); font-size:1.1rem; }
+
+  .mem { display:flex; gap:14px; flex-wrap:wrap; margin:12px 0; }
+  .mb { flex:1; min-width:200px; background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:14px; }
+  .mb h4 { font-size:.88rem; margin-bottom:6px; }
+  .mb p,.mb li { font-size:.8rem; color:var(--dim); }
+  .mb ul { padding-left:14px; }
+
+  .skill-map { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:12px; }
+  .skill-card { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:14px; }
+  .skill-card h4 { font-size:.9rem; margin-bottom:6px; }
+  .skill-card .skills { display:flex; flex-wrap:wrap; gap:4px; }
+  .skill-tag { font-size:.7rem; padding:3px 8px; border-radius:4px; background:rgba(79,142,255,.1); color:var(--accent); border:1px solid rgba(79,142,255,.2); }
+
+  .phase-label { display:inline-block; font-size:.7rem; padding:3px 10px; border-radius:4px; font-weight:700; margin-left:8px; }
+  .pl-now { background:rgba(52,211,153,.2); color:var(--green); border:1px solid var(--green); }
+  .pl-next { background:rgba(251,191,36,.15); color:var(--amber); border:1px solid var(--amber); }
+  .pl-later { background:rgba(79,142,255,.15); color:var(--accent); border:1px solid var(--accent); }
+
+  .principle-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:14px; margin:16px 0; }
+  .principle { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:16px; text-align:center; }
+  .principle .emoji { font-size:1.8rem; margin-bottom:6px; }
+  .principle .name { font-weight:600; font-size:.95rem; margin-bottom:4px; }
+  .principle .desc { font-size:.82rem; color:var(--dim); }
+
+  code { background:var(--surface2); padding:2px 6px; border-radius:4px; font-size:.82rem; color:var(--cyan); }
+
+  @media(max-width:600px) { h1{font-size:1.5rem;} .grid{grid-template-columns:1fr;} .skill-map{grid-template-columns:1fr;} .principle-grid{grid-template-columns:1fr;} }
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- ==================== HEADER ==================== -->
+<div class="header">
+  <h1>Agent Team Architecture v3</h1>
+  <div class="sub">AquaBotAI — Rethought from the Ground Up</div>
+  <div class="badges">
+    <span class="badge hot">v3 — Major Revision</span>
+    <span class="badge new">Context Budget System</span>
+    <span class="badge new">Semantic Memory</span>
+    <span class="badge new">Active Work Board</span>
+    <span class="badge new">Error Recovery Plan</span>
+    <span class="badge new">Starter Team (3 Agents)</span>
+    <span class="badge new">Plain-Language PM</span>
+  </div>
+  <p style="margin-top:16px; font-size:.88rem; color:var(--dim); max-width:700px; margin-left:auto; margin-right:auto;">
+    v3 is a ground-up rethink based on the skeptical evaluation and Sam's feedback. It solves the five critical challenges: context overload, memory scaling, agent coordination, error recovery, and practical rollout. Every section answers: "How does this actually work in practice?"
+  </p>
+</div>
+
+<!-- ==================== SECTION 1: FIVE PRINCIPLES ==================== -->
+<div class="sec">
+  <div class="sec-title"><span class="n">1</span> Five Principles — The Foundation</div>
+  <div class="sec-desc">Every design decision in this architecture flows from these five principles. If anything conflicts with them, the principles win.</div>
+
+  <div class="principle-grid">
+    <div class="principle">
+      <div class="emoji">🎯</div>
+      <div class="name">Focused, Not Isolated</div>
+      <div class="desc">Agents focus on their own task but always have <strong>visibility</strong> into what every other agent is doing. Like a team standup — you don't read everyone's code, but you know what they're working on.</div>
+    </div>
+    <div class="principle">
+      <div class="emoji">💬</div>
+      <div class="name">Plain Language First</div>
+      <div class="desc">The PM explains everything in language Sam understands. Why it's doing something, what the risks are, whether it's the right call. No jargon walls. Sam should always understand what's happening and why.</div>
+    </div>
+    <div class="principle">
+      <div class="emoji">🧠</div>
+      <div class="name">Context is Currency</div>
+      <div class="desc">Every token of context matters. Agents get exactly what they need — no more, no less. The Context Budget system ensures agents stay sharp and focused instead of drowning in information.</div>
+    </div>
+    <div class="principle">
+      <div class="emoji">🔄</div>
+      <div name="name" class="name">Never the Same Bug Twice</div>
+      <div class="desc">Every error becomes a lesson. When something breaks, the team doesn't just fix it — they add a test, update the memory, and change the process so that specific failure can never happen again.</div>
+    </div>
+    <div class="principle">
+      <div class="emoji">🌱</div>
+      <div class="name">Healthy Culture, Not Chaos</div>
+      <div class="desc">Start small (3 agents), build trust, scale deliberately. Quality over speed. Every agent knows its lane, respects others' work, and contributes to a team that gets better over time.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SECTION 2: CONTEXT BUDGET ==================== -->
+<div class="sec">
+  <div class="sec-title"><span class="n">2</span> The Context Budget System <span class="badge hot" style="font-size:.7rem;">Critical Innovation</span></div>
+  <div class="sec-desc">This is THE critical system. Without it, agents drown in context and lose focus. With it, every agent gets a laser-focused brief containing exactly what it needs — nothing more.</div>
+
+  <div class="grid">
+    <div class="card card-wide">
+      <div class="ch">
+        <div class="ci" style="background:rgba(248,113,113,.15);">🧠</div>
+        <div><div class="ct">The Problem v3 Solves</div><div class="cr">Why context management is the #1 challenge</div></div>
+      </div>
+      <p><strong>Before (v2):</strong> Every agent loads CLAUDE.md (460 lines) + full spec docs (200-500 lines each) + all memory files + codebase. That's 8,000-10,000 tokens just for context, leaving barely any room for the agent to actually think and work.</p>
+      <p><strong>After (v3):</strong> Every agent gets a ~50-line Task Brief with exactly what it needs. Context cost: 1,400 tokens (base) + 1,200-2,600 (task-specific). The agent has 3,000-6,500 tokens of working space. Focused, sharp, effective.</p>
+    </div>
+
+    <div class="card">
+      <div class="ch">
+        <div class="ci" style="background:rgba(52,211,153,.15);">📋</div>
+        <div><div class="ct">Base Context (Always Loaded)</div><div class="cr">~1,400 tokens — every agent gets this</div></div>
+      </div>
+      <p>The "skeleton" that every agent starts with, regardless of task:</p>
+      <ul>
+        <li><strong>Project ID</strong> (~100 tokens): AquaBotAI, tech stack summary, current phase</li>
+        <li><strong>CLAUDE.md Essentials</strong> (~200 tokens): Critical coding rules only — not the full 460 lines</li>
+        <li><strong>Memory Index</strong> (~200 tokens): Table of contents of memory/ with 1-line summaries</li>
+        <li><strong>Spec Index</strong> (~300 tokens): All 16 specs with 1-2 line purpose each</li>
+        <li><strong>Code Map</strong> (~400 tokens): Directory structure — which files belong to which features</li>
+        <li><strong>Active Work Board</strong> (~200 tokens): What every agent is currently working on (see Section 4)</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="ch">
+        <div class="ci" style="background:rgba(79,142,255,.15);">📦</div>
+        <div><div class="ct">Task Brief (Per-Assignment)</div><div class="cr">~50 lines — PM constructs this for each task</div></div>
+      </div>
+      <p>The PM builds a focused brief for each agent assignment:</p>
+      <ul>
+        <li><strong>Objective</strong> (2-3 lines): What exactly to build/fix. Plain language.</li>
+        <li><strong>Scope</strong> (2-3 lines): Which files to modify. Which to NOT touch.</li>
+        <li><strong>Spec Extract</strong> (~100 lines): Only the relevant section of the spec, not the full doc</li>
+        <li><strong>Memory Highlights</strong> (~30 lines): Only relevant patterns/mistakes from the memory system</li>
+        <li><strong>Success Criteria</strong> (3-5 bullets): How to know the task is done</li>
+        <li><strong>Active Work Board snapshot</strong>: What other agents are doing that could affect this task</li>
+        <li><strong>Do Not Load</strong> (1-2 lines): Explicitly prevents token waste</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="ch">
+        <div class="ci" style="background:rgba(251,191,36,.15);">✂️</div>
+        <div><div class="ct">Spec Extraction Protocol</div><div class="cr">How PM pulls only what's needed from a spec</div></div>
+      </div>
+      <p>Instead of loading a full 400-line spec, the PM extracts only the relevant section:</p>
+      <ul>
+        <li><strong>Step 1:</strong> Identify which section of the spec matches the task (e.g., "email verification" from 06_Auth_Spec)</li>
+        <li><strong>Step 2:</strong> Extract that section + 1 section above/below for context</li>
+        <li><strong>Step 3:</strong> Strip examples, deprecated notes, and cross-references to other features</li>
+        <li><strong>Step 4:</strong> Tag critical parts: <code>[CRITICAL]</code>, <code>[REFERENCE]</code>, <code>[EDGE CASE]</code></li>
+        <li><strong>Result:</strong> 100-200 lines instead of 400-500. Agent gets what matters.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="ch">
+        <div class="ci" style="background:rgba(124,92,252,.15);">🔍</div>
+        <div><div class="ct">Code Scoping Rules</div><div class="cr">Agents see their files + direct dependencies</div></div>
+      </div>
+      <p>How agents access code without loading the entire repo:</p>
+      <ul>
+        <li><strong>Primary files:</strong> Only the files specified in the task brief</li>
+        <li><strong>Direct dependencies:</strong> Files imported by the primary files (1 level deep)</li>
+        <li><strong>Type definitions:</strong> Any interfaces/types used by primary files</li>
+        <li><strong>Boundary marker:</strong> Files outside scope are flagged <code>[BOUNDARY]</code> — agent must ask PM before modifying</li>
+        <li><strong>For review tasks:</strong> Use <code>git diff</code> — only see changed lines + 3 lines of context, not full files</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="ch">
+        <div class="ci" style="background:rgba(248,113,113,.15);">🚨</div>
+        <div><div class="ct">Context Overflow Prevention</div><div class="cr">What happens when an agent runs out of room</div></div>
+      </div>
+      <ul>
+        <li><strong>75% used (Yellow):</strong> Drop optional memory, collapse code comments, remove <code>[REFERENCE]</code> sections</li>
+        <li><strong>90% used (Red):</strong> Stop loading new context. Agent works with what it has. Warn PM.</li>
+        <li><strong>100% (Hard stop):</strong> Task is too big. PM splits it into 2 smaller tasks for separate agents.</li>
+        <li><strong>Key rule:</strong> If a task can't fit in one agent's context, the task is too big — break it down.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout hot">
+    <b>Sam's Insight That Drove This: "Everything needs to be in the context of what it's working on and be very focused and specific with our language."</b>
+    <p>The Context Budget makes this automatic. The PM constructs focused briefs. Agents stay sharp. No drowning in irrelevant information.</p>
+  </div>
+</div>
+
+<!-- ==================== SECTION 3: SEMANTIC MEMORY ==================== -->
+<div class="sec">
+  <div class="sec-title"><span class="n">3</span> Semantic Retrieval Memory System <span class="badge hot" style="font-size:.7rem;">Critical Innovation</span></div>
+  <div class="sec-desc">The team's shared brain. Instead of flat files that grow endlessly, memory is organized into browsable categories with indexes. An agent can find the 3 relevant entries out of 200 without loading all 200.</div>
+
+  <div class="grid">
+    <div class="card card-wide">
+      <div class="ch">
+        <div class="ci" style="background:rgba(124,92,252,.15);">🧠</div>
+        <div><div class="ct">Memory Directory Structure</div><div class="cr">Organized for fast retrieval, not just storage</div></div>
+      </div>
+      <table>
+        <tr><th>Directory</th><th>What's Inside</th><th>How It Works</th></tr>
+        <tr>
+          <td><code>memory/INDEX.md</code></td>
+          <td>Master table of contents</td>
+          <td>Every agent reads this first. Shows all categories, entry counts, most recent entries, and domain tags. ~2KB total.</td>
+        </tr>
+        <tr>
+          <td><code>memory/mistakes/</code></td>
+          <td>Individual mistake entries</td>
+          <td>Each file: <code>M001-auth-jwt-refresh-loop.md</code>. 5-15 lines: what happened, root cause, fix, prevention. Category INDEX.md lists all entries with impact level + domain tags.</td>
+        </tr>
+        <tr>
+          <td><code>memory/patterns/</code></td>
+          <td>Proven working solutions</td>
+          <td>Each file: <code>P001-api-envelope-pattern.md</code>. When to use, implementation, tradeoffs. Agent loads only the patterns relevant to their task.</td>
+        </tr>
+        <tr>
+          <td><code>memory/decisions/</code></td>
+          <td>Architecture decisions</td>
+          <td>Each file: <code>D001-use-claude-sonnet.md</code>. Context, options considered, decision, reasoning, review cadence.</td>
+        </tr>
+        <tr>
+          <td><code>memory/bugs/</code></td>
+          <td>Active + resolved bugs</td>
+          <td>Each file: <code>B001-stripe-webhook-duplicate.md</code>. Severity, status, root cause, fix, regression test. Cross-links to related mistakes/patterns.</td>
+        </tr>
+        <tr>
+          <td><code>memory/sprints/</code></td>
+          <td>Sprint history</td>
+          <td>Each file: <code>sprint_01_summary.md</code>. Goals, outcomes, agent activity, ship readiness status, carries.</td>
+        </tr>
+        <tr>
+          <td><code>memory/feedback/</code></td>
+          <td>Sam's feedback entries</td>
+          <td>Each file: <code>F001-chat-ui-feels-clunky.md</code>. What Sam said, what PM interpreted, action taken.</td>
+        </tr>
+        <tr>
+          <td><code>memory/agent_notes/</code></td>
+          <td>Per-agent working notes</td>
+          <td>Each file: <code>frontend.md</code>, <code>backend.md</code>. Environment quirks, gotchas, personal learnings.</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="ch">
+        <div class="ci" style="background:rgba(52,211,153,.15);">🔎</div>
+        <div><div class="ct">Retrieval Protocol</div><div class="cr">How agents find what they need in 3 steps</div></div>
+      </div>
+      <p><strong>Step 1 — Scan Master Index</strong> (~1KB): Agent reads <code>memory/INDEX.md</code>. Identifies relevant categories (e.g., "I'm working on auth → check mistakes/ and patterns/").</p>
+      <p><strong>Step 2 — Scan Category Index</strong> (~2KB): Agent reads <code>memory/mistakes/INDEX.md</code>. Scans by domain tags and impact level. Picks 2-4 relevant entries.</p>
+      <p><strong>Step 3 — Load Specific Entries</strong> (~3KB): Agent reads only those 2-4 files. Gets full context for each in 5-15 lines.</p>
+      <div class="callout ok" style="margin-top:10px;">
+        <b>Result: ~6KB total instead of loading all 200+ entries (~150KB)</b>
+        <p>25x reduction in context cost. Agent finds exactly what's relevant.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="ch">
+        <div class="ci" style="background:rgba(251,191,36,.15);">📝</div>
+        <div><div class="ct">Entry Format (Standard)</div><div class="cr">Every entry follows this template</div></div>
+      </div>
+      <p>Each memory entry is a standalone file, 5-15 lines max:</p>
+      <ul>
+        <li><strong>Line 1:</strong> Title</li>
+        <li><strong>Line 2:</strong> <code>ID | Date | Impact | Status | Domain</code></li>
+        <li><strong>Summary:</strong> One sentence — what this entry is about</li>
+        <li><strong>Details:</strong> What happened / how it works (2-3 sentences)</li>
+        <li><strong>Action:</strong> What to do about it (the practical takeaway)</li>
+        <li><strong>Links:</strong> Cross-references to related entries (mistakes → patterns, bugs → fixes)</li>
+      </ul>
+      <p>If an entry needs more than 15 lines, split it into a summary entry + a detailed companion file.</p>
+    </div>
+
+    <div class="card">
+      <div class="ch">
+        <div class="ci" style="background:rgba(248,113,113,.15);">🧹</div>
+        <div><div class="ct">PM Maintenance</div><div class="cr">Weekly pruning keeps memory clean</div></div>
+      </div>
+      <ul>
+        <li><strong>Archive:</strong> Entries resolved 60+ days ago and not referenced → move to <code>memory/archive/</code></li>
+        <li><strong>Merge:</strong> Duplicate entries with same root cause → combine into one</li>
+        <li><strong>Split:</strong> Entries over 20 lines → summary + detail companion</li>
+        <li><strong>Validate links:</strong> Check cross-references still point to real files</li>
+        <li><strong>Update indexes:</strong> Keep category INDEX.md files current</li>
+        <li><strong>Cadence:</strong> Every Friday, 15-20 minutes of PM time</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SECTION 4: ACTIVE WORK BOARD ==================== -->
+<div class="sec">
+  <div class="sec-title"><span class="n">4</span> Active Work Board — Focused, Not Isolated <span class="badge new" style="font-size:.7rem;">Key Concept</span></div>
+  <div class="sec-desc">Every agent is focused on its own task but has full visibility into what every other agent is doing. This is the coordination layer that prevents agents from stepping on each other — without creating a bottleneck.</div>
+
+  <div class="grid">
+    <div class="card card-wide">
+      <div class="ch">
+        <div class="ci" style="background:rgba(79,142,255,.15);">📊</div>
+        <div><div class="ct">The Active Work Board</div><div class="cr"><code>memory/active_work.md</code> — updated by PM, read by all agents</div></div>
+      </div>
+      <p>A lightweight, always-current manifest that shows what every agent is working on right now. Every agent reads this before starting work and before committing. Think of it as the team's whiteboard.</p>
+
+      <table>
+        <tr><th>Field</th><th>What It Contains</th><th>Why It Matters</th></tr>
+        <tr>
+          <td><strong>Agent</strong></td>
+          <td>Which agent (Frontend, Backend, etc.)</td>
+          <td>Know who's doing what</td>
+        </tr>
+        <tr>
+          <td><strong>Task</strong></td>
+          <td>What they're building (1 line)</td>
+          <td>Understand the work at a glance</td>
+        </tr>
+        <tr>
+          <td><strong>Branch</strong></td>
+          <td>Git branch name</td>
+          <td>Find their code if needed</td>
+        </tr>
+        <tr>
+          <td><strong>Files Modified</strong></td>
+          <td>Key files being changed</td>
+          <td><strong>Prevent conflicts</strong> — if two agents touch the same file, flag it</td>
+        </tr>
+        <tr>
+          <td><strong>Dependencies</strong></td>
+          <td>What this task depends on / what depends on it</td>
+          <td>Agents understand the chain — "don't change the auth API, Backend is depending on it"</td>
+        </tr>
+        <tr>
+          <td><strong>Status</strong></td>
+          <td>In Progress / Ready for Review / Blocked / Complete</td>
+          <td>Know what's moving and what's stuck</td>
+        </tr>
+      </table>
+
+      <div class="callout" style="margin-top:14px;">
+        <b>Example Active Work Board</b>
+        <p style="font-family:monospace; font-size:.78rem; white-space:pre; margin-top:8px; line-height:1.5;">
+| Agent    | Task                         | Branch                  | Key Files                          | Depends On     | Status      |
+|----------|------------------------------|-------------------------|------------------------------------|----------------|-------------|
+| Frontend | Auth signup + login pages    | feature/auth-ui         | app/(auth)/, components/auth/      | Backend: auth API | In Progress |
+| Backend  | Auth API + JWT + rate limit  | feature/auth-backend    | app/api/auth/, lib/auth/, middleware.ts | DB: users table | In Progress |
+| Backend  | Stripe webhook handler       | feature/stripe-webhooks | app/api/webhooks/, lib/billing/    | None           | Ready for Review |
+        </p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="ch">
+        <div class="ci" style="background:rgba(52,211,153,.15);">🤝</div>
+        <div><div class="ct">Commit Coordination Protocol</div><div class="cr">All agents can commit — with awareness</div></div>
+      </div>
+      <p><strong>Before committing, every agent:</strong></p>
+      <ul>
+        <li><strong>1. Pull latest</strong> — get the newest code from main</li>
+        <li><strong>2. Check Active Work Board</strong> — is anyone else touching files I modified?</li>
+        <li><strong>3. If conflict detected:</strong> Report to PM. Don't commit. Let PM coordinate the merge.</li>
+        <li><strong>4. If no conflict:</strong> Commit with structured message (task ID, files changed, what was done)</li>
+        <li><strong>5. Update the board:</strong> Mark task status as "Ready for Review" or "Complete"</li>
+      </ul>
+      <div class="callout ok" style="margin-top:10px;">
+        <b>This replaces "only PM can commit" from v2</b>
+        <p>All agents can commit, but they always check the board first. The PM sets up the board, agents respect it. Lightweight coordination, no bottleneck.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="ch">
+        <div class="ci" style="background:rgba(251,191,36,.15);">⚡</div>
+        <div><div class="ct">Dependency Awareness</div><div class="cr">Agents understand the chain</div></div>
+      </div>
+      <p>When the PM assigns a task, the brief includes:</p>
+      <ul>
+        <li><strong>What you depend on:</strong> "Backend is building the auth API. If you need it, mock it for now. Branch: <code>feature/auth-backend</code>"</li>
+        <li><strong>What depends on you:</strong> "Frontend is waiting on your API shape. Share the endpoint contract before EOD."</li>
+        <li><strong>Shared files:</strong> "Both you and Frontend touch <code>lib/types/</code>. Coordinate if you add new types."</li>
+        <li><strong>This isn't surveillance</strong> — it's teamwork. Every agent knows the landscape so they can make smart decisions about their own work.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SECTION 5: STARTER TEAM ==================== -->
+<div class="sec">
+  <div class="sec-title"><span class="n">5</span> Starter Team — 3 Agents to Launch Monday <span class="phase-label pl-now">PHASE A — NOW</span></div>
+  <div class="sec-desc">Start with PM + Frontend + Backend. Three agents, clear lanes, parallel velocity. Quality agents join in Phase B once patterns are established.</div>
+
+  <div class="callout purple">
+    <b>Why PM + Frontend + Backend (not PM + Full-Stack + QA)?</b>
+    <p><strong>Parallelization:</strong> Two engineers working simultaneously = 2x velocity. A single "Full-Stack" agent can't context-switch between React and PostgreSQL without quality degradation. Separate agents can work in parallel on frontend pages and backend APIs at the same time.</p>
+    <p style="margin-top:6px;"><strong>Context windows:</strong> Each agent is deep in one domain. A Frontend agent knows React/Tailwind/shadcn. A Backend agent knows Supabase/Stripe/Edge Functions. Neither wastes context on the other's domain.</p>
+    <p style="margin-top:6px;"><strong>Phase I is ~50% done:</strong> The remaining work splits naturally: UI pages + backend APIs. Two agents can close this out faster than one.</p>
+  </div>
+
+  <div class="grid">
+    <!-- PM AGENT -->
+    <div class="card card-wide" style="border-color:var(--accent);">
+      <div class="ch">
+        <div class="ci" style="background:rgba(79,142,255,.2);">🎯</div>
+        <div>
+          <div class="ct">Agent 1: PM Orchestrator</div>
+          <div class="cr">Planner / Delegator / Reviewer / Sam's Translator</div>
+        </div>
+      </div>
+      <div style="margin-bottom:8px;"><span class="tag t-r">Complex</span><span class="phase-label pl-now">DAY 1</span></div>
+
+      <table>
+        <tr><th style="width:25%;">Responsibility</th><th>Details</th></tr>
+        <tr><td><strong>Sprint Planning</strong></td><td>Evaluates PRD, roadmap, codebase state, memory, and Sam's feedback. Proposes sprint plan. Sam approves.</td></tr>
+        <tr><td><strong>Task Briefing</strong></td><td>Constructs focused Task Briefs for Frontend and Backend using the Context Budget system. Extracts spec sections, loads relevant memory, scopes files.</td></tr>
+        <tr><td><strong>Active Work Board</strong></td><td>Maintains <code>memory/active_work.md</code>. Updates when assigning tasks, when agents complete work, when dependencies shift.</td></tr>
+        <tr><td><strong>Code Review (Phase A)</strong></td><td>Until dedicated Code Review agent joins in Phase B, PM does light review: spec compliance, no scope creep, tests pass, security basics.</td></tr>
+        <tr><td><strong>Memory Management</strong></td><td>Logs mistakes, patterns, decisions. Curates memory weekly. Ensures agents start with latest knowledge.</td></tr>
+        <tr><td><strong>Dashboard Updates</strong></td><td>After each sprint: updates Roadmap HTML with sprint results, agent activity, ship readiness, next sprint proposal.</td></tr>
+        <tr><td><strong>Plain-Language Reporting</strong></td><td><strong>Explains to Sam in plain English:</strong> what was built, why, what the risks are, what decisions are needed, what Sam needs to do. No jargon.</td></tr>
+        <tr><td><strong>Bug Triage</strong></td><td>When any agent finds a bug: PM classifies severity (P0-P3), updates bugs memory, takes action per Error Recovery Plan.</td></tr>
+      </table>
+
+      <div style="margin-top:12px;">
+        <strong style="font-size:.82rem;">Skills:</strong>
+        <span class="skill-tag">product-management:roadmap-management</span>
+        <span class="skill-tag">product-management:feature-spec</span>
+        <span class="skill-tag">productivity:memory-management</span>
+        <span class="skill-tag">productivity:task-management</span>
+        <span class="skill-tag">doc-coauthoring</span>
+        <span class="skill-tag">Supabase MCP</span>
+        <span class="skill-tag">Stripe MCP</span>
+        <span class="skill-tag">GitHub CLI</span>
+      </div>
+    </div>
+
+    <!-- FRONTEND AGENT -->
+    <div class="card" style="border-color:var(--cyan);">
+      <div class="ch">
+        <div class="ci" style="background:rgba(34,211,238,.2);">⚛️</div>
+        <div>
+          <div class="ct">Agent 2: Frontend Engineer</div>
+          <div class="cr">Next.js / React / Tailwind / shadcn/ui</div>
+        </div>
+      </div>
+      <div style="margin-bottom:8px;"><span class="tag t-a">Medium</span><span class="phase-label pl-now">DAY 1</span></div>
+
+      <p>Builds all user-facing UI — pages, components, hooks, forms, client state. Can mock Backend APIs if they're not ready yet (unblocked development).</p>
+
+      <ul>
+        <li>Next.js App Router pages and layouts</li>
+        <li>React components + shadcn/ui + Tailwind</li>
+        <li>Recharts dashboards for parameter data</li>
+        <li>Form handling + client-side Zod validation</li>
+        <li>Loading/error/empty states per spec</li>
+        <li>Responsive design + PWA manifest</li>
+        <li>API mocking until Backend delivers real endpoints</li>
+      </ul>
+
+      <div class="callout" style="margin-top:10px;">
+        <b>Handoff with Backend:</b>
+        <p>Frontend tells Backend: "I need POST /api/tanks with {name, type, volume}." Backend confirms the shape and builds it. Frontend mocks it in the meantime. When Backend delivers, Frontend swaps the mock for the real endpoint.</p>
+      </div>
+
+      <div style="margin-top:10px;">
+        <strong style="font-size:.82rem;">Skills:</strong>
+        <span class="skill-tag">web-design-guidelines</span>
+        <span class="skill-tag">web-artifacts-builder</span>
+        <span class="skill-tag">Context7</span>
+      </div>
+      <div style="margin-top:6px;">
+        <strong style="font-size:.82rem;">Ship Readiness:</strong>
+        <span style="font-size:.78rem; color:var(--dim);">01_Security (XSS, CSRF), 02_Test_Plan (E2E user flows)</span>
+      </div>
+    </div>
+
+    <!-- BACKEND AGENT -->
+    <div class="card" style="border-color:var(--green);">
+      <div class="ch">
+        <div class="ci" style="background:rgba(52,211,153,.2);">🔧</div>
+        <div>
+          <div class="ct">Agent 3: Backend Engineer</div>
+          <div class="cr">Supabase / API Routes / Stripe / Auth / DB</div>
+        </div>
+      </div>
+      <div style="margin-bottom:8px;"><span class="tag t-r">Complex</span><span class="phase-label pl-now">DAY 1</span></div>
+
+      <p>All server-side logic: API routes, database schema + migrations, auth, Stripe integration, Edge Functions, validation. The most security-critical agent. In Phase A, also handles database work (until DB agent joins later).</p>
+
+      <ul>
+        <li>API routes with standard envelope format</li>
+        <li>Supabase schema, migrations, RLS policies</li>
+        <li>Auth: JWT, rate limiting, session management</li>
+        <li>Stripe: checkout, webhooks, customer portal</li>
+        <li>Edge Functions: AI chat, cron jobs</li>
+        <li>Zod validation on all endpoints</li>
+        <li>Database indexes, seed data, type generation</li>
+      </ul>
+
+      <div class="callout" style="margin-top:10px;">
+        <b>Handoff with Frontend:</b>
+        <p>Backend shares API contracts early: "Here's the endpoint, here's the request/response shape." Frontend builds against it. Backend delivers the working endpoint. Integration happens naturally.</p>
+      </div>
+
+      <div style="margin-top:10px;">
+        <strong style="font-size:.82rem;">Skills:</strong>
+        <span class="skill-tag">postgres-best-practices</span>
+        <span class="skill-tag">Supabase MCP</span>
+        <span class="skill-tag">Stripe MCP</span>
+        <span class="skill-tag">Context7</span>
+      </div>
+      <div style="margin-top:6px;">
+        <strong style="font-size:.82rem;">Ship Readiness:</strong>
+        <span style="font-size:.78rem; color:var(--dim);">01_Security (ALL), 03_Deployment (migrations), 04_Runbook (error handling)</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SECTION 6: SCALING PLAN ==================== -->
+<div class="sec">
+  <div class="sec-title"><span class="n">6</span> Full Agent Roster &amp; Scaling Plan</div>
+  <div class="sec-desc">All 11 agents documented for reference. Phase A starts with 3. Phase B adds quality. Phase C adds specialists. Every agent is defined now — deployed when ready.</div>
+
+  <table>
+    <tr><th style="width:5%;">#</th><th style="width:18%;">Agent</th><th style="width:10%;">Phase</th><th style="width:30%;">Role</th><th>Deploy Trigger</th></tr>
+    <tr style="background:rgba(52,211,153,.05);">
+      <td>1</td><td><strong>PM Orchestrator</strong></td><td><span class="phase-label pl-now">A</span></td>
+      <td>Plans, delegates, reviews, coordinates, reports to Sam</td>
+      <td>Day 1 — the brain starts first</td>
+    </tr>
+    <tr style="background:rgba(52,211,153,.05);">
+      <td>2</td><td><strong>Frontend Engineer</strong></td><td><span class="phase-label pl-now">A</span></td>
+      <td>Next.js pages, React components, UI, client state</td>
+      <td>Day 1 — UI work is ~50% of remaining Phase I</td>
+    </tr>
+    <tr style="background:rgba(52,211,153,.05);">
+      <td>3</td><td><strong>Backend Engineer</strong></td><td><span class="phase-label pl-now">A</span></td>
+      <td>APIs, database, auth, Stripe, Edge Functions</td>
+      <td>Day 1 — server work runs parallel to frontend</td>
+    </tr>
+    <tr style="background:rgba(251,191,36,.05);">
+      <td>4</td><td><strong>Unit/Integration Test</strong></td><td><span class="phase-label pl-next">B</span></td>
+      <td>Vitest tests, coverage, regression tests for bug fixes</td>
+      <td>When Phase A agents produce enough code to test (Sprint 2-3)</td>
+    </tr>
+    <tr style="background:rgba(251,191,36,.05);">
+      <td>5</td><td><strong>Code Review Agent</strong></td><td><span class="phase-label pl-next">B</span></td>
+      <td>Security, spec compliance, CLAUDE.md standards, scope enforcement</td>
+      <td>When PRs become too frequent for PM to review alone</td>
+    </tr>
+    <tr style="background:rgba(251,191,36,.05);">
+      <td>6</td><td><strong>Browser Test Agent</strong></td><td><span class="phase-label pl-next">B</span></td>
+      <td>Live browser testing when features are ship-ready. Not every change.</td>
+      <td>When first features are believed ready to ship (feature-complete)</td>
+    </tr>
+    <tr style="background:rgba(79,142,255,.05);">
+      <td>7</td><td><strong>Database Specialist</strong></td><td><span class="phase-label pl-later">C</span></td>
+      <td>Schema optimization, complex migrations, query tuning, species data</td>
+      <td>When Backend is spending too much time on DB optimization vs. features</td>
+    </tr>
+    <tr style="background:rgba(79,142,255,.05);">
+      <td>8</td><td><strong>UI/UX Design Agent</strong></td><td><span class="phase-label pl-later">C</span></td>
+      <td>Wireframes, component patterns, accessibility, design system</td>
+      <td>Phase II polish — when functional UI needs design refinement</td>
+    </tr>
+    <tr style="background:rgba(79,142,255,.05);">
+      <td>9</td><td><strong>Research Agent</strong></td><td><span class="phase-label pl-later">C</span></td>
+      <td>Library evaluation, API docs, best practices, competitive analysis</td>
+      <td>When technical decisions need deeper research (new integrations, P1 features)</td>
+    </tr>
+    <tr style="background:rgba(79,142,255,.05);">
+      <td>10</td><td><strong>DevOps Agent</strong></td><td><span class="phase-label pl-later">C</span></td>
+      <td>CI/CD, Vercel config, monitoring, Sentry, env management</td>
+      <td>Pre-launch — when deployment pipeline needs hardening</td>
+    </tr>
+    <tr style="background:rgba(79,142,255,.05);">
+      <td>11</td><td><strong>Documentation Agent</strong></td><td><span class="phase-label pl-later">C</span></td>
+      <td>Spec updates, changelogs, decision log, doc sync</td>
+      <td>When PM is spending too much time on doc maintenance</td>
+    </tr>
+  </table>
+
+  <div class="callout ok">
+    <b>Scaling is trigger-based, not time-based.</b>
+    <p>We don't add agents on a schedule. We add them when there's a real need: PM is overloaded with reviews → add Code Review Agent. Features are ready to ship → add Browser Test Agent. Backend is spending all its time on DB queries → add Database Specialist.</p>
+  </div>
+</div>
+
+<!-- ==================== SECTION 7: PM COMMUNICATION ==================== -->
+<div class="sec">
+  <div class="sec-title"><span class="n">7</span> PM Communication — Plain Language, No Jargon</div>
+  <div class="sec-desc">The PM is Sam's expert advisor. It explains what it's doing, why, what the risks are, and whether it's the right call — in language anyone can understand.</div>
+
+  <div class="grid">
+    <div class="card card-wide">
+      <div class="ch">
+        <div class="ci" style="background:rgba(79,142,255,.15);">💬</div>
+        <div><div class="ct">How the PM Talks to Sam</div><div class="cr">Every report follows this pattern</div></div>
+      </div>
+
+      <table>
+        <tr><th style="width:20%;">Communication</th><th style="width:35%;">What PM Says</th><th>Why It Matters</th></tr>
+        <tr>
+          <td><strong>Sprint Proposal</strong></td>
+          <td>"This sprint, I recommend we build the login/signup pages and the Stripe billing integration. Here's why: login is blocking everything else (no one can use the app without it), and billing is the second biggest dependency."</td>
+          <td>Sam understands priority reasoning, not just a task list</td>
+        </tr>
+        <tr>
+          <td><strong>Risk Flag</strong></td>
+          <td>"The Backend agent wants to change how we store user sessions. This is a security-sensitive change. The risk is: if we get it wrong, users could be locked out or see each other's data. I think the change is worth it because [reason], but I wanted you to know before we proceed."</td>
+          <td>Sam knows the stakes before approving</td>
+        </tr>
+        <tr>
+          <td><strong>Decision Needed</strong></td>
+          <td>"We have two options for the AI chat: Option A is simpler but limits us to 50 messages per conversation. Option B is more complex but supports unlimited conversations. Option A takes 2 hours, Option B takes a full day. What matters more to you right now?"</td>
+          <td>Sam makes informed decisions with clear tradeoffs</td>
+        </tr>
+        <tr>
+          <td><strong>Sprint Report</strong></td>
+          <td>"This sprint we built the signup flow, login page, and started the tank creation form. Frontend built 4 pages. Backend built 3 API endpoints and the database tables. We found one bug: the password reset email wasn't sending — already fixed. Next sprint I recommend we tackle the AI chat engine."</td>
+          <td>Sam sees progress in human terms, not git commits</td>
+        </tr>
+        <tr>
+          <td><strong>Error Escalation</strong></td>
+          <td>"Something went wrong with the Stripe integration — test payments are failing. I've paused all billing work until we fix it. This is a P0 (critical) issue because billing is core to the product. The Backend agent is investigating. I'll update you within the hour."</td>
+          <td>Sam knows the severity without needing to understand the code</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SECTION 8: ERROR RECOVERY ==================== -->
+<div class="sec">
+  <div class="sec-title"><span class="n">8</span> Error Recovery Plan <span class="badge hot" style="font-size:.7rem;">New in v3</span></div>
+  <div class="sec-desc">What happens when things go wrong. Detection layers, severity classification, rollback procedures, post-mortems, and circuit breakers.</div>
+
+  <div class="grid">
+    <div class="card card-wide">
+      <div class="ch">
+        <div class="ci" style="background:rgba(248,113,113,.15);">🛡️</div>
+        <div><div class="ct">8 Detection Layers</div><div class="cr">Errors are caught at progressively earlier stages</div></div>
+      </div>
+      <table>
+        <tr><th style="width:5%;">#</th><th style="width:25%;">Layer</th><th style="width:18%;">Who</th><th>What It Catches</th></tr>
+        <tr><td>1</td><td>Self-Review</td><td>Engineering Agent</td><td>Obvious bugs, linting errors, missing validations before submitting</td></tr>
+        <tr><td>2</td><td>Unit/Integration Tests</td><td>Test Agent (Phase B) / Self (Phase A)</td><td>Logic errors, broken APIs, data validation failures</td></tr>
+        <tr><td>3</td><td>Code Review</td><td>Code Review Agent (Phase B) / PM (Phase A)</td><td>Security issues, spec violations, scope creep, architectural problems</td></tr>
+        <tr><td>4</td><td>Browser Testing</td><td>Browser Test Agent (Phase B)</td><td>UI bugs, broken flows, rendering issues, mobile breakpoints</td></tr>
+        <tr><td>5</td><td>PM Final Review</td><td>PM Orchestrator</td><td>Cross-agent conflicts, dependency issues, ship readiness gaps</td></tr>
+        <tr><td>6</td><td>Staging Deploy</td><td>DevOps (Phase C) / PM (Phase A)</td><td>Environment-specific issues, deployment failures</td></tr>
+        <tr><td>7</td><td>Production Monitoring</td><td>Sentry + Vercel analytics</td><td>Runtime errors, performance regressions, 500s</td></tr>
+        <tr><td>8</td><td>Sam's Testing</td><td>Sam (human)</td><td>UX issues, "this feels wrong," business logic errors only a domain expert catches</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="ch">
+        <div class="ci" style="background:rgba(248,113,113,.15);">🚨</div>
+        <div><div class="ct">Severity Response</div></div>
+      </div>
+      <table>
+        <tr><th>Level</th><th>Response</th><th>Action</th></tr>
+        <tr>
+          <td><span class="tag t-r">CRITICAL</span></td>
+          <td>Immediate</td>
+          <td>Halt all work. Rollback or emergency fix. Notify Sam. Post-mortem required.</td>
+        </tr>
+        <tr>
+          <td><span class="tag t-a">HIGH</span></td>
+          <td>5-30 min</td>
+          <td>Prioritize fix in current sprint. May rollback. Notify Sam if user-facing.</td>
+        </tr>
+        <tr>
+          <td><span class="tag t-b">MEDIUM</span></td>
+          <td>&lt;24 hours</td>
+          <td>Fix through normal pipeline. No rollback needed. Document in bugs.</td>
+        </tr>
+        <tr>
+          <td><span class="tag t-g">LOW</span></td>
+          <td>Next sprint</td>
+          <td>Backlog it. Fix when capacity allows. No disruption.</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="ch">
+        <div class="ci" style="background:rgba(251,191,36,.15);">🔄</div>
+        <div><div class="ct">Rollback Procedures</div></div>
+      </div>
+      <ul>
+        <li><strong>Code:</strong> <code>git revert</code> the bad commit. Clean, traceable, preserves history.</li>
+        <li><strong>Deployment:</strong> Vercel instant rollback to previous deploy. Takes seconds.</li>
+        <li><strong>Database:</strong> Backward-compatible migrations only. If a migration breaks, restore from Supabase point-in-time backup.</li>
+        <li><strong>Stripe:</strong> If billing error detected, PM immediately pauses webhook processing. Manual review before resuming. Refund affected users if needed.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="ch">
+        <div class="ci" style="background:rgba(52,211,153,.15);">📝</div>
+        <div><div class="ct">Post-Mortem &amp; "Never Twice"</div></div>
+      </div>
+      <p>Every error that reaches main or production gets a post-mortem:</p>
+      <ul>
+        <li><strong>What went wrong:</strong> Root cause in plain language</li>
+        <li><strong>Which detection layer missed it:</strong> Why didn't code review / tests / browser test catch it?</li>
+        <li><strong>Prevention:</strong> Add a test, update a checklist, add a memory entry</li>
+        <li><strong>The "Never Twice" rule:</strong> After every error → add unit test + update code review checklist + add memory entry. That specific type of failure becomes impossible to repeat.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="ch">
+        <div class="ci" style="background:rgba(248,113,113,.15);">⛔</div>
+        <div><div class="ct">Circuit Breakers</div></div>
+      </div>
+      <p>Automatic "stop everything" triggers:</p>
+      <ul>
+        <li><strong>3+ CRITICAL/HIGH errors in one sprint:</strong> Code freeze. Review the quality pipeline before proceeding.</li>
+        <li><strong>Same feature rolled back twice:</strong> Halt that feature. Redesign the approach.</li>
+        <li><strong>Database integrity issue:</strong> Halt all migrations. Full audit before resuming.</li>
+        <li><strong>Stripe billing error:</strong> Disable webhook processing. Manual review.</li>
+        <li><strong>Unknown root cause after 15 minutes:</strong> Escalate to Sam instead of guessing.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="ch">
+        <div class="ci" style="background:rgba(79,142,255,.15);">🙋</div>
+        <div><div class="ct">When PM Escalates to Sam</div></div>
+      </div>
+      <p>PM asks Sam for help when:</p>
+      <ul>
+        <li>Any data loss or corruption (even suspected)</li>
+        <li>Billing errors affecting real money</li>
+        <li>Security breaches or credential exposure</li>
+        <li>Conflicting priorities where PM can't decide</li>
+        <li>Unknown root cause after 15 minutes of investigation</li>
+        <li>Rollback would cause worse problems than the bug</li>
+        <li>Multiple agents involved in a conflict PM can't resolve</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SECTION 9: AUTONOMOUS SPRINT PLANNING ==================== -->
+<div class="sec">
+  <div class="sec-title"><span class="n">9</span> Autonomous Sprint Planning</div>
+  <div class="sec-desc">"Start your next sprint" is a valid command. The PM reads feedback, evaluates the PRD, maps dependencies, and proposes a plan. You approve or adjust.</div>
+
+  <div class="grid">
+    <div class="card card-wide">
+      <div class="ch">
+        <div class="ci" style="background:rgba(79,142,255,.15);">🧠</div>
+        <div><div class="ct">PM's Sprint Planning Algorithm</div></div>
+      </div>
+      <table>
+        <tr><th style="width:5%;">Step</th><th style="width:22%;">Action</th><th>Details</th></tr>
+        <tr><td>1</td><td><strong>Read Sam's Feedback</strong></td><td>Check Roadmap HTML Feedback Section + <code>memory/feedback/</code>. Incorporate priorities, concerns, overrides FIRST.</td></tr>
+        <tr><td>2</td><td><strong>Evaluate PRD Progress</strong></td><td>Cross-reference spec docs with actual codebase. What's built? What's partial? What's untouched?</td></tr>
+        <tr><td>3</td><td><strong>Check Roadmap Position</strong></td><td>Current week vs. milestones. Ahead, behind, or on track? What's on the critical path?</td></tr>
+        <tr><td>4</td><td><strong>Map Dependencies</strong></td><td>Auth → Tanks → AI Chat → Params. What's unblocked now? What can run in parallel?</td></tr>
+        <tr><td>5</td><td><strong>Check Bug Backlog</strong></td><td>Any P0/P1 bugs? Bugs always take priority. P0 blocks the sprint. P1 gets scheduled first.</td></tr>
+        <tr><td>6</td><td><strong>Review Ship Readiness</strong></td><td>Are we accumulating security debt? Missing tests? Need monitoring setup?</td></tr>
+        <tr><td>7</td><td><strong>Review Memory</strong></td><td>Scan <code>memory/mistakes/INDEX.md</code> and <code>memory/patterns/INDEX.md</code>. Incorporate lessons.</td></tr>
+        <tr><td>8</td><td><strong>Construct Sprint Plan</strong></td><td>Tasks, acceptance criteria, agent assignments, Context Budget briefs, risk flags. Write to <code>Docs/Sprints/sprint_N.md</code>.</td></tr>
+        <tr><td>9</td><td><strong>Present to Sam</strong></td><td>Plain-language summary: what will be built, by whom, why this order, what Sam needs to do (if anything), decisions needed.</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="flow">
+    <div class="fs" style="border-color:var(--amber);">Sam: "Start next sprint"</div>
+    <div class="fa">→</div>
+    <div class="fs" style="border-color:var(--accent);">PM reads feedback + evaluates state</div>
+    <div class="fa">→</div>
+    <div class="fs" style="border-color:var(--accent2);">PM proposes sprint in plain language</div>
+    <div class="fa">→</div>
+    <div class="fs" style="border-color:var(--amber);">Sam approves / adjusts</div>
+    <div class="fa">→</div>
+    <div class="fs" style="border-color:var(--green);">PM delegates with Context Budget briefs</div>
+    <div class="fa">→</div>
+    <div class="fs" style="border-color:var(--cyan);">Agents build + commit (check Active Work Board)</div>
+    <div class="fa">→</div>
+    <div class="fs" style="border-color:var(--green);">PM reports results + updates dashboard</div>
+  </div>
+</div>
+
+<!-- ==================== SECTION 10: LIVING ROADMAP DASHBOARD ==================== -->
+<div class="sec">
+  <div class="sec-title"><span class="n">10</span> The Living Roadmap Dashboard</div>
+  <div class="sec-desc">The Roadmap HTML is Sam's single pane of glass. Updated after every sprint. Contains sprint history, agent activity, ship readiness, bugs, and a feedback section Sam uses to steer the team.</div>
+
+  <div class="grid">
+    <div class="card card-wide">
+      <table>
+        <tr><th style="width:25%;">Section</th><th>What It Shows</th></tr>
+        <tr><td><strong>Roadmap Timeline</strong></td><td>Planned vs. actual progress. Current week. Milestones with status.</td></tr>
+        <tr><td><strong>Sprint History</strong></td><td>Every completed sprint: goals, outcomes, what carried over. Running log.</td></tr>
+        <tr><td><strong>Agent Activity</strong></td><td>What each agent did this sprint. "Frontend: Built auth pages (3 PRs). Backend: Auth API + Stripe webhooks (2 PRs)."</td></tr>
+        <tr><td><strong>Ship Readiness</strong></td><td>Green/Yellow/Red for each of the 6 ship readiness areas.</td></tr>
+        <tr><td><strong>Bug Tracker</strong></td><td>Active P0/P1 bugs. Resolved bugs with root cause.</td></tr>
+        <tr><td><strong>Human Action Items</strong></td><td>What Sam needs to do: decisions, approvals, API keys, DNS config.</td></tr>
+        <tr><td><strong>Next Sprint Proposal</strong></td><td>PM's recommendation for next sprint based on autonomous planning.</td></tr>
+        <tr><td style="border-color:var(--green);"><strong style="color:var(--green);">Feedback Section</strong></td><td>Sam leaves notes here. <strong>PM reads this FIRST before planning.</strong> "Focus on billing" or "Chat UI feels clunky" or "I tested signup — here's what broke."</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SECTION 11: SHIP READINESS ==================== -->
+<div class="sec">
+  <div class="sec-title"><span class="n">11</span> Ship Readiness Gates</div>
+  <div class="sec-desc">Each of the 6 Ship Readiness docs maps to specific agents. The PM tracks compliance every sprint, not just at launch.</div>
+
+  <table>
+    <tr><th>Ship Readiness Doc</th><th>Primary Agent</th><th>Sprint Checks</th></tr>
+    <tr><td><strong>01_Security_Privacy</strong></td><td>Backend + Code Review (Phase B)</td><td>Every PR: RLS check, input validation, no secrets, rate limiting</td></tr>
+    <tr><td><strong>02_Test_Plan</strong></td><td>Test Agent (Phase B)</td><td>Tests written for every feature. Coverage tracked.</td></tr>
+    <tr><td><strong>03_Deployment_Plan</strong></td><td>DevOps (Phase C) / PM (Phase A)</td><td>CI/CD working, preview deploys, env vars managed</td></tr>
+    <tr><td><strong>04_Runbook_Ops</strong></td><td>DevOps (Phase C) / PM (Phase A)</td><td>Monitoring configured as services are integrated</td></tr>
+    <tr><td><strong>05_Release_Notes</strong></td><td>PM + Browser Test (Phase B)</td><td>N/A during sprints (launch doc). Browser Test runs T-1 smoke tests.</td></tr>
+    <tr><td><strong>06_Post_Launch</strong></td><td>PM + DevOps (Phase C)</td><td>Event tracking code added as features ship</td></tr>
+  </table>
+</div>
+
+<!-- ==================== SECTION 12: BROWSER TESTING ==================== -->
+<div class="sec">
+  <div class="sec-title"><span class="n">12</span> Browser Testing — Ship-Ready Milestones Only</div>
+  <div class="sec-desc">The Browser Test Agent doesn't test every change. It tests when a feature is believed to be complete and ready to ship. Sam can also test manually and report feedback.</div>
+
+  <div class="grid">
+    <div class="card">
+      <div class="ch">
+        <div class="ci" style="background:rgba(52,211,153,.15);">🌐</div>
+        <div><div class="ct">When Browser Testing Happens</div></div>
+      </div>
+      <ul>
+        <li><strong>Feature complete:</strong> When an agent says "auth signup flow is done," Browser Test validates the entire flow end-to-end</li>
+        <li><strong>Pre-launch:</strong> Full T-1 smoke test checklist from 05_Release_Notes</li>
+        <li><strong>After major bug fixes:</strong> Verify the fix works and nothing else broke</li>
+        <li><strong>Sam's request:</strong> "Test the chat feature for me" triggers a browser test session</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="ch">
+        <div class="ci" style="background:rgba(251,191,36,.15);">🧑‍💻</div>
+        <div><div class="ct">Sam's Manual Testing</div></div>
+      </div>
+      <ul>
+        <li>Sam tests features personally when he wants to</li>
+        <li>Reports feedback via the Roadmap HTML Feedback Section</li>
+        <li>"I tried signup on my phone — the button was cut off on the bottom"</li>
+        <li>PM reads this at next sprint start and creates fix tasks</li>
+        <li>This is Sam's direct line to the team — real user testing from the founder</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SECTION 13: MEMORY + FILE ORGANIZATION ==================== -->
+<div class="sec">
+  <div class="sec-title"><span class="n">13</span> File Organization &amp; Directory Structure</div>
+
+  <div class="grid">
+    <div class="card card-wide">
+      <table>
+        <tr><th style="width:30%;">Directory</th><th style="width:30%;">What Goes Here</th><th>Naming Convention</th></tr>
+        <tr><td><code>Docs/AquaBotAI_Specs/</code></td><td>Product specs</td><td><code>{NN}_{Feature}_Spec.md</code></td></tr>
+        <tr><td><code>Docs/Ship_Readiness/</code></td><td>Ship readiness checklists</td><td><code>{NN}_{Area}_Checklist.md</code></td></tr>
+        <tr><td><code>Docs/Roadmap/</code></td><td>Roadmap MD + living HTML dashboard</td><td><code>AquaBotAI_Product_Roadmap.{md,html}</code></td></tr>
+        <tr><td><code>Docs/Sprints/</code></td><td>Sprint plans + retrospectives</td><td><code>sprint_{NN}_plan.md</code></td></tr>
+        <tr><td><code>memory/INDEX.md</code></td><td>Master memory index</td><td>Table of contents with counts + recent entries</td></tr>
+        <tr><td><code>memory/mistakes/</code></td><td>Individual mistake entries</td><td><code>M{NNN}-{kebab-title}.md</code></td></tr>
+        <tr><td><code>memory/patterns/</code></td><td>Proven solutions</td><td><code>P{NNN}-{kebab-title}.md</code></td></tr>
+        <tr><td><code>memory/decisions/</code></td><td>Architecture decisions</td><td><code>D{NNN}-{kebab-title}.md</code></td></tr>
+        <tr><td><code>memory/bugs/</code></td><td>Bug tracker entries</td><td><code>B{NNN}-{kebab-title}.md</code></td></tr>
+        <tr><td><code>memory/sprints/</code></td><td>Sprint summaries</td><td><code>sprint_{NN}_summary.md</code></td></tr>
+        <tr><td><code>memory/feedback/</code></td><td>Sam's feedback entries</td><td><code>F{NNN}-{kebab-title}.md</code></td></tr>
+        <tr><td><code>memory/agent_notes/</code></td><td>Per-agent working notes</td><td><code>{role}.md</code></td></tr>
+        <tr><td><code>memory/active_work.md</code></td><td>Active Work Board</td><td>Single file, updated by PM</td></tr>
+        <tr><td><code>memory/archive/</code></td><td>Archived old entries</td><td>Same structure as parent categories</td></tr>
+        <tr><td><code>agents/prompts/</code></td><td>Agent system prompts</td><td><code>{role}.md</code></td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SECTION 14: SPRINT CYCLE ==================== -->
+<div class="sec">
+  <div class="sec-title"><span class="n">14</span> The Sprint Cycle</div>
+
+  <table>
+    <tr><th style="width:5%;">#</th><th style="width:18%;">Phase</th><th style="width:12%;">Who</th><th>What Happens</th></tr>
+    <tr><td>1</td><td><strong>Read Feedback</strong></td><td>PM</td><td>Read Sam's feedback from Roadmap HTML + memory/feedback/. Incorporate priorities first.</td></tr>
+    <tr><td>2</td><td><strong>Plan Sprint</strong></td><td>PM</td><td>Autonomous planning: PRD progress, roadmap, dependencies, bugs, ship readiness, memory.</td></tr>
+    <tr><td>3</td><td><strong>Present to Sam</strong></td><td>PM</td><td>Plain-language proposal: what, why, who, risks, decisions needed.</td></tr>
+    <tr><td>4</td><td><strong>Sam Approves</strong></td><td>Sam</td><td>Reviews, adjusts, greenlights. "Looks good" or "Swap X for Y."</td></tr>
+    <tr><td>5</td><td><strong>PM Delegates</strong></td><td>PM</td><td>Creates Task Briefs using Context Budget system. Updates Active Work Board. Assigns agents.</td></tr>
+    <tr><td>6</td><td><strong>Agents Build</strong></td><td>Engineering</td><td>Frontend + Backend work in parallel. Check Active Work Board before committing. Coordinate on shared dependencies.</td></tr>
+    <tr><td>7</td><td><strong>Quality Check</strong></td><td>PM (Phase A) / QA (Phase B)</td><td>Code review, tests, browser test (when ship-ready). PM catches cross-agent conflicts.</td></tr>
+    <tr><td>8</td><td><strong>Ship + Document</strong></td><td>PM + All</td><td>Merge to main. Update memory with lessons. Log sprint in sprint_log.</td></tr>
+    <tr><td>9</td><td><strong>Dashboard Update</strong></td><td>PM</td><td>Update Roadmap HTML: sprint history, agent activity, ship readiness, bugs, next sprint proposal, clear feedback section for Sam's new input.</td></tr>
+  </table>
+</div>
+
+<!-- ==================== SECTION 15: GUARDRAILS ==================== -->
+<div class="sec">
+  <div class="sec-title"><span class="n">15</span> Guardrails</div>
+
+  <div class="grid">
+    <div class="card">
+      <div class="ch"><div class="ci" style="background:rgba(248,113,113,.15);">🔒</div><div><div class="ct">Commit Rules</div></div></div>
+      <ul>
+        <li>All agents can commit to feature branches</li>
+        <li>Before committing: pull latest, check Active Work Board for conflicts</li>
+        <li>If conflict detected: report to PM, don't commit</li>
+        <li>Structured commit messages: task ID, files changed, what was done</li>
+        <li>PM merges feature branches to main after quality checks pass</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="ch"><div class="ci" style="background:rgba(251,191,36,.15);">⚡</div><div><div class="ct">Scope Discipline</div></div></div>
+      <ul>
+        <li>Task Brief specifies which files agent can modify</li>
+        <li>Files outside scope are <code>[BOUNDARY]</code> — ask PM to expand scope</li>
+        <li>No broad refactors unless explicitly assigned</li>
+        <li>No dependency additions without PM approval</li>
+        <li>If task can't fit in context budget, PM splits it</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="ch"><div class="ci" style="background:rgba(52,211,153,.15);">🛡️</div><div><div class="ct">Critical Path Protection</div></div></div>
+      <ul>
+        <li><strong>Billing/Stripe:</strong> PM + Sam both review</li>
+        <li><strong>Auth/RLS:</strong> Double review required</li>
+        <li><strong>AI System Prompts:</strong> Sam's approval needed</li>
+        <li><strong>Migrations:</strong> Test on staging via Supabase MCP first</li>
+        <li><strong>Any code touching money:</strong> Extra scrutiny, no shortcuts</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="ch"><div class="ci" style="background:rgba(124,92,252,.15);">💰</div><div><div class="ct">Cost Guardrails</div></div></div>
+      <ul>
+        <li>Context Budget prevents agents from reading everything</li>
+        <li>Agents read specific files, not the whole repo</li>
+        <li>Spec extraction loads sections, not full docs</li>
+        <li>Memory retrieval loads entries, not entire categories</li>
+        <li>If a task requires too much context, split it — don't force it</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SECTION 16: CONCRETE NEXT STEPS ==================== -->
+<div class="sec">
+  <div class="sec-title"><span class="n">16</span> Concrete Next Steps — Build Monday</div>
+
+  <table>
+    <tr><th>#</th><th>Task</th><th>Effort</th><th>Output</th></tr>
+    <tr>
+      <td>1</td>
+      <td>Create <code>memory/</code> directory structure with all subdirectories and INDEX files</td>
+      <td>20 min</td>
+      <td>Full semantic memory structure: INDEX.md, mistakes/, patterns/, decisions/, bugs/, sprints/, feedback/, agent_notes/, active_work.md</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>Write PM Orchestrator system prompt</td>
+      <td>1-2 hrs</td>
+      <td><code>agents/prompts/pm_orchestrator.md</code> — autonomous planning algorithm, Context Budget protocol, Active Work Board management, plain-language communication rules, error recovery procedures</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>Write Frontend + Backend agent prompts</td>
+      <td>1-2 hrs</td>
+      <td><code>agents/prompts/frontend.md</code> and <code>agents/prompts/backend.md</code> — scope rules, skills, ship readiness context, commit protocol, Active Work Board usage</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>Create Context Budget template (Task Brief format)</td>
+      <td>30 min</td>
+      <td>Standardized 50-line task brief template PM uses for every assignment</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>Create Roadmap HTML dashboard template</td>
+      <td>1-2 hrs</td>
+      <td>Updated <code>AquaBotAI_Product_Roadmap.html</code> with sprint history, agent log, ship readiness, feedback sections</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>Write remaining agent prompts (all 8 future agents)</td>
+      <td>2-3 hrs</td>
+      <td><code>agents/prompts/{role}.md</code> for all Phase B and C agents — documented now, deployed later</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>Update CLAUDE.md with agent team section</td>
+      <td>30 min</td>
+      <td>Add: memory protocol, commit rules, Active Work Board, Context Budget reference, agent roles</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>Run Sprint 1 with the Starter Team</td>
+      <td>Full session</td>
+      <td>"Start your first sprint." PM evaluates PRD, proposes plan, Sam approves, agents build.</td>
+    </tr>
+  </table>
+</div>
+
+<!-- ==================== SECTION 17: CHANGELOG ==================== -->
+<div class="sec">
+  <div class="sec-title"><span class="n">17</span> v2 → v3 Changelog — What Changed and Why</div>
+
+  <table>
+    <tr><th style="width:25%;">Area</th><th style="width:30%;">v2</th><th style="width:30%;">v3</th><th>Why</th></tr>
+    <tr>
+      <td><strong>Context Management</strong></td>
+      <td>Every agent loads full CLAUDE.md + full specs + all memory</td>
+      <td><strong>Context Budget:</strong> 50-line Task Briefs, spec extraction, scoped code loading</td>
+      <td>Sam: "This is critical. How do we get more concise?"</td>
+    </tr>
+    <tr>
+      <td><strong>Memory System</strong></td>
+      <td>Flat MD files (mistakes.md, patterns.md, etc.)</td>
+      <td><strong>Semantic Retrieval:</strong> Indexed categories, individual entries, 3-step retrieval protocol</td>
+      <td>Sam: "An internal semantic retrieval system"</td>
+    </tr>
+    <tr>
+      <td><strong>Agent Visibility</strong></td>
+      <td>Agents only see their own files</td>
+      <td><strong>Active Work Board:</strong> Every agent sees what all agents are doing. Focused but not isolated.</td>
+      <td>Sam: "Agents should have visibility into what the other agents are working on"</td>
+    </tr>
+    <tr>
+      <td><strong>Commit Control</strong></td>
+      <td>Only PM can merge to main</td>
+      <td><strong>All agents commit</strong> to feature branches. Check Active Work Board first. PM merges to main after review.</td>
+      <td>Sam: "I'm okay with letting all the other agents commit stuff"</td>
+    </tr>
+    <tr>
+      <td><strong>Error Recovery</strong></td>
+      <td>No plan</td>
+      <td><strong>Full system:</strong> 8 detection layers, severity classification, rollback procedures, post-mortems, circuit breakers, "Never Twice" rule</td>
+      <td>Sam: "Let's think of a plan for this"</td>
+    </tr>
+    <tr>
+      <td><strong>PM Communication</strong></td>
+      <td>Technical reports</td>
+      <td><strong>Plain language:</strong> PM explains why, risks, tradeoffs in language Sam understands</td>
+      <td>Sam: "Tell me why it's doing it, especially if it's read to me in plain language"</td>
+    </tr>
+    <tr>
+      <td><strong>Browser Testing</strong></td>
+      <td>Test after every deploy</td>
+      <td><strong>Ship-ready milestones only:</strong> Test when feature is believed complete. Sam also tests manually.</td>
+      <td>Sam: "I don't need it to browser test every single change"</td>
+    </tr>
+    <tr>
+      <td><strong>Starting Team</strong></td>
+      <td>Start with PM only (Phase A)</td>
+      <td><strong>Start with 3:</strong> PM + Frontend + Backend. Parallel velocity from Day 1.</td>
+      <td>Sam: "I propose starting with two to three agents"</td>
+    </tr>
+    <tr>
+      <td><strong>Agent Documentation</strong></td>
+      <td>Only active agents documented</td>
+      <td><strong>All 11 documented:</strong> Full roster defined now, deployed when trigger conditions are met.</td>
+      <td>Sam: "I still wouldn't mind documenting those agents"</td>
+    </tr>
+    <tr>
+      <td><strong>Cost</strong></td>
+      <td>No guardrails</td>
+      <td><strong>Built into Context Budget:</strong> Agents read specific files, not everything. Specs extracted, not fully loaded.</td>
+      <td>Sam: "Having more specific instructions to each agent on how to read what code"</td>
+    </tr>
+  </table>
+</div>
+
+<!-- ==================== FOOTER ==================== -->
+<div style="text-align:center; padding:36px 0; color:var(--dim); font-size:.83rem; border-top:1px solid var(--border); margin-top:40px;">
+  <p><strong>AquaBotAI Agent Team Architecture v3</strong></p>
+  <p>Feb 8, 2026 — Ground-up redesign addressing all critical challenges</p>
+  <p style="margin-top:8px;">Context Budget System · Semantic Memory · Active Work Board · Error Recovery<br>Plain-Language PM · 3-Agent Starter Team · All 11 Agents Documented · Ship Readiness Gates</p>
+  <p style="margin-top:12px; font-size:.78rem; color:var(--dim);">Built on Sam's core insight: "Everything needs to be in the context of what it's working on and be very focused and specific."</p>
+</div>
+
+</div>
+</body>
+</html>

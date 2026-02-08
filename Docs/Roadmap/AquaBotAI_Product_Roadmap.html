@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AquaBotAI Product Roadmap</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -133,6 +134,74 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .risk-card p{font-size:0.8rem;color:var(--text2);line-height:1.4}
 .risk-high{border-left:3px solid var(--red)}.risk-med{border-left:3px solid var(--yellow)}.risk-low{border-left:3px solid var(--green)}
 
+/* Progress Bars */
+.progress-bar{height:6px;background:var(--surface2);border-radius:3px;overflow:hidden;margin-top:10px}
+.progress-bar-fill{height:100%;border-radius:3px;transition:width 1s ease-out}
+.progress-bar-lg{height:10px;background:var(--surface2);border-radius:5px;overflow:hidden}
+.progress-bar-lg .progress-bar-fill{height:100%;border-radius:5px;transition:width 1.2s ease-out}
+.progress-pct{font-size:0.72rem;font-weight:700;margin-left:8px;min-width:32px;text-align:right}
+
+/* Status Badges */
+.status-badge{padding:2px 8px;border-radius:4px;font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px}
+.status-in-progress{background:rgba(59,130,246,0.15);color:var(--accent)}
+.status-started{background:rgba(234,179,8,0.15);color:var(--yellow)}
+.status-not-started{background:rgba(241,245,249,0.08);color:var(--text2)}
+.status-complete{background:rgba(34,197,94,0.15);color:var(--green)}
+
+/* Sprint Banner */
+.sprint-banner{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:24px;position:relative;overflow:hidden}
+.sprint-banner::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--green),var(--accent),var(--cyan))}
+.sprint-banner .sprint-row{display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+.sprint-banner .sprint-progress{flex:1;min-width:200px}
+.sprint-banner .sprint-meta{display:flex;gap:16px;flex-wrap:wrap}
+.sprint-banner .sprint-item{text-align:center;min-width:100px}
+.sprint-banner .sprint-item .si-label{font-size:0.68rem;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px}
+.sprint-banner .sprint-item .si-value{font-size:0.9rem;font-weight:700;margin-top:2px}
+.sprint-updated{font-size:0.7rem;color:var(--text2);margin-top:10px;text-align:right}
+
+/* Pulse indicator */
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.pulse-dot{width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;animation:pulse 2s infinite;margin-right:6px;vertical-align:middle}
+
+/* Progress Ring (SVG) */
+.progress-ring-wrap{display:flex;flex-direction:column;align-items:center;margin-bottom:12px}
+.progress-ring{transform:rotate(-90deg)}
+.progress-ring-bg{fill:none;stroke:var(--surface2);stroke-width:6}
+.progress-ring-fill{fill:none;stroke-width:6;stroke-linecap:round;transition:stroke-dashoffset 1.2s ease-out}
+.progress-ring-text{font-size:1rem;font-weight:800;fill:var(--text);text-anchor:middle;dominant-baseline:central;transform:rotate(90deg);transform-origin:center}
+
+/* Milestone Checklist */
+.m-checklist{margin-top:10px;font-size:0.78rem}
+.m-checklist-item{padding:3px 0;display:flex;align-items:center;gap:6px;color:var(--text2)}
+.m-checklist-item.done{color:var(--green)}
+.m-checklist-item.partial{color:var(--yellow)}
+.m-check{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:0.6rem;flex-shrink:0}
+.m-checklist-item.done .m-check{border-color:var(--green);background:rgba(34,197,94,0.15);color:var(--green)}
+.m-checklist-item.partial .m-check{border-color:var(--yellow);background:rgba(234,179,8,0.15);color:var(--yellow)}
+
+/* Today Marker on Gantt */
+.gantt-today{position:absolute;top:0;bottom:0;width:2px;background:var(--yellow);z-index:10;opacity:0.8}
+.gantt-today::after{content:"NOW";position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:0.55rem;font-weight:800;color:var(--yellow);letter-spacing:1px;white-space:nowrap}
+.gantt-container{position:relative}
+
+/* Feature progress row */
+.feature-progress-row{display:flex;align-items:center;margin-top:8px;gap:4px}
+.feature-progress-row .progress-bar{flex:1;margin-top:0}
+
+/* Progress Tab Feature List */
+.progress-feature-row{display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;margin-bottom:8px}
+.progress-feature-row .pf-icon{font-size:1.1rem;flex-shrink:0}
+.progress-feature-row .pf-name{flex:1;font-size:0.85rem;font-weight:600;min-width:0}
+.progress-feature-row .pf-bar{flex:2;min-width:120px}
+.progress-feature-row .pf-pct{font-size:0.82rem;font-weight:800;min-width:40px;text-align:right}
+
+/* Next priorities */
+.next-priorities{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:16px}
+.next-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;position:relative}
+.next-card .next-num{font-size:2rem;font-weight:900;color:var(--surface2);position:absolute;top:8px;right:14px}
+.next-card h4{font-size:0.9rem;font-weight:700;margin-bottom:4px}
+.next-card p{font-size:0.78rem;color:var(--text2);line-height:1.4}
+
 /* Responsive */
 @media(max-width:768px){
   .container{padding:12px}
@@ -141,6 +210,10 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
   .tabs{flex-wrap:nowrap;overflow-x:auto}
   .gantt-container{display:none}
   .dep-grid,.risk-grid{grid-template-columns:1fr}
+  .sprint-banner .sprint-row{flex-direction:column;align-items:stretch}
+  .sprint-banner .sprint-meta{justify-content:space-around}
+  .progress-feature-row{flex-wrap:wrap}
+  .progress-feature-row .pf-bar{min-width:100%;order:3}
 }
 </style>
 </head>
@@ -158,8 +231,50 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
   </div>
 </div>
 
+<!-- Sprint Banner -->
+<div class="sprint-banner">
+  <div class="sprint-row">
+    <div class="sprint-progress">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+        <span class="pulse-dot"></span>
+        <span style="font-size:0.78rem;font-weight:700;color:var(--green)">Phase 1 — Foundation & Core MVP</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:0.72rem;color:var(--text2)">Overall MVP Progress</span>
+        <span style="font-size:1.1rem;font-weight:800;color:var(--accent)">75%</span>
+      </div>
+      <div class="progress-bar-lg" style="margin-top:6px">
+        <div class="progress-bar-fill" style="width:75%;background:linear-gradient(90deg,var(--green),var(--accent))"></div>
+      </div>
+    </div>
+    <div class="sprint-meta">
+      <div class="sprint-item">
+        <div class="si-label">Current Week</div>
+        <div class="si-value" style="color:var(--cyan)">Week 9</div>
+      </div>
+      <div class="sprint-item">
+        <div class="si-label">Active</div>
+        <div class="si-value" style="color:var(--accent)">Maintenance (Done)</div>
+      </div>
+      <div class="sprint-item">
+        <div class="si-label">Next Up</div>
+        <div class="si-value" style="color:var(--yellow)">Maintenance & Push</div>
+      </div>
+      <div class="sprint-item">
+        <div class="si-label">MVP Target</div>
+        <div class="si-value" style="color:var(--text2)">Week 14</div>
+      </div>
+    </div>
+  </div>
+  <div class="sprint-updated">Last updated: Feb 8, 2026 — Sprint 5 Complete (Maintenance Scheduling)</div>
+</div>
+
 <div class="tabs" id="tabs">
   <button class="tab active" data-tab="overview">Overview</button>
+  <button class="tab" data-tab="sprints">📋 Sprints</button>
+  <button class="tab" data-tab="testing">🧪 Testing</button>
+  <button class="tab" data-tab="feedback">💬 Feedback</button>
+  <button class="tab" data-tab="progress">Progress</button>
   <button class="tab" data-tab="timeline">Timeline & Gantt</button>
   <button class="tab" data-tab="rice">RICE Prioritization</button>
   <button class="tab" data-tab="dependencies">Dependencies</button>
@@ -193,7 +308,8 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
       <div class="feature-info">
         <h3>Project Scaffolding & Infrastructure</h3>
         <p>Next.js 14 + TypeScript + Tailwind + shadcn/ui. Supabase project, database schema (Phase 1 tables), RLS policies, Vercel deployment pipeline.</p>
-        <div class="feature-meta"><span class="tag tag-p0">P0</span><span class="tag tag-weeks">1.5 weeks</span><span class="tag tag-effort">Foundation</span></div>
+        <div class="feature-meta"><span class="tag tag-p0">P0</span><span class="tag tag-weeks">1.5 weeks</span><span class="tag tag-effort">Foundation</span><span class="status-badge status-complete">Complete</span></div>
+        <div class="feature-progress-row"><div class="progress-bar"><div class="progress-bar-fill" style="width:100%;background:var(--green)"></div></div><span class="progress-pct" style="color:var(--green)">100%</span></div>
       </div>
     </div>
     <div class="feature-details">
@@ -213,11 +329,12 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 
   <div class="feature-card" onclick="toggleCard(this)">
     <div class="feature-top">
-      <div class="feature-icon" style="background:rgba(59,130,246,0.15);color:var(--accent)">🔐</div>
+      <div class="feature-icon" style="background:rgba(34,197,94,0.15);color:var(--green)">🔐</div>
       <div class="feature-info">
         <h3>Authentication & Onboarding</h3>
         <p>Email/password + Google OAuth + magic link. Onboarding flow with tank creation. Session management with JWT. Protected routes.</p>
-        <div class="feature-meta"><span class="tag tag-p0">P0 — Blocker</span><span class="tag tag-weeks">2 weeks</span><span class="tag tag-dep">Blocks everything</span></div>
+        <div class="feature-meta"><span class="tag tag-p0">P0 — Blocker</span><span class="tag tag-weeks">2 weeks</span><span class="tag tag-dep">Blocks everything</span><span class="status-badge status-complete">Complete</span></div>
+        <div class="feature-progress-row"><div class="progress-bar"><div class="progress-bar-fill" style="width:100%;background:var(--green)"></div></div><span class="progress-pct" style="color:var(--green)">100%</span></div>
       </div>
     </div>
     <div class="feature-details">
@@ -236,11 +353,12 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 
   <div class="feature-card" onclick="toggleCard(this)">
     <div class="feature-top">
-      <div class="feature-icon" style="background:rgba(6,182,212,0.15);color:var(--cyan)">🐠</div>
+      <div class="feature-icon" style="background:rgba(34,197,94,0.15);color:var(--green)">🐠</div>
       <div class="feature-info">
         <h3>Tank Profile Management</h3>
         <p>Tank CRUD with type, volume, dimensions, substrate, photo upload. Multi-tank support gated by tier. Tank switching UI.</p>
-        <div class="feature-meta"><span class="tag tag-p0">P0</span><span class="tag tag-weeks">1.5 weeks</span><span class="tag tag-dep">Needs: Auth</span></div>
+        <div class="feature-meta"><span class="tag tag-p0">P0</span><span class="tag tag-weeks">1.5 weeks</span><span class="tag tag-dep">Needs: Auth</span><span class="status-badge status-complete">Complete</span></div>
+        <div class="feature-progress-row"><div class="progress-bar"><div class="progress-bar-fill" style="width:100%;background:var(--green)"></div></div><span class="progress-pct" style="color:var(--green)">100%</span></div>
       </div>
     </div>
     <div class="feature-details">
@@ -257,11 +375,12 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 
   <div class="feature-card" onclick="toggleCard(this)">
     <div class="feature-top">
-      <div class="feature-icon" style="background:rgba(234,179,8,0.15);color:var(--yellow)">💬</div>
+      <div class="feature-icon" style="background:rgba(34,197,94,0.15);color:var(--green)">💬</div>
       <div class="feature-info">
         <h3>AI Chat Engine (Core)</h3>
         <p>Claude Sonnet 4.5 chat with per-tank context. Dynamic system prompts with tank/parameter/livestock data injection. Action execution via natural language.</p>
-        <div class="feature-meta"><span class="tag tag-p0">P0 — Core</span><span class="tag tag-weeks">3 weeks</span><span class="tag tag-dep">Needs: Auth, Tanks</span></div>
+        <div class="feature-meta"><span class="tag tag-p0">P0 — Core</span><span class="tag tag-weeks">3 weeks</span><span class="tag tag-dep">Needs: Auth, Tanks</span><span class="status-badge status-in-progress">In Progress</span></div>
+        <div class="feature-progress-row"><div class="progress-bar"><div class="progress-bar-fill" style="width:85%;background:var(--green)"></div></div><span class="progress-pct" style="color:var(--green)">85%</span></div>
       </div>
     </div>
     <div class="feature-details">
@@ -283,11 +402,12 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 
   <div class="feature-card" onclick="toggleCard(this)">
     <div class="feature-top">
-      <div class="feature-icon" style="background:rgba(236,72,153,0.15);color:var(--pink)">💳</div>
+      <div class="feature-icon" style="background:rgba(34,197,94,0.15);color:var(--green)">💳</div>
       <div class="feature-info">
         <h3>Subscription & Billing</h3>
         <p>Stripe Checkout + Customer Portal. 14-day free trial (no CC). 3-tier pricing ($3.99 / $7.99 / $14.99). Webhook handlers. Grace period for failed payments.</p>
-        <div class="feature-meta"><span class="tag tag-p0">P0 — Blocker</span><span class="tag tag-weeks">2 weeks</span><span class="tag tag-dep">Needs: Auth</span></div>
+        <div class="feature-meta"><span class="tag tag-p0">P0 — Blocker</span><span class="tag tag-weeks">2 weeks</span><span class="tag tag-dep">Needs: Auth</span><span class="status-badge status-in-progress">In Progress</span></div>
+        <div class="feature-progress-row"><div class="progress-bar"><div class="progress-bar-fill" style="width:85%;background:var(--green)"></div></div><span class="progress-pct" style="color:var(--green)">85%</span></div>
       </div>
     </div>
     <div class="feature-details">
@@ -324,7 +444,8 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
       <div class="feature-info">
         <h3>Water Parameters & Analysis</h3>
         <p>Manual parameter entry (pH, ammonia, nitrite, nitrate, temp + saltwater params). Interactive charts (7/30/90-day). AI trend analysis and proactive alerts.</p>
-        <div class="feature-meta"><span class="tag tag-p0">P0</span><span class="tag tag-weeks">2 weeks</span><span class="tag tag-dep">Needs: Tanks, AI Chat</span></div>
+        <div class="feature-meta"><span class="tag tag-p0">P0</span><span class="tag tag-weeks">2 weeks</span><span class="tag tag-dep">Needs: Tanks, AI Chat</span><span class="status-badge status-started">Complete</span></div>
+        <div class="feature-progress-row"><div class="progress-bar"><div class="progress-bar-fill" style="width:95%;background:var(--green)"></div></div><span class="progress-pct" style="color:var(--green)">95%</span></div>
       </div>
     </div>
     <div class="feature-details">
@@ -346,7 +467,8 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
       <div class="feature-info">
         <h3>Species Database & Livestock Management</h3>
         <p>500+ freshwater, 200+ saltwater, 100+ invert species with search. Livestock tracking per tank. AI compatibility checking and stocking recommendations.</p>
-        <div class="feature-meta"><span class="tag tag-p0">P0</span><span class="tag tag-weeks">2.5 weeks</span><span class="tag tag-dep">Needs: Tanks, AI Chat</span></div>
+        <div class="feature-meta"><span class="tag tag-p0">P0</span><span class="tag tag-weeks">2.5 weeks</span><span class="tag tag-dep">Needs: Tanks, AI Chat</span><span class="status-badge status-started">Complete</span></div>
+        <div class="feature-progress-row"><div class="progress-bar"><div class="progress-bar-fill" style="width:90%;background:var(--green)"></div></div><span class="progress-pct" style="color:var(--green)">90%</span></div>
       </div>
     </div>
     <div class="feature-details">
@@ -369,7 +491,8 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
       <div class="feature-info">
         <h3>Maintenance Scheduling & Push Notifications</h3>
         <p>Recurring/one-time tasks with push notification reminders. Task overview across tanks. AI-suggested schedules based on tank profile and bioload.</p>
-        <div class="feature-meta"><span class="tag tag-p0">P0</span><span class="tag tag-weeks">2 weeks</span><span class="tag tag-dep">Needs: Tanks, AI, PWA</span></div>
+        <div class="feature-meta"><span class="tag tag-p0">P0</span><span class="tag tag-weeks">2 weeks</span><span class="tag tag-dep">Needs: Tanks, AI, PWA</span><span class="status-badge status-started">Complete</span></div>
+        <div class="feature-progress-row"><div class="progress-bar"><div class="progress-bar-fill" style="width:85%;background:var(--green)"></div></div><span class="progress-pct" style="color:var(--green)">85%</span></div>
       </div>
     </div>
     <div class="feature-details">
@@ -392,7 +515,8 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
       <div class="feature-info">
         <h3>Admin Portal (Phase 1 — SQL/Studio)</h3>
         <p>Basic admin via Supabase Studio + SQL scripts. User search, subscription management, account actions, audit logging. No custom UI yet.</p>
-        <div class="feature-meta"><span class="tag tag-p0">P0</span><span class="tag tag-weeks">1 week</span><span class="tag tag-dep">Needs: Auth, Billing</span></div>
+        <div class="feature-meta"><span class="tag tag-p0">P0</span><span class="tag tag-weeks">1 week</span><span class="tag tag-dep">Needs: Auth, Billing</span><span class="status-badge status-not-started">Not Started</span></div>
+        <div class="feature-progress-row"><div class="progress-bar"><div class="progress-bar-fill" style="width:5%;background:var(--text2)"></div></div><span class="progress-pct" style="color:var(--text2)">5%</span></div>
       </div>
     </div>
     <div class="feature-details">
@@ -426,7 +550,8 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
       <div class="feature-info">
         <h3>Photo Diagnosis</h3>
         <p>Species ID from photos (>85% accuracy). Disease diagnosis with treatment plans. Confidence scoring. Claude Vision API. Plus/Pro only.</p>
-        <div class="feature-meta"><span class="tag tag-p1">P1</span><span class="tag tag-weeks">2 weeks</span><span class="tag tag-dep">Needs: AI Chat, Species DB</span></div>
+        <div class="feature-meta"><span class="tag tag-p1">P1</span><span class="tag tag-weeks">2 weeks</span><span class="tag tag-dep">Needs: AI Chat, Species DB</span><span class="status-badge status-not-started">Not Started</span></div>
+        <div class="feature-progress-row"><div class="progress-bar"><div class="progress-bar-fill" style="width:0%"></div></div><span class="progress-pct" style="color:var(--text2)">0%</span></div>
       </div>
     </div>
     <div class="feature-details">
@@ -448,7 +573,8 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
       <div class="feature-info">
         <h3>Equipment Tracking & AI Recommendations</h3>
         <p>Equipment catalog per tank with lifespan tracking. Maintenance reminders. AI web search recommendations for gear (Pro-only, SerpAPI).</p>
-        <div class="feature-meta"><span class="tag tag-p1">P1</span><span class="tag tag-weeks">3 weeks</span><span class="tag tag-dep">Needs: Tanks, Maintenance</span></div>
+        <div class="feature-meta"><span class="tag tag-p1">P1</span><span class="tag tag-weeks">3 weeks</span><span class="tag tag-dep">Needs: Tanks, Maintenance</span><span class="status-badge status-not-started">Not Started</span></div>
+        <div class="feature-progress-row"><div class="progress-bar"><div class="progress-bar-fill" style="width:0%"></div></div><span class="progress-pct" style="color:var(--text2)">0%</span></div>
       </div>
     </div>
     <div class="feature-details">
@@ -469,7 +595,8 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
       <div class="feature-info">
         <h3>Interactive Dashboards & Email Reports</h3>
         <p>AI-generated daily/weekly health reports via email. Multi-tank comparison dashboard. Health score calculation. Pro-only features.</p>
-        <div class="feature-meta"><span class="tag tag-p1">P1</span><span class="tag tag-weeks">2 weeks</span><span class="tag tag-dep">Needs: Params, AI, Billing</span></div>
+        <div class="feature-meta"><span class="tag tag-p1">P1</span><span class="tag tag-weeks">2 weeks</span><span class="tag tag-dep">Needs: Params, AI, Billing</span><span class="status-badge status-not-started">Not Started</span></div>
+        <div class="feature-progress-row"><div class="progress-bar"><div class="progress-bar-fill" style="width:0%"></div></div><span class="progress-pct" style="color:var(--text2)">0%</span></div>
       </div>
     </div>
     <div class="feature-details">
@@ -490,7 +617,8 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
       <div class="feature-info">
         <h3>Admin Portal v2 (Custom Dashboard)</h3>
         <p>Custom admin UI with real-time analytics (DAU, MRR, churn). Content CRUD for species/equipment. Feature flags UI. 2FA for admins.</p>
-        <div class="feature-meta"><span class="tag tag-p1">P1</span><span class="tag tag-weeks">3 weeks</span><span class="tag tag-dep">Needs: Admin v1</span></div>
+        <div class="feature-meta"><span class="tag tag-p1">P1</span><span class="tag tag-weeks">3 weeks</span><span class="tag tag-dep">Needs: Admin v1</span><span class="status-badge status-not-started">Not Started</span></div>
+        <div class="feature-progress-row"><div class="progress-bar"><div class="progress-bar-fill" style="width:0%"></div></div><span class="progress-pct" style="color:var(--text2)">0%</span></div>
       </div>
     </div>
     <div class="feature-details">
@@ -512,7 +640,8 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
       <div class="feature-info">
         <h3>Polish & P2 Explorations</h3>
         <p>Streaming AI responses, voice input, annual billing, promo codes, CSV export, calendar sync, community features exploration.</p>
-        <div class="feature-meta"><span class="tag tag-p2">P2</span><span class="tag tag-weeks">Ongoing</span><span class="tag tag-effort">Backlog</span></div>
+        <div class="feature-meta"><span class="tag tag-p2">P2</span><span class="tag tag-weeks">Ongoing</span><span class="tag tag-effort">Backlog</span><span class="status-badge status-not-started">Not Started</span></div>
+        <div class="feature-progress-row"><div class="progress-bar"><div class="progress-bar-fill" style="width:0%"></div></div><span class="progress-pct" style="color:var(--text2)">0%</span></div>
       </div>
     </div>
     <div class="feature-details">
@@ -535,11 +664,491 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 
 </div><!-- /overview -->
 
+<!-- ============== SPRINTS ============== -->
+<div class="panel" id="sprints">
+<h2 style="font-size:1.2rem;margin-bottom:8px">📋 Sprint History</h2>
+<p style="font-size:0.82rem;color:var(--text2);margin-bottom:20px">Complete history of development sprints. What was built, outcomes, and metrics.</p>
+
+<!-- Sprint 4 (Active) -->
+<div style="background:var(--surface);border:2px solid var(--accent);border-radius:12px;margin-bottom:16px;overflow:hidden">
+  <div style="background:linear-gradient(90deg,rgba(59,130,246,0.2),transparent);padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+    <div>
+      <h3 style="font-size:1rem;font-weight:700;margin-bottom:2px">Sprint 4: Water Parameters & Species Database</h3>
+      <span style="font-size:0.75rem;color:var(--text2)">Weeks 9-11 | Feb 8 - Mar 1, 2026</span>
+    </div>
+    <span class="status-badge status-started">In Progress</span>
+  </div>
+  <div style="padding:20px">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:16px">
+      <div style="text-align:center;padding:12px;background:var(--bg);border-radius:8px">
+        <div style="font-size:0.7rem;color:var(--text2);text-transform:uppercase">Target Progress</div>
+        <div style="font-size:1.3rem;font-weight:800;color:var(--accent)">+17%</div>
+        <div style="font-size:0.72rem;color:var(--text2)">48% → 65%</div>
+      </div>
+      <div style="text-align:center;padding:12px;background:var(--bg);border-radius:8px">
+        <div style="font-size:0.7rem;color:var(--text2);text-transform:uppercase">New Pages</div>
+        <div style="font-size:1.3rem;font-weight:800;color:var(--cyan)">+4</div>
+      </div>
+      <div style="text-align:center;padding:12px;background:var(--bg);border-radius:8px">
+        <div style="font-size:0.7rem;color:var(--text2);text-transform:uppercase">E2E Tests Target</div>
+        <div style="font-size:1.3rem;font-weight:800;color:var(--purple)">108</div>
+        <div style="font-size:0.72rem;color:var(--text2)">+45 new</div>
+      </div>
+      <div style="text-align:center;padding:12px;background:var(--bg);border-radius:8px">
+        <div style="font-size:0.7rem;color:var(--text2);text-transform:uppercase">New Components</div>
+        <div style="font-size:1.3rem;font-weight:800;color:var(--green)">+15</div>
+      </div>
+    </div>
+    <h4 style="font-size:0.85rem;font-weight:700;margin-bottom:8px">What We're Building</h4>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:0.82rem">
+      <div>
+        <div style="font-weight:600;color:var(--cyan);margin-bottom:4px">🧪 Track A: Water Parameters</div>
+        <ul style="padding-left:16px;color:var(--text2);line-height:1.6">
+          <li>Recharts dashboards with line graphs</li>
+          <li>Time range selector (7/30/90 days)</li>
+          <li>Safe/warning/danger zone overlays</li>
+          <li>AI trend analysis endpoint</li>
+          <li>Custom thresholds per tank</li>
+        </ul>
+      </div>
+      <div>
+        <div style="font-weight:600;color:var(--purple);margin-bottom:4px">🐟 Track B: Species & Livestock</div>
+        <ul style="padding-left:16px;color:var(--text2);line-height:1.6">
+          <li>Searchable species library (500+)</li>
+          <li>Filters by type, care level, temperament</li>
+          <li>Livestock tracking per tank</li>
+          <li>AI compatibility checking</li>
+          <li>Stocking density indicator</li>
+        </ul>
+      </div>
+    </div>
+    <div style="margin-top:16px;padding:12px;background:var(--bg);border-radius:8px;font-size:0.82rem">
+      <strong>Why this sprint:</strong> Water Parameters and Species are the #1 and #2 use cases for aquarium keepers. They're required for MVP launch and unlock the next sprint (Maintenance Scheduling).
+    </div>
+  </div>
+</div>
+
+<!-- Sprint 3 -->
+<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:16px;overflow:hidden">
+  <div style="background:linear-gradient(90deg,rgba(34,197,94,0.15),transparent);padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+    <div>
+      <h3 style="font-size:1rem;font-weight:700;margin-bottom:2px">Sprint 3: AI Chat Engine + Billing</h3>
+      <span style="font-size:0.75rem;color:var(--text2)">Weeks 5-8 | Feb 3-28, 2026</span>
+    </div>
+    <span class="status-badge status-complete">Complete</span>
+  </div>
+  <div style="padding:20px">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:16px">
+      <div style="text-align:center;padding:12px;background:var(--bg);border-radius:8px">
+        <div style="font-size:0.7rem;color:var(--text2);text-transform:uppercase">Progress</div>
+        <div style="font-size:1.3rem;font-weight:800;color:var(--green)">+23%</div>
+        <div style="font-size:0.72rem;color:var(--text2)">25% → 48%</div>
+      </div>
+      <div style="text-align:center;padding:12px;background:var(--bg);border-radius:8px">
+        <div style="font-size:0.7rem;color:var(--text2);text-transform:uppercase">Files Created</div>
+        <div style="font-size:1.3rem;font-weight:800;color:var(--accent)">33</div>
+      </div>
+      <div style="text-align:center;padding:12px;background:var(--bg);border-radius:8px">
+        <div style="font-size:0.7rem;color:var(--text2);text-transform:uppercase">E2E Tests</div>
+        <div style="font-size:1.3rem;font-weight:800;color:var(--cyan)">63</div>
+        <div style="font-size:0.72rem;color:var(--text2)">+40 new</div>
+      </div>
+      <div style="text-align:center;padding:12px;background:var(--bg);border-radius:8px">
+        <div style="font-size:0.7rem;color:var(--text2);text-transform:uppercase">Bugs Found</div>
+        <div style="font-size:1.3rem;font-weight:800;color:var(--green)">0</div>
+      </div>
+    </div>
+    <h4 style="font-size:0.85rem;font-weight:700;margin-bottom:8px">What Was Built</h4>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:0.82rem">
+      <div>
+        <div style="font-weight:600;color:var(--cyan);margin-bottom:4px">🤖 AI Chat Engine (85%)</div>
+        <ul style="padding-left:16px;color:var(--text2);line-height:1.6">
+          <li>Chat API route (/api/ai/chat)</li>
+          <li>Chat UI components (container, input, messages)</li>
+          <li>Global and per-tank chat pages</li>
+          <li>Usage tracking and rate limits</li>
+        </ul>
+      </div>
+      <div>
+        <div style="font-weight:600;color:var(--green);margin-bottom:4px">💳 Billing & Subscription (85%)</div>
+        <ul style="padding-left:16px;color:var(--text2);line-height:1.6">
+          <li>Stripe Checkout integration</li>
+          <li>Customer Portal</li>
+          <li>Webhook handlers</li>
+          <li>Billing page with plan cards</li>
+        </ul>
+      </div>
+    </div>
+    <h4 style="font-size:0.85rem;font-weight:700;margin-top:16px;margin-bottom:8px">Carried to Next Sprint</h4>
+    <ul style="padding-left:16px;color:var(--text2);font-size:0.82rem">
+      <li>AI action execution (schedule tasks via chat)</li>
+      <li>Context summarization (token limit handling)</li>
+      <li>Email notifications for billing events</li>
+    </ul>
+  </div>
+</div>
+
+<!-- Previous Sprints Placeholder -->
+<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center;color:var(--text2)">
+  <p style="font-size:0.85rem">Earlier sprints (1-2) were combined into initial project scaffolding and auth setup.</p>
+  <p style="font-size:0.8rem;margin-top:8px">Sprint history will grow as development continues.</p>
+</div>
+
+</div><!-- /sprints -->
+
+<!-- ============== TESTING ============== -->
+<div class="panel" id="testing">
+<h2 style="font-size:1.2rem;margin-bottom:8px">🧪 Testing Queue</h2>
+<p style="font-size:0.82rem;color:var(--text2);margin-bottom:20px">Features ready for Sam to test manually. Report issues here or via the Feedback tab.</p>
+
+<!-- Ready to Test -->
+<div style="margin-bottom:24px">
+<h3 style="font-size:1rem;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px">
+  <span style="width:10px;height:10px;background:var(--yellow);border-radius:50%"></span>
+  Ready to Test
+</h3>
+
+<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:12px">
+  <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+    <div>
+      <h4 style="font-size:0.9rem;font-weight:700">AI Chat — Basic Conversation</h4>
+      <span style="font-size:0.75rem;color:var(--text2)">Sprint 3 | Added Feb 8, 2026</span>
+    </div>
+    <span class="status-badge status-started">Awaiting Test</span>
+  </div>
+  <div style="padding:16px 20px;font-size:0.82rem;color:var(--text2)">
+    <p style="margin-bottom:12px"><strong>What to test:</strong></p>
+    <ul style="padding-left:16px;line-height:1.6">
+      <li>Go to /chat and send a message like "What should my pH be for freshwater?"</li>
+      <li>Verify AI responds with relevant information</li>
+      <li>Test the per-tank chat at /tanks/[id]/chat (select a tank first)</li>
+      <li>Check that usage counter appears and updates</li>
+    </ul>
+    <div style="margin-top:12px;padding:12px;background:var(--bg);border-radius:8px">
+      <strong>Sam's Notes:</strong>
+      <textarea id="test-notes-chat" data-feature="chat" placeholder="Add your testing notes here..." onblur="saveTestingNotes('chat',this)" style="width:100%;margin-top:8px;padding:8px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.8rem;min-height:60px;resize:vertical"></textarea>
+    </div>
+  </div>
+</div>
+
+<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:12px">
+  <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+    <div>
+      <h4 style="font-size:0.9rem;font-weight:700">Billing Page — Subscription Display</h4>
+      <span style="font-size:0.75rem;color:var(--text2)">Sprint 3 | Added Feb 8, 2026</span>
+    </div>
+    <span class="status-badge status-started">Awaiting Test</span>
+  </div>
+  <div style="padding:16px 20px;font-size:0.82rem;color:var(--text2)">
+    <p style="margin-bottom:12px"><strong>What to test:</strong></p>
+    <ul style="padding-left:16px;line-height:1.6">
+      <li>Go to /billing and verify all 4 plan cards display correctly</li>
+      <li>Check that your current plan is highlighted</li>
+      <li>Test the "Upgrade" buttons (will redirect to Stripe - can cancel)</li>
+      <li>Verify FAQ section displays properly</li>
+    </ul>
+    <div style="margin-top:12px;padding:12px;background:var(--bg);border-radius:8px">
+      <strong>Sam's Notes:</strong>
+      <textarea id="test-notes-billing" data-feature="billing" placeholder="Add your testing notes here..." onblur="saveTestingNotes('billing',this)" style="width:100%;margin-top:8px;padding:8px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.8rem;min-height:60px;resize:vertical"></textarea>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- Previously Tested -->
+<div>
+<h3 style="font-size:1rem;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px">
+  <span style="width:10px;height:10px;background:var(--green);border-radius:50%"></span>
+  Previously Tested
+</h3>
+<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 20px">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+    <span style="font-size:0.85rem;font-weight:600">Auth Flow (Login/Signup/Magic Link)</span>
+    <span class="status-badge status-complete">Tested ✓</span>
+  </div>
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+    <span style="font-size:0.85rem;font-weight:600">Tank CRUD (Create/Edit/Delete)</span>
+    <span class="status-badge status-complete">Tested ✓</span>
+  </div>
+  <div style="display:flex;align-items:center;justify-content:space-between">
+    <span style="font-size:0.85rem;font-weight:600">Onboarding Flow (5 steps)</span>
+    <span class="status-badge status-complete">Tested ✓</span>
+  </div>
+</div>
+</div>
+
+</div><!-- /testing -->
+
+<!-- ============== FEEDBACK ============== -->
+<div class="panel" id="feedback">
+<h2 style="font-size:1.2rem;margin-bottom:8px">💬 Feedback to PM</h2>
+<p style="font-size:0.82rem;color:var(--text2);margin-bottom:20px">Submit feedback, priorities, or bug reports. The PM checks this before each sprint.</p>
+
+<!-- New Feedback Form -->
+<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:24px">
+  <h3 style="font-size:1rem;font-weight:700;margin-bottom:16px">Submit New Feedback</h3>
+
+  <div style="margin-bottom:16px">
+    <label style="font-size:0.82rem;font-weight:600;display:block;margin-bottom:6px">Type</label>
+    <select id="feedback-type" style="width:100%;padding:10px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.85rem">
+      <option value="priority">🎯 Priority Change</option>
+      <option value="bug">🐛 Bug Report</option>
+      <option value="feature">💡 Feature Request</option>
+      <option value="question">❓ Question</option>
+      <option value="other">📝 Other</option>
+    </select>
+  </div>
+
+  <div style="margin-bottom:16px">
+    <label style="font-size:0.82rem;font-weight:600;display:block;margin-bottom:6px">Your Message</label>
+    <textarea id="feedback-message" placeholder="Describe what you want the PM to know..." style="width:100%;padding:12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.85rem;min-height:120px;resize:vertical"></textarea>
+  </div>
+
+  <div style="margin-bottom:16px">
+    <label style="font-size:0.82rem;font-weight:600;display:block;margin-bottom:6px">Attach Screenshots (optional)</label>
+    <div style="border:2px dashed var(--border);border-radius:8px;padding:24px;text-align:center;cursor:pointer" onclick="document.getElementById('feedback-files').click()">
+      <input type="file" id="feedback-files" multiple accept="image/*" style="display:none">
+      <div style="font-size:1.5rem;margin-bottom:8px">📷</div>
+      <div style="font-size:0.85rem;color:var(--text2)">Click or drag images here</div>
+      <div id="feedback-file-list" style="margin-top:12px;font-size:0.8rem;color:var(--accent)"></div>
+    </div>
+  </div>
+
+  <button onclick="submitFeedback()" style="background:var(--accent);color:#fff;border:none;padding:12px 24px;border-radius:8px;font-size:0.85rem;font-weight:600;cursor:pointer;transition:all .2s">
+    Submit Feedback
+  </button>
+</div>
+
+<!-- Feedback History -->
+<div style="margin-bottom:24px">
+  <h3 style="font-size:1rem;font-weight:700;margin-bottom:12px">Recent Feedback</h3>
+
+  <div id="feedback-history">
+    <div style="text-align:center;padding:20px;color:var(--text2);font-size:0.82rem" id="feedback-empty-state">
+      Loading feedback...
+    </div>
+  </div>
+</div>
+
+</div><!-- /feedback -->
+
+<!-- ============== PROGRESS ============== -->
+<div class="panel" id="progress">
+<h2 style="font-size:1.2rem;margin-bottom:8px">Development Progress Tracker</h2>
+<p style="font-size:0.82rem;color:var(--text2);margin-bottom:20px">Real-time progress against MVP and v1 milestones. Updated as features are built.</p>
+
+<!-- Overall MVP Progress -->
+<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:24px">
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+  <h3 style="font-size:1rem;font-weight:700">MVP Completion</h3>
+  <span style="font-size:1.5rem;font-weight:800;color:var(--accent)">75%</span>
+</div>
+<div class="progress-bar-lg"><div class="progress-bar-fill" style="width:75%;background:linear-gradient(90deg,var(--green),var(--accent))"></div></div>
+<div style="display:flex;justify-content:space-between;margin-top:8px;font-size:0.72rem;color:var(--text2)">
+  <span>Phase 1: Foundation</span>
+  <span>Phase 2: Feature Complete</span>
+  <span>MVP Launch (Wk 14)</span>
+</div>
+</div>
+
+<!-- Feature-by-Feature Breakdown -->
+<h3 style="font-size:1rem;font-weight:700;margin-bottom:12px">Feature Breakdown</h3>
+
+<div style="margin-bottom:8px;font-size:0.72rem;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;padding:0 14px">Phase 1 — Foundation</div>
+
+<div class="progress-feature-row">
+  <div class="pf-icon">🔧</div>
+  <div class="pf-name">Scaffolding & Infrastructure</div>
+  <div class="pf-bar"><div class="progress-bar" style="margin:0"><div class="progress-bar-fill" style="width:100%;background:var(--green)"></div></div></div>
+  <div class="pf-pct" style="color:var(--green)">100%</div>
+</div>
+<div class="progress-feature-row">
+  <div class="pf-icon">🔐</div>
+  <div class="pf-name">Auth & Onboarding</div>
+  <div class="pf-bar"><div class="progress-bar" style="margin:0"><div class="progress-bar-fill" style="width:100%;background:var(--green)"></div></div></div>
+  <div class="pf-pct" style="color:var(--green)">100%</div>
+</div>
+<div class="progress-feature-row">
+  <div class="pf-icon">🐠</div>
+  <div class="pf-name">Tank Profile Management</div>
+  <div class="pf-bar"><div class="progress-bar" style="margin:0"><div class="progress-bar-fill" style="width:100%;background:var(--green)"></div></div></div>
+  <div class="pf-pct" style="color:var(--green)">100%</div>
+</div>
+<div class="progress-feature-row">
+  <div class="pf-icon">💬</div>
+  <div class="pf-name">AI Chat Engine</div>
+  <div class="pf-bar"><div class="progress-bar" style="margin:0"><div class="progress-bar-fill" style="width:85%;background:var(--green)"></div></div></div>
+  <div class="pf-pct" style="color:var(--green)">85%</div>
+</div>
+<div class="progress-feature-row">
+  <div class="pf-icon">💳</div>
+  <div class="pf-name">Subscription & Billing</div>
+  <div class="pf-bar"><div class="progress-bar" style="margin:0"><div class="progress-bar-fill" style="width:85%;background:var(--green)"></div></div></div>
+  <div class="pf-pct" style="color:var(--green)">85%</div>
+</div>
+
+<div style="margin:16px 0 8px;font-size:0.72rem;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;padding:0 14px">Phase 2 — MVP Features</div>
+
+<div class="progress-feature-row">
+  <div class="pf-icon">🧪</div>
+  <div class="pf-name">Water Parameters & Analysis</div>
+  <div class="pf-bar"><div class="progress-bar" style="margin:0"><div class="progress-bar-fill" style="width:95%;background:var(--green)"></div></div></div>
+  <div class="pf-pct" style="color:var(--green)">95%</div>
+</div>
+<div class="progress-feature-row">
+  <div class="pf-icon">🐟</div>
+  <div class="pf-name">Species DB & Livestock</div>
+  <div class="pf-bar"><div class="progress-bar" style="margin:0"><div class="progress-bar-fill" style="width:90%;background:var(--green)"></div></div></div>
+  <div class="pf-pct" style="color:var(--green)">90%</div>
+</div>
+<div class="progress-feature-row">
+  <div class="pf-icon">📋</div>
+  <div class="pf-name">Maintenance & Notifications</div>
+  <div class="pf-bar"><div class="progress-bar" style="margin:0"><div class="progress-bar-fill" style="width:85%;background:var(--green)"></div></div></div>
+  <div class="pf-pct" style="color:var(--green)">85%</div>
+</div>
+<div class="progress-feature-row">
+  <div class="pf-icon">🛡️</div>
+  <div class="pf-name">Admin Portal v1</div>
+  <div class="pf-bar"><div class="progress-bar" style="margin:0"><div class="progress-bar-fill" style="width:5%;background:var(--text2)"></div></div></div>
+  <div class="pf-pct" style="color:var(--text2)">5%</div>
+</div>
+
+<div style="margin:16px 0 8px;font-size:0.72rem;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;padding:0 14px">Phase 3 — Growth (Post-MVP)</div>
+
+<div class="progress-feature-row" style="opacity:0.5">
+  <div class="pf-icon">📸</div>
+  <div class="pf-name">Photo Diagnosis</div>
+  <div class="pf-bar"><div class="progress-bar" style="margin:0"><div class="progress-bar-fill" style="width:0%;background:var(--text2)"></div></div></div>
+  <div class="pf-pct" style="color:var(--text2)">0%</div>
+</div>
+<div class="progress-feature-row" style="opacity:0.5">
+  <div class="pf-icon">⚙️</div>
+  <div class="pf-name">Equipment Tracking</div>
+  <div class="pf-bar"><div class="progress-bar" style="margin:0"><div class="progress-bar-fill" style="width:0%;background:var(--text2)"></div></div></div>
+  <div class="pf-pct" style="color:var(--text2)">0%</div>
+</div>
+<div class="progress-feature-row" style="opacity:0.5">
+  <div class="pf-icon">📊</div>
+  <div class="pf-name">Dashboards & Reports</div>
+  <div class="pf-bar"><div class="progress-bar" style="margin:0"><div class="progress-bar-fill" style="width:0%;background:var(--text2)"></div></div></div>
+  <div class="pf-pct" style="color:var(--text2)">0%</div>
+</div>
+<div class="progress-feature-row" style="opacity:0.5">
+  <div class="pf-icon">🖥️</div>
+  <div class="pf-name">Admin v2</div>
+  <div class="pf-bar"><div class="progress-bar" style="margin:0"><div class="progress-bar-fill" style="width:0%;background:var(--text2)"></div></div></div>
+  <div class="pf-pct" style="color:var(--text2)">0%</div>
+</div>
+
+<!-- Milestone Checklists -->
+<h3 style="font-size:1rem;font-weight:700;margin:24px 0 12px">Milestone Progress</h3>
+<div class="milestones">
+  <div class="milestone m1">
+    <div class="progress-ring-wrap">
+      <svg class="progress-ring" width="64" height="64" viewBox="0 0 64 64">
+        <circle class="progress-ring-bg" cx="32" cy="32" r="28"/>
+        <circle class="progress-ring-fill" cx="32" cy="32" r="28" stroke="var(--green)" stroke-dasharray="175.9" stroke-dashoffset="26.4"/>
+        <text class="progress-ring-text" x="32" y="32">85%</text>
+      </svg>
+    </div>
+    <h3 style="text-align:center">M1: Foundation</h3>
+    <div class="m-date" style="text-align:center">Target: Week 5</div>
+    <div class="m-checklist">
+      <div class="m-checklist-item done"><span class="m-check">&#10003;</span> User can sign up (email/Google/magic link)</div>
+      <div class="m-checklist-item done"><span class="m-check">&#10003;</span> Tank creation with CRUD + photo upload</div>
+      <div class="m-checklist-item done"><span class="m-check">&#10003;</span> AI chat responds with tank-aware answers</div>
+      <div class="m-checklist-item partial"><span class="m-check">~</span> PWA installable on mobile</div>
+    </div>
+  </div>
+  <div class="milestone m2">
+    <div class="progress-ring-wrap">
+      <svg class="progress-ring" width="64" height="64" viewBox="0 0 64 64">
+        <circle class="progress-ring-bg" cx="32" cy="32" r="28"/>
+        <circle class="progress-ring-fill" cx="32" cy="32" r="28" stroke="var(--green)" stroke-dasharray="175.9" stroke-dashoffset="26.4"/>
+        <text class="progress-ring-text" x="32" y="32">85%</text>
+      </svg>
+    </div>
+    <h3 style="text-align:center">M2: Billing Live</h3>
+    <div class="m-date" style="text-align:center">Target: Week 10</div>
+    <div class="m-checklist">
+      <div class="m-checklist-item done"><span class="m-check">&#10003;</span> 14-day free trial flow working</div>
+      <div class="m-checklist-item done"><span class="m-check">&#10003;</span> Stripe Checkout payment flow</div>
+      <div class="m-checklist-item done"><span class="m-check">&#10003;</span> Tier limits enforced (DB + UI)</div>
+    </div>
+  </div>
+  <div class="milestone m3">
+    <div class="progress-ring-wrap">
+      <svg class="progress-ring" width="64" height="64" viewBox="0 0 64 64">
+        <circle class="progress-ring-bg" cx="32" cy="32" r="28"/>
+        <circle class="progress-ring-fill" cx="32" cy="32" r="28" stroke="var(--cyan)" stroke-dasharray="175.9" stroke-dashoffset="96.7"/>
+        <text class="progress-ring-text" x="32" y="32">45%</text>
+      </svg>
+    </div>
+    <h3 style="text-align:center">M3: MVP Launch</h3>
+    <div class="m-date" style="text-align:center">Target: Week 14</div>
+    <div class="m-checklist">
+      <div class="m-checklist-item partial"><span class="m-check">~</span> Water parameter tracking (DB done, no UI)</div>
+      <div class="m-checklist-item"><span class="m-check"></span> 800+ species searchable</div>
+      <div class="m-checklist-item"><span class="m-check"></span> Maintenance tasks with push reminders</div>
+      <div class="m-checklist-item"><span class="m-check"></span> Admin tools for user management</div>
+    </div>
+  </div>
+  <div class="milestone m4">
+    <div class="progress-ring-wrap">
+      <svg class="progress-ring" width="64" height="64" viewBox="0 0 64 64">
+        <circle class="progress-ring-bg" cx="32" cy="32" r="28"/>
+        <circle class="progress-ring-fill" cx="32" cy="32" r="28" stroke="var(--purple)" stroke-dasharray="175.9" stroke-dashoffset="175.9"/>
+        <text class="progress-ring-text" x="32" y="32">0%</text>
+      </svg>
+    </div>
+    <h3 style="text-align:center">M4: Full v1</h3>
+    <div class="m-date" style="text-align:center">Target: Week 24</div>
+    <div class="m-checklist">
+      <div class="m-checklist-item"><span class="m-check"></span> Photo diagnosis live</div>
+      <div class="m-checklist-item"><span class="m-check"></span> Equipment tracking with AI recs</div>
+      <div class="m-checklist-item"><span class="m-check"></span> Email reports for Pro users</div>
+      <div class="m-checklist-item"><span class="m-check"></span> Custom admin dashboard</div>
+    </div>
+  </div>
+</div>
+
+<!-- What's Next -->
+<h3 style="font-size:1rem;font-weight:700;margin:24px 0 4px">What's Next</h3>
+<p style="font-size:0.82rem;color:var(--text2);margin-bottom:12px">Top 3 priorities based on dependency order and current progress.</p>
+<div class="next-priorities">
+  <div class="next-card" style="border-left:3px solid var(--green)">
+    <div class="next-num">1</div>
+    <h4 style="color:var(--green)">MVP Polish & Testing (Sprint 6)</h4>
+    <p>End-to-end testing, bug fixes, performance optimization, push notification integration. All P0 features built — focus on quality before launch.</p>
+  </div>
+  <div class="next-card" style="border-left:3px solid var(--yellow)">
+    <div class="next-num">2</div>
+    <h4 style="color:var(--yellow)">Photo Diagnosis (P1)</h4>
+    <p>Species ID from photos, disease diagnosis with treatment plans. Claude Vision API. Plus/Pro tier only. Depends on Species DB (now complete). ~2 weeks.</p>
+  </div>
+  <div class="next-card" style="border-left:3px solid var(--accent)">
+    <div class="next-num">3</div>
+    <h4 style="color:var(--accent)">Equipment Tracking (P1)</h4>
+    <p>Equipment inventory per tank, replacement reminders, AI-recommended upgrades. Good monetization feature for Plus/Pro tiers. ~1.5 weeks.</p>
+  </div>
+</div>
+
+<!-- Blockers -->
+<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-top:24px">
+  <h3 style="font-size:1rem;font-weight:700;margin-bottom:8px">Blockers & Notes</h3>
+  <p style="font-size:0.82rem;color:var(--text2)"><strong>Sprint 5 Complete:</strong> Maintenance Scheduling at 85% — full CRUD for tasks, completion logging, AI-recommended schedules, maintenance summary widget. <strong>ALL P0 MVP features now built.</strong> Water Params 95%, Species 90%, Maintenance 85%. <strong>Next:</strong> Sprint 6 — MVP Polish, E2E testing, push notifications, deployment readiness. 1 open bug (B004). Memory: 8 decisions, 8 patterns, 4 bugs.</p>
+</div>
+
+</div><!-- /progress -->
+
 <!-- ============== TIMELINE & GANTT ============== -->
 <div class="panel" id="timeline">
 <h2 style="font-size:1.2rem;margin-bottom:16px">Visual Timeline — 26 Weeks (Feb–Aug 2026)</h2>
 
-<div class="gantt-container">
+<div class="gantt-container" id="gantt">
+  <!-- Today marker: positioned via JS based on current week -->
+  <div class="gantt-today" id="gantt-today-marker" style="display:none"></div>
   <div class="gantt-header">
     <div class="gantt-month" style="font-weight:700">Feature</div>
     <div class="gantt-month" style="grid-column:span 4;border-right:1px solid var(--border)">Feb</div>
@@ -862,45 +1471,77 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 
 <div class="milestones">
   <div class="milestone m1">
+    <div class="progress-ring-wrap">
+      <svg class="progress-ring" width="72" height="72" viewBox="0 0 72 72">
+        <circle class="progress-ring-bg" cx="36" cy="36" r="30"/>
+        <circle class="progress-ring-fill" cx="36" cy="36" r="30" stroke="var(--green)" stroke-dasharray="188.5" stroke-dashoffset="84.8"/>
+        <text class="progress-ring-text" x="36" y="36">55%</text>
+      </svg>
+    </div>
     <div class="m-date">Week 5 — Mid-March 2026</div>
     <h3>Foundation Complete</h3>
     <p>Auth works, tanks can be created, AI chat responds with tank context. You can demo the core loop.</p>
-    <div class="m-items">
-      <span>✅ User can sign up and create a tank</span>
-      <span>✅ AI chat responds with tank-aware answers</span>
-      <span>✅ PWA installable on mobile</span>
+    <div class="m-checklist">
+      <div class="m-checklist-item done"><span class="m-check">&#10003;</span> User can sign up and create a tank</div>
+      <div class="m-checklist-item done"><span class="m-check">&#10003;</span> Tank CRUD with photo upload working</div>
+      <div class="m-checklist-item"><span class="m-check"></span> AI chat responds with tank-aware answers</div>
+      <div class="m-checklist-item partial"><span class="m-check">~</span> PWA installable on mobile (manifest done, icons pending)</div>
     </div>
   </div>
   <div class="milestone m2">
+    <div class="progress-ring-wrap">
+      <svg class="progress-ring" width="72" height="72" viewBox="0 0 72 72">
+        <circle class="progress-ring-bg" cx="36" cy="36" r="30"/>
+        <circle class="progress-ring-fill" cx="36" cy="36" r="30" stroke="var(--accent)" stroke-dasharray="188.5" stroke-dashoffset="160.2"/>
+        <text class="progress-ring-text" x="36" y="36">15%</text>
+      </svg>
+    </div>
     <div class="m-date">Week 10 — Mid-April 2026</div>
     <h3>Billing Live</h3>
     <p>Stripe integrated, tiers enforced, trial flow working. Product is monetization-ready.</p>
-    <div class="m-items">
-      <span>✅ 14-day free trial with full Pro access</span>
-      <span>✅ Stripe Checkout payment flow</span>
-      <span>✅ Tier limits enforced across features</span>
+    <div class="m-checklist">
+      <div class="m-checklist-item"><span class="m-check"></span> 14-day free trial with full Pro access</div>
+      <div class="m-checklist-item"><span class="m-check"></span> Stripe Checkout payment flow</div>
+      <div class="m-checklist-item partial"><span class="m-check">~</span> Tier limits enforced (DB functions done, UI partial)</div>
+      <div class="m-checklist-item done"><span class="m-check">&#10003;</span> Subscription DB schema created</div>
     </div>
   </div>
   <div class="milestone m3">
+    <div class="progress-ring-wrap">
+      <svg class="progress-ring" width="72" height="72" viewBox="0 0 72 72">
+        <circle class="progress-ring-bg" cx="36" cy="36" r="30"/>
+        <circle class="progress-ring-fill" cx="36" cy="36" r="30" stroke="var(--cyan)" stroke-dasharray="188.5" stroke-dashoffset="141.4"/>
+        <text class="progress-ring-text" x="36" y="36">25%</text>
+      </svg>
+    </div>
     <div class="m-date">Week 14 — Late May 2026</div>
-    <h3>🚀 MVP Public Launch</h3>
+    <h3>MVP Public Launch</h3>
     <p>All P0 features shipped. Parameters, species, maintenance, push notifications all working. Ready for first users.</p>
-    <div class="m-items">
-      <span>✅ Water parameter tracking + charts</span>
-      <span>✅ 800+ species searchable</span>
-      <span>✅ Maintenance tasks with push reminders</span>
-      <span>✅ Admin tools for user management</span>
+    <div class="m-checklist">
+      <div class="m-checklist-item partial"><span class="m-check">~</span> Water parameter tracking (DB + basic display done)</div>
+      <div class="m-checklist-item"><span class="m-check"></span> 800+ species searchable</div>
+      <div class="m-checklist-item"><span class="m-check"></span> Maintenance tasks with push reminders</div>
+      <div class="m-checklist-item"><span class="m-check"></span> Admin tools for user management</div>
+      <div class="m-checklist-item done"><span class="m-check">&#10003;</span> Database schema complete (11 tables)</div>
+      <div class="m-checklist-item done"><span class="m-check">&#10003;</span> RLS policies for all tables (26 policies)</div>
     </div>
   </div>
   <div class="milestone m4">
+    <div class="progress-ring-wrap">
+      <svg class="progress-ring" width="72" height="72" viewBox="0 0 72 72">
+        <circle class="progress-ring-bg" cx="36" cy="36" r="30"/>
+        <circle class="progress-ring-fill" cx="36" cy="36" r="30" stroke="var(--purple)" stroke-dasharray="188.5" stroke-dashoffset="188.5"/>
+        <text class="progress-ring-text" x="36" y="36">0%</text>
+      </svg>
+    </div>
     <div class="m-date">Week 24 — Late July 2026</div>
     <h3>Full v1 Feature Complete</h3>
-    <p>All P1 growth features shipped. Photo diagnosis, equipment tracking, dashboards, admin v2. Focus shifts to retention and growth.</p>
-    <div class="m-items">
-      <span>✅ Photo diagnosis live (Plus/Pro)</span>
-      <span>✅ Equipment tracking with AI recs</span>
-      <span>✅ Email reports for Pro users</span>
-      <span>✅ Custom admin dashboard</span>
+    <p>All P1 growth features shipped. Photo diagnosis, equipment tracking, dashboards, admin v2.</p>
+    <div class="m-checklist">
+      <div class="m-checklist-item"><span class="m-check"></span> Photo diagnosis live (Plus/Pro)</div>
+      <div class="m-checklist-item"><span class="m-check"></span> Equipment tracking with AI recs</div>
+      <div class="m-checklist-item"><span class="m-check"></span> Email reports for Pro users</div>
+      <div class="m-checklist-item"><span class="m-check"></span> Custom admin dashboard</div>
     </div>
   </div>
 </div>
@@ -988,6 +1629,230 @@ function togglePhase(header){
   const content=header.nextElementSibling;
   if(content)content.style.display=content.style.display==='none'?'grid':'none';
 }
+
+// Today marker on Gantt chart
+(function positionTodayMarker(){
+  const gantt=document.getElementById('gantt');
+  const marker=document.getElementById('gantt-today-marker');
+  if(!gantt||!marker)return;
+  // Project starts Feb 3 2026 (Week 1)
+  const projectStart=new Date(2026,1,3);
+  const now=new Date();
+  const weeksSinceStart=Math.max(0,(now-projectStart)/(7*24*60*60*1000));
+  const currentWeek=Math.min(Math.floor(weeksSinceStart)+1,26);
+  // Gantt grid: 200px label + 26 equal columns
+  // Each column = (container_width - 200) / 26
+  // Position marker at the start of the current week column
+  const labelWidth=200;
+  const totalCols=26;
+  // Use percentage-based positioning
+  const colWidthPct=(100-((labelWidth/gantt.offsetWidth)*100))/totalCols;
+  const labelPct=(labelWidth/gantt.offsetWidth)*100;
+  const leftPct=labelPct+(currentWeek-0.5)*colWidthPct;
+  marker.style.left=leftPct+'%';
+  marker.style.display='block';
+  marker.style.top='0';
+  marker.style.bottom='0';
+})();
+
+// Animate progress bars on scroll into view
+(function animateProgressBars(){
+  const bars=document.querySelectorAll('.progress-bar-fill');
+  bars.forEach(bar=>{
+    const w=bar.style.width;
+    bar.style.width='0%';
+    setTimeout(()=>{bar.style.width=w;},200);
+  });
+})();
+
+// ============ SUPABASE FEEDBACK SYSTEM ============
+const SUPABASE_URL='https://mtwyezkbmyrgxqmskblu.supabase.co';
+const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im10d3llemtibXlyZ3hxbXNrYmx1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0OTU1MTcsImV4cCI6MjA4NjA3MTUxN30.4SzecB7Rrm3dAmB3t7FqKSQ4Pm6v7ureI33zwzuMmYU';
+const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+
+// Type label map
+const TYPE_LABELS={'priority':'🎯 PRIORITY','bug':'🐛 BUG','feature':'💡 FEATURE','question':'❓ QUESTION','other':'📝 OTHER'};
+
+// Upload images to Supabase Storage and return public URLs
+async function uploadFeedbackImages(feedbackId,files){
+  const urls=[];
+  for(let i=0;i<files.length;i++){
+    const file=files[i];
+    const ext=file.name.split('.').pop();
+    const path=`${feedbackId}/${Date.now()}_${i}.${ext}`;
+    const{data,error}=await sb.storage.from('feedback-images').upload(path,file,{contentType:file.type,upsert:false});
+    if(error){console.error('Upload error:',error);continue;}
+    const{data:urlData}=sb.storage.from('feedback-images').getPublicUrl(path);
+    if(urlData?.publicUrl) urls.push(urlData.publicUrl);
+  }
+  return urls;
+}
+
+// Render a single feedback card
+function renderFeedbackCard(fb){
+  const date=new Date(fb.created_at).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
+  const statusColor=fb.status==='addressed'?'var(--green)':fb.status==='wontfix'?'var(--red)':'var(--accent)';
+  const statusLabel=fb.status==='addressed'?'✅ Addressed':fb.status==='wontfix'?'❌ Won\'t Fix':'⏳ Pending PM review';
+  const statusBadge=fb.status==='addressed'?'status-complete':fb.status==='wontfix'?'status-blocked':'status-progress';
+
+  let imagesHtml='';
+  if(fb.image_urls&&fb.image_urls.length>0){
+    imagesHtml='<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">';
+    fb.image_urls.forEach(url=>{
+      imagesHtml+=`<a href="${url}" target="_blank" style="display:block;border-radius:8px;overflow:hidden;border:1px solid var(--border)"><img src="${url}" style="max-width:200px;max-height:150px;object-fit:cover;display:block" alt="feedback attachment"></a>`;
+    });
+    imagesHtml+='</div>';
+  }
+
+  const card=document.createElement('div');
+  card.style.cssText='background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin-bottom:12px;border-left:3px solid '+statusColor;
+  card.innerHTML=`
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+      <span style="font-weight:700;color:var(--accent);font-size:0.8rem">${fb.id}</span>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:0.75rem;color:var(--text2)">${date}</span>
+        <span class="status-badge ${statusBadge}" style="font-size:0.65rem">${fb.status==='addressed'?'Addressed':fb.status==='wontfix'?'Won\'t Fix':'Pending'}</span>
+      </div>
+    </div>
+    <div style="font-size:0.85rem;margin-bottom:8px">
+      <span style="padding:2px 8px;background:rgba(59,130,246,0.15);color:var(--accent);border-radius:4px;font-size:0.7rem;font-weight:600">${TYPE_LABELS[fb.type]||fb.type}</span>
+    </div>
+    <p style="font-size:0.85rem;color:var(--text);line-height:1.5">${(fb.message||'').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</p>
+    ${imagesHtml}
+    ${fb.pm_notes?`<div style="margin-top:10px;padding:10px;background:var(--bg);border-radius:6px;font-size:0.8rem;color:var(--text2)"><strong>PM Response:</strong> ${fb.pm_notes}</div>`:''}
+    <div style="margin-top:8px;padding:8px;background:var(--bg);border-radius:4px;font-size:0.8rem;color:${fb.status==='addressed'?'var(--green)':'var(--yellow)'}">${statusLabel}</div>
+  `;
+  return card;
+}
+
+// Submit feedback to Supabase
+async function submitFeedback(){
+  const type=document.getElementById('feedback-type').value;
+  const message=document.getElementById('feedback-message').value;
+  const files=document.getElementById('feedback-files').files;
+  const btn=document.querySelector('#feedback button[onclick="submitFeedback()"]');
+
+  if(!message.trim()){
+    alert('Please enter your feedback message.');
+    return;
+  }
+
+  // Disable button during submission
+  btn.disabled=true;
+  btn.textContent='Submitting...';
+  btn.style.opacity='0.6';
+
+  try{
+    const feedbackId='FB-'+Date.now().toString(36).toUpperCase();
+
+    // Upload images first
+    let imageUrls=[];
+    if(files.length>0){
+      btn.textContent='Uploading images...';
+      imageUrls=await uploadFeedbackImages(feedbackId,files);
+    }
+
+    // Insert feedback row
+    btn.textContent='Saving feedback...';
+    const{data,error}=await sb.from('feedback').insert({
+      id:feedbackId,
+      type:type,
+      message:message,
+      image_urls:imageUrls,
+      submitted_by:'Sam',
+      status:'pending'
+    }).select().single();
+
+    if(error) throw error;
+
+    // Add to DOM immediately
+    const historyDiv=document.getElementById('feedback-history');
+    const emptyState=document.getElementById('feedback-empty-state');
+    if(emptyState) emptyState.remove();
+    historyDiv.insertBefore(renderFeedbackCard(data),historyDiv.firstChild);
+
+    // Clear form
+    document.getElementById('feedback-message').value='';
+    document.getElementById('feedback-files').value='';
+    document.getElementById('feedback-file-list').innerHTML='';
+
+    alert('Feedback submitted and saved! The PM will review this in the next sprint review.');
+  }catch(err){
+    console.error('Feedback submission error:',err);
+    alert('Error submitting feedback: '+(err.message||'Unknown error')+'. Check console for details.');
+  }finally{
+    btn.disabled=false;
+    btn.textContent='Submit Feedback';
+    btn.style.opacity='1';
+  }
+}
+
+// File input display handler
+document.getElementById('feedback-files')?.addEventListener('change',function(e){
+  const fileList=document.getElementById('feedback-file-list');
+  const files=e.target.files;
+  if(files.length===0){
+    fileList.innerHTML='';
+    return;
+  }
+  let html='<strong>Selected files:</strong><br>';
+  for(let i=0;i<files.length;i++){
+    const size=(files[i].size/1024).toFixed(1);
+    html+=`📎 ${files[i].name} (${size} KB)<br>`;
+  }
+  fileList.innerHTML=html;
+});
+
+// Load all feedback from Supabase on page load
+(async function loadFeedback(){
+  const historyDiv=document.getElementById('feedback-history');
+  if(!historyDiv) return;
+
+  try{
+    const{data,error}=await sb.from('feedback').select('*').order('created_at',{ascending:false});
+    if(error) throw error;
+
+    const emptyState=document.getElementById('feedback-empty-state');
+
+    if(!data||data.length===0){
+      if(emptyState) emptyState.textContent='No feedback yet. Submit new feedback above.';
+      return;
+    }
+
+    if(emptyState) emptyState.remove();
+    data.forEach(fb=>{
+      historyDiv.appendChild(renderFeedbackCard(fb));
+    });
+  }catch(err){
+    console.error('Error loading feedback:',err);
+    const emptyState=document.getElementById('feedback-empty-state');
+    if(emptyState) emptyState.textContent='Could not load feedback. Check console for errors.';
+  }
+})();
+
+// Testing notes save handler
+function saveTestingNotes(featureId,textarea){
+  const notes=textarea.value;
+  const saved=JSON.parse(localStorage.getItem('aquabot-testing-notes')||'{}');
+  saved[featureId]={notes:notes,updated:new Date().toISOString()};
+  localStorage.setItem('aquabot-testing-notes',JSON.stringify(saved));
+
+  // Visual feedback
+  const original=textarea.style.borderColor;
+  textarea.style.borderColor='var(--green)';
+  setTimeout(()=>{textarea.style.borderColor=original;},1000);
+}
+
+// Load saved testing notes
+(function loadTestingNotes(){
+  const saved=JSON.parse(localStorage.getItem('aquabot-testing-notes')||'{}');
+  Object.keys(saved).forEach(id=>{
+    const textarea=document.querySelector(`textarea[data-feature="${id}"]`);
+    if(textarea){
+      textarea.value=saved[id].notes;
+    }
+  });
+})();
 </script>
 </body>
 </html>
