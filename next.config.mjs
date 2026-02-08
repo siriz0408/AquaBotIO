@@ -1,10 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Security headers — applied to all routes
+  // Security headers — applied to page routes only (not static assets)
   async headers() {
     return [
       {
-        source: "/(.*)",
+        // Apply to all routes EXCEPT _next/static, _next/image, and favicon
+        source: "/((?!_next/static|_next/image|favicon.ico).*)",
         headers: [
           {
             key: "X-Frame-Options",
