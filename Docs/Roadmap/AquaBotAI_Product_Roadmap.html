@@ -241,10 +241,10 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
       </div>
       <div style="display:flex;align-items:center;gap:8px">
         <span style="font-size:0.72rem;color:var(--text2)">Overall MVP Progress</span>
-        <span style="font-size:1.1rem;font-weight:800;color:var(--accent)">90%</span>
+        <span style="font-size:1.1rem;font-weight:800;color:var(--accent)">92%</span>
       </div>
       <div class="progress-bar-lg" style="margin-top:6px">
-        <div class="progress-bar-fill" style="width:90%;background:linear-gradient(90deg,var(--green),var(--accent))"></div>
+        <div class="progress-bar-fill" style="width:92%;background:linear-gradient(90deg,var(--green),var(--accent))"></div>
       </div>
     </div>
     <div class="sprint-meta">
@@ -266,7 +266,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
       </div>
     </div>
   </div>
-  <div class="sprint-updated">Last updated: Feb 8, 2026 — Sprint 8 (AI Chat RPC Fix, Nav Fixes, Notifications Page)</div>
+  <div class="sprint-updated">Last updated: Feb 8, 2026 — Sprint 8 Complete (AI Chat RPC, Nav Fixes, PWA Manifest, SW Registration)</div>
 </div>
 
 <div class="tabs" id="tabs">
@@ -669,25 +669,25 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 <h2 style="font-size:1.2rem;margin-bottom:8px">📋 Sprint History</h2>
 <p style="font-size:0.82rem;color:var(--text2);margin-bottom:20px">Complete history of development sprints. What was built, outcomes, and metrics.</p>
 
-<!-- Sprint 8 (Most Recent - In Progress) -->
-<div style="background:var(--surface);border:2px solid var(--cyan);border-radius:12px;margin-bottom:16px;overflow:hidden">
-  <div style="background:linear-gradient(90deg,rgba(0,180,216,0.2),transparent);padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+<!-- Sprint 8 (Complete) -->
+<div style="background:var(--surface);border:2px solid var(--green);border-radius:12px;margin-bottom:16px;overflow:hidden">
+  <div style="background:linear-gradient(90deg,rgba(34,197,94,0.2),transparent);padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
     <div>
       <h3 style="font-size:1rem;font-weight:700;margin-bottom:2px">Sprint 8: Bug Fixes & Stability</h3>
       <span style="font-size:0.75rem;color:var(--text2)">Feb 8, 2026</span>
     </div>
-    <span class="status-badge status-progress">In Progress</span>
+    <span class="status-badge status-complete">Complete</span>
   </div>
   <div style="padding:20px">
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:16px">
       <div style="text-align:center;padding:12px;background:var(--bg);border-radius:8px">
         <div style="font-size:0.7rem;color:var(--text2);text-transform:uppercase">Progress</div>
-        <div style="font-size:1.3rem;font-weight:800;color:var(--green)">+2%</div>
-        <div style="font-size:0.72rem;color:var(--text2)">88% → 90%</div>
+        <div style="font-size:1.3rem;font-weight:800;color:var(--green)">+4%</div>
+        <div style="font-size:0.72rem;color:var(--text2)">88% → 92%</div>
       </div>
       <div style="text-align:center;padding:12px;background:var(--bg);border-radius:8px">
         <div style="font-size:0.7rem;color:var(--text2);text-transform:uppercase">Files Changed</div>
-        <div style="font-size:1.3rem;font-weight:800;color:var(--cyan)">6</div>
+        <div style="font-size:1.3rem;font-weight:800;color:var(--cyan)">8</div>
       </div>
       <div style="text-align:center;padding:12px;background:var(--bg);border-radius:8px">
         <div style="font-size:0.7rem;color:var(--text2);text-transform:uppercase">New Migrations</div>
@@ -695,7 +695,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
       </div>
       <div style="text-align:center;padding:12px;background:var(--bg);border-radius:8px">
         <div style="font-size:0.7rem;color:var(--text2);text-transform:uppercase">Bugs Fixed</div>
-        <div style="font-size:1.3rem;font-weight:800;color:var(--green)">4</div>
+        <div style="font-size:1.3rem;font-weight:800;color:var(--green)">5</div>
       </div>
     </div>
     <h4 style="font-size:0.85rem;font-weight:700;margin-bottom:8px">What Was Built</h4>
@@ -706,12 +706,14 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
           <li><strong>B009:</strong> Added missing <code>check_and_increment_ai_usage</code> RPC function to remote Supabase</li>
           <li><strong>B010:</strong> Fixed bottom tab bar to use dynamic tank-aware routes</li>
           <li><strong>B011:</strong> Fixed quick actions linking to non-existent /new pages</li>
+          <li><strong>B013:</strong> Fixed manifest.json blocked by auth middleware</li>
         </ul>
       </div>
       <div>
-        <div style="font-weight:600;color:var(--green);margin-bottom:4px">📄 New Pages</div>
+        <div style="font-weight:600;color:var(--green);margin-bottom:4px">📄 PWA & Pages</div>
         <ul style="padding-left:16px;color:var(--text2);line-height:1.6">
           <li><strong>B012:</strong> Created /notifications placeholder page</li>
+          <li>Service Worker registration component added</li>
           <li>AI Chat now works end-to-end</li>
           <li>Build passes cleanly</li>
         </ul>
@@ -1174,9 +1176,9 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:24px">
 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
   <h3 style="font-size:1rem;font-weight:700">MVP Completion</h3>
-  <span style="font-size:1.5rem;font-weight:800;color:var(--accent)">88%</span>
+  <span style="font-size:1.5rem;font-weight:800;color:var(--accent)">92%</span>
 </div>
-<div class="progress-bar-lg"><div class="progress-bar-fill" style="width:88%;background:linear-gradient(90deg,var(--green),var(--accent))"></div></div>
+<div class="progress-bar-lg"><div class="progress-bar-fill" style="width:92%;background:linear-gradient(90deg,var(--green),var(--accent))"></div></div>
 <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:0.72rem;color:var(--text2)">
   <span>Phase 1: Foundation ✓</span>
   <span>Phase 2: Feature Complete ✓</span>
