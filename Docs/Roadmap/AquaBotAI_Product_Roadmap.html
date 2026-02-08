@@ -241,10 +241,10 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
       </div>
       <div style="display:flex;align-items:center;gap:8px">
         <span style="font-size:0.72rem;color:var(--text2)">Overall MVP Progress</span>
-        <span style="font-size:1.1rem;font-weight:800;color:var(--accent)">97%</span>
+        <span style="font-size:1.1rem;font-weight:800;color:var(--accent)">98%</span>
       </div>
       <div class="progress-bar-lg" style="margin-top:6px">
-        <div class="progress-bar-fill" style="width:97%;background:linear-gradient(90deg,var(--green),var(--accent))"></div>
+        <div class="progress-bar-fill" style="width:98%;background:linear-gradient(90deg,var(--green),var(--accent))"></div>
       </div>
     </div>
     <div class="sprint-meta">
@@ -266,7 +266,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
       </div>
     </div>
   </div>
-  <div class="sprint-updated">Last updated: Feb 8, 2026 — Sprint 10 In Progress (Signup auto-login fix FB-MLE7MCRC, Production deployment prep)</div>
+  <div class="sprint-updated">Last updated: Feb 8, 2026 — Sprint 10 In Progress (Species expansion 25→180, Signup fix, Security headers fix)</div>
 </div>
 
 <div class="tabs" id="tabs">
@@ -682,12 +682,12 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:16px">
       <div style="text-align:center;padding:12px;background:var(--bg);border-radius:8px">
         <div style="font-size:0.7rem;color:var(--text2);text-transform:uppercase">Progress</div>
-        <div style="font-size:1.3rem;font-weight:800;color:var(--cyan)">+1%</div>
-        <div style="font-size:0.72rem;color:var(--text2)">96% → 97%</div>
+        <div style="font-size:1.3rem;font-weight:800;color:var(--cyan)">+2%</div>
+        <div style="font-size:0.72rem;color:var(--text2)">96% → 98%</div>
       </div>
       <div style="text-align:center;padding:12px;background:var(--bg);border-radius:8px">
         <div style="font-size:0.7rem;color:var(--text2);text-transform:uppercase">Files Changed</div>
-        <div style="font-size:1.3rem;font-weight:800;color:var(--cyan)">1</div>
+        <div style="font-size:1.3rem;font-weight:800;color:var(--cyan)">4</div>
       </div>
       <div style="text-align:center;padding:12px;background:var(--bg);border-radius:8px">
         <div style="font-size:0.7rem;color:var(--text2);text-transform:uppercase">Feedback Items</div>
@@ -695,7 +695,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
       </div>
       <div style="text-align:center;padding:12px;background:var(--bg);border-radius:8px">
         <div style="font-size:0.7rem;color:var(--text2);text-transform:uppercase">Bugs Fixed</div>
-        <div style="font-size:1.3rem;font-weight:800;color:var(--green)">1</div>
+        <div style="font-size:1.3rem;font-weight:800;color:var(--green)">2</div>
       </div>
     </div>
     <h4 style="font-size:0.85rem;font-weight:700;margin-bottom:8px">What Was Built</h4>
@@ -709,11 +709,26 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
         </ul>
       </div>
       <div>
+        <div style="font-weight:600;color:var(--green);margin-bottom:4px">🐠 Species Database Expansion</div>
+        <ul style="padding-left:16px;color:var(--text2);line-height:1.6">
+          <li><strong>Before:</strong> 25 species (freshwater only)</li>
+          <li><strong>After:</strong> 180 species (80 freshwater, 50 saltwater, 30 invertebrates, 20 plants)</li>
+          <li><strong>Result:</strong> Comprehensive species library for diverse aquarium setups</li>
+        </ul>
+      </div>
+      <div>
+        <div style="font-weight:600;color:var(--purple);margin-bottom:4px">🛡️ Security Headers Fix (B014)</div>
+        <ul style="padding-left:16px;color:var(--text2);line-height:1.6">
+          <li><strong>Problem:</strong> X-Content-Type-Options: nosniff was blocking CSS/JS static assets</li>
+          <li><strong>Fix:</strong> Updated next.config.mjs source pattern to exclude _next/static from security headers</li>
+          <li><strong>Result:</strong> Pages load correctly with all styles and scripts</li>
+        </ul>
+      </div>
+      <div>
         <div style="font-weight:600;color:var(--yellow);margin-bottom:4px">📋 Remaining P0 Tasks</div>
         <ul style="padding-left:16px;color:var(--text2);line-height:1.6">
           <li>Vercel deployment — vercel.json, env vars, domain config</li>
           <li>Stripe live keys — configure for real payments</li>
-          <li>Species data expansion — 25 → 200+ species</li>
         </ul>
       </div>
     </div>
