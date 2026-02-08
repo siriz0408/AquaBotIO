@@ -3,8 +3,13 @@ import Link from "next/link";
 import { Fish } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy",
-  description: "AquaBotAI Privacy Policy - Learn how we collect, use, and protect your data.",
+  title: "Privacy Policy - How We Protect Your Data",
+  description: "AquaBotAI Privacy Policy - Learn how we collect, use, and protect your aquarium data. We use industry-standard encryption and Supabase row-level security to keep your tank profiles, water parameters, and personal information secure.",
+  openGraph: {
+    title: "Privacy Policy | AquaBotAI",
+    description: "AquaBotAI Privacy Policy - Learn how we collect, use, and protect your aquarium data with industry-standard encryption and security practices.",
+    images: ["/og-image.png"],
+  },
 };
 
 export default function PrivacyPage() {

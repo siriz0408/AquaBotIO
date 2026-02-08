@@ -5,8 +5,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 
 export const metadata: Metadata = {
-  title: "Support",
-  description: "Get help with AquaBotAI - FAQ, contact support, and documentation.",
+  title: "Support Center - Help & FAQ",
+  description: "Get help with AquaBotAI - Frequently asked questions about tank management, water parameters, subscriptions, and billing. Contact our support team via email or use the AI chat assistant for instant answers.",
+  openGraph: {
+    title: "Support Center | AquaBotAI",
+    description: "Get help with AquaBotAI - FAQ, email support, and AI chat assistant for aquarium care questions.",
+    images: ["/og-image.png"],
+  },
 };
 
 export default function SupportPage() {

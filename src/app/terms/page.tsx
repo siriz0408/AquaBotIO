@@ -3,8 +3,13 @@ import Link from "next/link";
 import { Fish } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Terms of Service",
-  description: "AquaBotAI Terms of Service - Read our terms and conditions for using the platform.",
+  title: "Terms of Service - Usage Guidelines",
+  description: "AquaBotAI Terms of Service - Read our terms and conditions for using the AI-powered aquarium management platform. Covers subscriptions, billing, acceptable use, and limitations of liability.",
+  openGraph: {
+    title: "Terms of Service | AquaBotAI",
+    description: "AquaBotAI Terms of Service - Read our terms and conditions for using the AI-powered aquarium management platform.",
+    images: ["/og-image.png"],
+  },
 };
 
 export default function TermsPage() {
