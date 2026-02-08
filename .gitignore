@@ -38,3 +38,11 @@ npm-debug.log*
 # Temp files
 *.tmp
 *.temp
+
+# Build artifacts
+tsconfig.tsbuildinfo
+
+# Screenshots (temporary)
+*.png
+!public/**/*.png
+!Docs/Wireframes/**/*.png

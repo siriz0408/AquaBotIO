@@ -10,18 +10,17 @@ const config: Config = {
   theme: {
   	extend: {
   		colors: {
-  			// AquaBotAI Brand Colors (from official logo)
+  			// AquaBotAI Brand Colors — aligned with Wireframes (15_UI_UX_Design_System.md)
   			brand: {
-  				navy: '#0A2540',        // Primary text, headings (from "AQUA" in logo)
-  				cyan: '#00B4D8',        // Primary CTAs, buttons (from "BOT" in logo)
-  				'cyan-light': '#48CAE4', // Gradient end, secondary accent
+  				navy: '#0A2463',        // Primary text, headings, dark backgrounds
+  				teal: '#1B998B',        // PRIMARY accent — CTAs, active states, good/success
+  				cyan: '#00B4D8',        // Secondary accent — links, hover states
+  				'cyan-light': '#48CAE4', // Gradient end, tertiary accent
   				'cyan-glow': '#90E0EF',  // Hover states, glows
-  				bg: '#F8FAFC',          // Page background
-  				alert: '#FF6B6B',       // Danger/error states
-  				warning: '#F59E0B',     // Caution states
-  				success: '#10B981',     // Success states
-  				// Alternative teal from wireframes
-  				teal: '#1B998B',        // From wireframe designs
+  				bg: '#F0F4F8',          // Page background
+  				alert: '#FF6B6B',       // Danger/error/overdue states
+  				warning: '#F59E0B',     // Caution/approaching limits
+  				success: '#1B998B',     // Success states (same as teal)
   			},
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',

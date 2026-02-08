@@ -13,6 +13,7 @@
 **Branch:** [e.g., feature/auth-ui]
 **Priority:** [P0 Critical / P1 High / P2 Medium / P3 Low]
 **Skills to Load:** [e.g., /frontend-design, /mobile-design — or "None" if not applicable]
+**Design Reference:** [For UI tasks: `15_UI_UX_Design_System.md` Section [N] + wireframe component name — or "N/A" for backend tasks]
 
 ---
 
@@ -83,3 +84,4 @@ Budget status: [Under / At / Over — and that's OK because: reason]
 > - Use commit format: `[agent] task-id: description`
 > - Report to PM if you hit a conflict or need to modify files outside scope
 > - If you learn something new, note it in memory/agent_notes/[your-role].md
+> - **For all UI tasks:** Verify colors and layout match `15_UI_UX_Design_System.md`. Wireframes in `Docs/Wireframes/` are the visual source of truth.

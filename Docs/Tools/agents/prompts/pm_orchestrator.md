@@ -24,7 +24,8 @@ Read `CLAUDE.md` for the full tech stack, coding standards, and project rules. K
 - **Tech:** Next.js 14, TypeScript, Tailwind, shadcn/ui, Supabase, Claude AI, Stripe, Vercel
 - **Phase:** MVP development (P0 features)
 - **Target:** Late May 2026 (~Week 14)
-- **Specs:** 16 spec docs in `Docs/AquaBotAI_Specs/`
+- **Specs:** 18 spec docs in `Docs/AquaBotAI_Specs/` (includes `14_Implementation_Status.md` and `15_UI_UX_Design_System.md`)
+- **Wireframes:** `Docs/Wireframes/` — Figma-exported React components, **source of truth for all UI**
 - **Ship Readiness:** 6 docs in `Docs/Ship_Readiness/`
 - **Roadmap:** `Docs/Roadmap/AquaBotAI_Product_Roadmap.md`
 
@@ -49,8 +50,10 @@ Future agents (Phase B: Test, Code Review, Browser Test. Phase C: DB Specialist,
 When constructing Task Briefs, include relevant skills for the agent to load. Skills are loaded **per-task**, not always-on — this respects the Context Budget philosophy.
 
 ### For Frontend Tasks (UI/UX Work)
-| Skill | When to Use |
-|-------|-------------|
+| Skill / Reference | When to Use |
+|-------------------|-------------|
+| **`15_UI_UX_Design_System.md`** | **MANDATORY for ALL UI tasks** — canonical design guide with colors, typography, layout, components, mobile patterns. Frontend agent must read this before building. |
+| **`Docs/Wireframes/`** | **MANDATORY for ALL UI tasks** — Figma-exported React components. Source of truth for visual design. |
 | `/ui-ux-pro-max` | **Primary design skill** — comprehensive design system with styles, colors, fonts, UX rules. Use for any UI work. |
 | `/frontend-design` | High design quality, avoids generic AI aesthetics |
 | `/mobile-design` | Mobile-first layouts, responsive design |
@@ -78,10 +81,10 @@ Add a "Skills to Load" field in the Task Brief header:
 ```
 
 ### When to Include Skills
-- **UI/UX work:** Include `/frontend-design` and/or `/mobile-design`
+- **ANY UI/UX work:** ALWAYS include `15_UI_UX_Design_System.md` reference + `/frontend-design` and/or `/mobile-design`
 - **Form building:** Add `/accessibility-compliance`
 - **Database changes:** Add `/supabase-postgres-best-practices`
-- **Design polish work:** Include all relevant design skills
+- **Design polish work:** Include all relevant design skills + wireframe component references
 
 ---
 
@@ -97,9 +100,10 @@ Every agent gets a **~50-line Task Brief** instead of loading entire docs. You b
    - Project ID: AquaBotAI, current phase, tech stack summary
    - CLAUDE.md Essentials: Critical coding rules only (not the full 460 lines)
    - Memory Index: Table of contents with 1-line summaries
-   - Spec Index: All 16 specs with brief purpose
+   - Spec Index: All 18 specs with brief purpose
    - Code Map: Directory structure — which files belong to which features
    - Active Work Board snapshot: What every agent is currently doing
+   - **Design System reference** (for Frontend tasks): Brand colors, layout rules, wireframe mapping from `15_UI_UX_Design_System.md`
 
 2. **Task-Specific Context** (~1,200-2,600 tokens):
    - Objective (2-3 lines): What exactly to build/fix
@@ -189,6 +193,9 @@ P0 bugs block the sprint. P1 bugs get scheduled first. Check `memory/bugs/INDEX.
 
 ### Step 6: Review Ship Readiness
 Are we accumulating security debt? Missing tests? Check the 6 ship readiness docs.
+
+### Step 6.5: Check UI/UX Alignment
+Compare recent UI changes against `Docs/AquaBotAI_Specs/15_UI_UX_Design_System.md` and `Docs/Wireframes/`. If any colors, layouts, or component patterns have drifted from the wireframes, add alignment tasks to the sprint. The wireframe is the source of truth for visual design (see Decision D009).
 
 ### Step 7: Review Memory
 Scan `memory/mistakes/INDEX.md` and `memory/patterns/INDEX.md`. Incorporate lessons.
@@ -545,7 +552,9 @@ Track these every sprint, not just at launch:
 - **Always check Sam's feedback FIRST** — query `SELECT * FROM feedback WHERE status = 'pending'` at the start of every run. Sam's feedback drives priorities.
 - **Always respond to feedback** — update `status` and `pm_notes` in the `feedback` table so Sam knows you read it.
 - CLAUDE.md is the source of truth for coding standards. Always reference it.
-- Specs in `Docs/AquaBotAI_Specs/` are the source of truth for features. Code follows specs.
+- Specs in `Docs/AquaBotAI_Specs/` (18 docs) are the source of truth for features. Code follows specs.
+- Wireframes in `Docs/Wireframes/` are the source of truth for UI design. Code follows wireframes.
+- `15_UI_UX_Design_System.md` is the canonical design guide — MANDATORY for all Frontend tasks.
 - If specs conflict with code, prefer specs unless clearly outdated — flag the conflict.
 - Never commit secrets, tokens, or PII.
 - Billing/Stripe changes require both your review AND Sam's approval.

@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import { Providers } from "@/components/providers";
+import { ServiceWorkerRegister } from "@/components/service-worker-register";
 import "./globals.css";
 
 const geistSans = localFont({
@@ -58,8 +59,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#00B4D8" }, // brand-cyan
-    { media: "(prefers-color-scheme: dark)", color: "#0A2540" },   // brand-navy
+    { media: "(prefers-color-scheme: light)", color: "#1B998B" }, // brand-teal (primary)
+    { media: "(prefers-color-scheme: dark)", color: "#0A2463" },   // brand-navy
   ],
   width: "device-width",
   initialScale: 1,
@@ -79,6 +80,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}
       >
         <Providers>{children}</Providers>
+        <ServiceWorkerRegister />
       </body>
     </html>
   );

@@ -1,6 +1,6 @@
 # Sprints Index
 
-> Total sprints: 6 | Last updated: 2026-02-08
+> Total sprints: 8 (+ docs audit) | Last updated: 2026-02-08
 
 Naming: `sprint_{NN}_summary.md`
 
@@ -12,8 +12,31 @@ Naming: `sprint_{NN}_summary.md`
 | Sprint 5 | 2026-02-08 | Maintenance Scheduling | COMPLETED | Push notifications, MVP polish |
 | Sprint 6 | 2026-02-08 | MVP Polish & Testing | COMPLETED | Species seed data, AI key, PWA icons |
 | Sprint 7 | 2026-02-08 | Production Readiness | COMPLETED | DB fixes, B004/B007/B008, Species live, PWA icons |
+| Docs Audit | 2026-02-08 | Documentation Review | COMPLETED | New specs (14, 15), roadmap/ship readiness updates, wireframe comparison |
+| Sprint 8 | 2026-02-08 | Launch Prep & Design Alignment | COMPLETED | Color palette aligned, SW registered, security headers, AI chat live, build verified |
 
 ## Sprint Details
+
+### Sprint 8 (Launch Prep)
+- **Focus:** Align colors to wireframes, enable PWA, add security headers, verify AI chat
+- **Color Fix:** Navy `#0A2540`→`#0A2463`, promoted teal to primary, bg `#F8FAFC`→`#F0F4F8`
+- **Security:** 6 headers added to `next.config.mjs` (HSTS, X-Frame, Referrer-Policy, etc.)
+- **PWA:** Service worker registration component created + added to layout
+- **AI Chat:** Verified live with Anthropic key — Claude responds with tank-context-aware answers in ~2s
+- **Build:** `npm run build` passes cleanly (exit 0)
+- **Progress:** 88% → 93%
+- **Remaining:** Vercel deployment, Stripe live keys, species expansion
+
+### Docs Audit (Post-Sprint 7)
+- **Focus:** Review all Docs/ against actual implementation
+- **Created:** `14_Implementation_Status.md` — full system change log, feature matrix, bug tracker
+- **Created:** `15_UI_UX_Design_System.md` — canonical UI/UX guide derived from Wireframes
+- **Updated:** `PLANNING_INDEX.md` — current project state, sprint history, service connections
+- **Updated:** `AquaBotAI_Product_Roadmap.md` — implementation status table, milestone progress
+- **Updated:** `Ship_Readiness/INDEX.md` — current status, change summary
+- **Updated:** `active_work.md` — new docs, UI alignment items, environment status
+- **Finding:** Color palette drifted from wireframes (navy, primary accent, background)
+- **Finding:** Navigation structure (bottom tabs, floating chat) matches wireframes well
 
 ### Sprint 7 (Week 12)
 - **Focus:** Production readiness — fix blocking bugs, apply DB migrations, PWA icons

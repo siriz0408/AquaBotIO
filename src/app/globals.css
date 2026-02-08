@@ -47,33 +47,33 @@
 
 @layer base {
   :root {
-    /* AquaBotAI Brand Colors */
-    --brand-navy: 213 75% 15%;
-    --brand-cyan: 193 100% 43%;
+    /* AquaBotAI Brand Colors — aligned with Wireframes (15_UI_UX_Design_System.md) */
+    --brand-navy: 225 82% 21%;
+    --brand-teal: 170 71% 35%;
+    --brand-cyan: 193 100% 42%;
     --brand-cyan-light: 193 78% 59%;
     --brand-cyan-glow: 193 75% 75%;
-    --brand-bg: 210 40% 98%;
-    --brand-teal: 167 78% 35%;
+    --brand-bg: 210 33% 95%;
 
-    --background: 210 40% 98%;
-    --foreground: 213 75% 15%;
+    --background: 210 33% 95%;
+    --foreground: 225 82% 21%;
     --card: 0 0% 100%;
-    --card-foreground: 213 75% 15%;
+    --card-foreground: 225 82% 21%;
     --popover: 0 0% 100%;
-    --popover-foreground: 213 75% 15%;
-    --primary: 193 100% 43%;
+    --popover-foreground: 225 82% 21%;
+    --primary: 170 71% 35%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 213 75% 15%;
-    --muted: 210 40% 96%;
+    --secondary: 210 33% 96%;
+    --secondary-foreground: 225 82% 21%;
+    --muted: 210 33% 96%;
     --muted-foreground: 215 16% 47%;
-    --accent: 167 78% 35%;
+    --accent: 193 100% 42%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 68% 71%;
     --destructive-foreground: 0 0% 98%;
     --border: 214 32% 91%;
     --input: 214 32% 91%;
-    --ring: 193 100% 43%;
+    --ring: 170 71% 35%;
     --chart-1: 167 78% 35%;
     --chart-2: 193 100% 43%;
     --chart-3: 38 92% 50%;
@@ -82,27 +82,27 @@
     --radius: 0.5rem;
   }
   .dark {
-    --background: 213 75% 8%;
-    --foreground: 210 40% 98%;
-    --card: 213 75% 12%;
-    --card-foreground: 210 40% 98%;
-    --popover: 213 75% 12%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 193 100% 43%;
-    --primary-foreground: 213 75% 15%;
-    --secondary: 213 50% 20%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 213 50% 20%;
+    --background: 225 82% 5%;
+    --foreground: 210 33% 98%;
+    --card: 225 82% 8%;
+    --card-foreground: 210 33% 98%;
+    --popover: 225 82% 8%;
+    --popover-foreground: 210 33% 98%;
+    --primary: 170 71% 35%;
+    --primary-foreground: 225 82% 21%;
+    --secondary: 225 50% 15%;
+    --secondary-foreground: 210 33% 98%;
+    --muted: 225 50% 15%;
     --muted-foreground: 215 20% 65%;
-    --accent: 167 78% 35%;
+    --accent: 193 100% 42%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 213 50% 20%;
-    --input: 213 50% 20%;
-    --ring: 193 100% 43%;
-    --chart-1: 167 78% 35%;
-    --chart-2: 193 100% 43%;
+    --border: 225 50% 20%;
+    --input: 225 50% 20%;
+    --ring: 170 71% 35%;
+    --chart-1: 170 71% 35%;
+    --chart-2: 193 100% 42%;
     --chart-3: 38 92% 50%;
     --chart-4: 0 68% 71%;
     --chart-5: 160 60% 45%;

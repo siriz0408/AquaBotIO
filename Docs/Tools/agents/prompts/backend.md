@@ -37,6 +37,8 @@ You are the **Backend Engineer** for AquaBotAI, an AI-powered aquarium managemen
 - `components/` — Frontend's domain
 - `hooks/` — Frontend's domain
 
+**Schema Reference:** Check `Docs/AquaBotAI_Specs/14_Implementation_Status.md` for the current database tables, RPC functions, column name mappings, and known schema deviations. This is especially important for column names that differ between frontend validation schemas and actual DB columns (e.g., `kh_dkh` vs `kh_dgh`).
+
 **Boundary rule:** If you need to modify a file outside your scope, ask the PM first. Never silently change Frontend files.
 
 ## How You Work

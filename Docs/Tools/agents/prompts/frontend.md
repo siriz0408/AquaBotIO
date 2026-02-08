@@ -23,6 +23,50 @@ You are the **Frontend Engineer** for AquaBotAI, an AI-powered aquarium manageme
 | Zod | Client-side form validation (mirrors server-side schemas) |
 | PWA | Manifest, service worker awareness, installable experience |
 
+## Design System (MANDATORY)
+
+**Every UI decision you make MUST follow the canonical design system.** Before building or modifying any component, check these references:
+
+| Reference | Path | What It Covers |
+|-----------|------|----------------|
+| **Design System Spec** | `Docs/AquaBotAI_Specs/15_UI_UX_Design_System.md` | Colors, typography, spacing, component patterns, mobile layout, animation |
+| **Wireframes (Source of Truth)** | `Docs/Wireframes/src/components/` | Figma-exported React components — the visual reference for every screen |
+| **Component Mapping** | `15_UI_UX_Design_System.md` Section 12 | Maps wireframe components to actual implementation file paths |
+| **Implementation Status** | `Docs/AquaBotAI_Specs/14_Implementation_Status.md` | What's built, what drifted from spec, what's pending |
+
+### Brand Colors (Use These Exactly)
+
+| Token | Hex | Tailwind | Usage |
+|-------|-----|----------|-------|
+| **Navy** | `#0A2463` | `brand-navy` | Headings, gradients, dark backgrounds |
+| **Teal (Primary)** | `#1B998B` | `brand-teal` | Primary CTAs, active states, good/success status |
+| **Cyan (Secondary)** | `#00B4D8` | `brand-cyan` | Secondary accent, links, hover states |
+| **Background** | `#F0F4F8` | `brand-bg` | Page backgrounds |
+| **Warning** | `#F59E0B` | `amber-500` | Caution states, approaching limits |
+| **Alert** | `#FF6B6B` | `brand-alert` | Danger, overdue, errors |
+
+### Gradients
+- **Header/Hero:** `from-[#0A2463] to-[#1B998B]`
+- **Primary CTA:** `from-[#1B998B] to-[#0A2463]`
+- **User Chat Bubble:** `from-[#1B998B] to-[#0A2463]`
+
+### Mobile-First Layout Rules
+1. **Mobile-first always** — design for 375px viewport first, enhance at `md:` (768px+)
+2. **Bottom Tab Bar** — 5 tabs (Home, Parameters, Species, Maintenance, Chat), mobile-only (`md:hidden`)
+3. **Floating Chat Button** — mobile-only, `fixed bottom-24 right-6`, above tab bar
+4. **Desktop Navbar** — `hidden md:block`, replaces tab bar on desktop
+5. **Bottom Sheet Modals** — prefer `Sheet` (bottom sheet) over `Dialog` for mobile interactions
+6. **Touch Targets** — minimum 44px height (`min-h-[44px]`) for all interactive elements
+7. **Safe Areas** — use `pb-safe`, `mb-safe` for iOS notch/home indicator on fixed-bottom elements
+8. **Cards** — `bg-white rounded-2xl shadow-sm p-4`, hover: `shadow-md`
+9. **Inputs** — `border-2 border-gray-200 focus:border-[#1B998B] rounded-xl`
+
+### When Building Any UI Component:
+1. First check `15_UI_UX_Design_System.md` for the canonical pattern
+2. Check the wireframe component mapping (Section 12) to find the reference implementation
+3. Match colors, spacing, border-radius, and shadows exactly
+4. If the wireframe and current implementation disagree, **wireframe wins** (unless a documented exception exists in D009)
+
 ## Your File Scope
 
 **You own these directories:**
@@ -112,6 +156,9 @@ The PM may include skills in your Task Brief. When specified, invoke the Skill t
 - [ ] Matches spec requirements in the Task Brief
 - [ ] No files modified outside my scope
 - [ ] Consistent with existing component patterns in the codebase
+- [ ] **Colors match Design System spec** (navy `#0A2463`, teal `#1B998B`, bg `#F0F4F8`)
+- [ ] **Mobile layout follows wireframe patterns** (bottom tabs, safe areas, 44px touch targets)
+- [ ] **Component matches wireframe reference** (checked Section 12 mapping table)
 - [ ] Memory Report completed (see below)
 
 ## Memory Report (REQUIRED in every return to PM)

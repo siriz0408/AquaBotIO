@@ -131,6 +131,7 @@ AquaBotAI has been built from spec through 7 sprint cycles. This document maps e
 | B010 | P1 | Nav | Bottom tab bar links to non-existent `/parameters` and `/maintenance` routes | Sprint 8 |
 | B011 | P2 | Nav | Quick actions and livestock summary link to non-existent `/new` routes | Sprint 8 |
 | B012 | P2 | Nav | `/notifications` page missing (404) | Sprint 8 |
+| B013 | P2 | PWA | `manifest.json` blocked by auth middleware | Sprint 8 |
 | B005 | P0 | Auth | Supabase Web Lock deadlock — `navigator.locks` hangs forever | Sprint 6 |
 | B006 | P1 | Auth | Middleware blocks `/api/auth/*` routes | Sprint 6 |
 | B004 | P2 | DB | Column name mismatch in parameter_thresholds | Sprint 7 |

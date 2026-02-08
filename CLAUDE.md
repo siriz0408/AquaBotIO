@@ -14,7 +14,7 @@ If specs conflict with code, prefer specs unless they are clearly outdated; flag
 
 ### Spec Doc Index
 
-**Product Specs** (`Docs/AquaBotAI PRD/`):
+**Product Specs** (`Docs/AquaBotAI_Specs/`):
 
 | File | Covers |
 |------|--------|
@@ -33,7 +33,15 @@ If specs conflict with code, prefer specs unless they are clearly outdated; flag
 | `11_Interactive_Dashboards_Reports_Spec.md` | Email reports via Resend, multi-tank comparison, health score (P1) |
 | `12_API_Integration_Spec.md` | Complete REST API contract — all endpoints, request/response schemas, error codes |
 | `13_Admin_Portal_Management_Spec.md` | Admin roles, user management, audit logging, feature flags |
+| `14_Implementation_Status.md` | System changes audit — feature matrix, bug tracker, schema status, env config |
+| `15_UI_UX_Design_System.md` | **Canonical UI/UX guide** — colors, typography, layout, components, mobile patterns (from Wireframes) |
 | `Open_Questions_Decisions.md` | 89 product decisions — 81 resolved, 8 awaiting input |
+
+**Wireframes** (`Docs/Wireframes/`):
+
+| Path | Covers |
+|------|--------|
+| `Docs/Wireframes/` | Figma-exported React component library — **source of truth for all UI design**. 43 files covering every screen, color, spacing, and interaction pattern. Run with `npm run dev` in that directory to preview. |
 
 **Ship Readiness** (`Docs/Ship_Readiness/`):
 

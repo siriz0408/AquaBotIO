@@ -213,10 +213,13 @@ This means the codebase gets more reliable over time.
 |------|-------|
 | Agent prompts | `Docs/Tools/agents/prompts/` |
 | Task Brief template | `Docs/Tools/agents/prompts/task_brief_template.md` |
-| Team memory | `memory/` |
+| Team memory | `memory/` (8 bugs, 9 decisions, 8 patterns, 2 mistakes, 7 sprints) |
 | Active Work Board | `memory/active_work.md` |
 | Sprint plans | `Docs/Sprints/` |
-| Product specs | `Docs/AquaBotAI PRD/` |
+| Product specs (18 docs) | `Docs/AquaBotAI_Specs/` |
+| Implementation status | `Docs/AquaBotAI_Specs/14_Implementation_Status.md` |
+| **UI/UX Design System** | **`Docs/AquaBotAI_Specs/15_UI_UX_Design_System.md`** — canonical design guide |
+| **Wireframes (UI source of truth)** | **`Docs/Wireframes/`** — Figma-exported React components |
 | Ship readiness docs | `Docs/Ship_Readiness/` |
 | Roadmap | `Docs/Roadmap/` |
 | Architecture reference | `Docs/Tools/Agent_Architecture_v3.html` |
