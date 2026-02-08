@@ -24,6 +24,7 @@ export default function HomePage() {
         </div>
       </header>
 
+      <main>
       {/* Hero Section */}
       <section className="container flex flex-col items-center justify-center gap-8 py-24 text-center md:py-32">
         <div className="flex max-w-3xl flex-col items-center gap-4">
@@ -257,6 +258,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+      </main>
 
       {/* Footer */}
       <footer className="border-t py-12">

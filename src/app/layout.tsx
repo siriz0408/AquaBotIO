@@ -42,18 +42,28 @@ export const metadata: Metadata = {
   formatDetection: {
     telephone: false,
   },
+  metadataBase: new URL("https://aquabotai-mu.vercel.app"),
   openGraph: {
     type: "website",
     siteName: "AquaBotAI",
     title: "AquaBotAI - AI-Powered Aquarium Management",
     description:
       "Your intelligent aquarium companion. Track water parameters, manage livestock, get AI-powered care advice.",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "AquaBotAI - AI-Powered Aquarium Management",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "AquaBotAI - AI-Powered Aquarium Management",
     description:
       "Your intelligent aquarium companion. Track water parameters, manage livestock, get AI-powered care advice.",
+    images: ["/og-image.png"],
   },
 };
 
@@ -64,8 +74,9 @@ export const viewport: Viewport = {
   ],
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
+  // Allow user zoom for accessibility (WCAG 1.4.4)
+  maximumScale: 5,
+  userScalable: true,
   viewportFit: "cover", // Enable iOS safe area insets
 };
 

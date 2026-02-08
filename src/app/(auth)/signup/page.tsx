@@ -141,7 +141,9 @@ export default function SignupPage() {
             <Fish className="h-8 w-8 text-brand-cyan" />
             <span className="text-xl font-bold">AquaBotAI</span>
           </Link>
-          <CardTitle>Create your account</CardTitle>
+          <CardTitle>
+          <h1 className="text-2xl">Create your account</h1>
+        </CardTitle>
           <CardDescription>Start your 14-day free trial. No credit card required.</CardDescription>
         </CardHeader>
 
