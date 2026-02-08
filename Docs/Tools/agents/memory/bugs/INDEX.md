@@ -1,11 +1,12 @@
 # Bugs Index
 
-> Active: 0 | Resolved: 8 | Last updated: 2026-02-08
+> Active: 0 | Resolved: 9 | Last updated: 2026-02-08
 
 Naming: `B{NNN}-{kebab-title}.md`
 
 | ID | Severity | Status | Domain | Title | Assigned To |
 |----|----------|--------|--------|-------|-------------|
+| B014 | P1 | RESOLVED | config | Security headers blocking static assets (nosniff on _next/static) | PM |
 | B005 | P0 | RESOLVED | auth | Supabase auth Web Lock deadlock (noOpLock workaround) | Backend |
 | B006 | P1 | RESOLVED | auth | Middleware blocks /api/auth/* routes | Backend |
 | B004 | P2 | RESOLVED | db | Column name mismatch water_parameters vs parameter_thresholds | Backend |
