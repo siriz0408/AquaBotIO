@@ -4,13 +4,13 @@ import { Fish } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Privacy Policy - How We Protect Your Data",
-  description: "AquaBotAI Privacy Policy - Learn how we collect, use, and protect your aquarium data with industry-standard encryption.",
+  description: "AquaBotAI Privacy Policy - Learn how we collect, use, and protect your aquarium data with industry-standard security practices.",
   alternates: {
     canonical: "https://aquabotai-mu.vercel.app/privacy",
   },
   openGraph: {
     title: "Privacy Policy | AquaBotAI",
-    description: "AquaBotAI Privacy Policy - Learn how we collect, use, and protect your aquarium data with industry-standard encryption.",
+    description: "AquaBotAI Privacy Policy - Learn how we collect, use, and protect your aquarium data with industry-standard security.",
     images: ["/og-image.png"],
   },
 };

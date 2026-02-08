@@ -161,9 +161,7 @@ function LoginForm() {
           <Fish className="h-8 w-8 text-brand-cyan" />
           <span className="text-xl font-bold">AquaBotAI</span>
         </Link>
-        <CardTitle>
-          <h1 className="text-2xl">Welcome back</h1>
-        </CardTitle>
+        <h1 className="text-2xl font-semibold leading-none tracking-tight">Welcome back</h1>
         <CardDescription>Sign in to your account to continue</CardDescription>
       </CardHeader>
 
