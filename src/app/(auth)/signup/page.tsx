@@ -38,27 +38,43 @@ export default function SignupPage() {
     setIsLoading(true);
 
     try {
-      const { error } = await supabase.auth.signUp({
+      // Step 1: Create the account
+      const { error: signUpError } = await supabase.auth.signUp({
         email,
         password,
         options: {
           data: {
             full_name: fullName,
           },
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
         },
       });
 
-      if (error) {
-        if (error.message.includes("already registered")) {
+      if (signUpError) {
+        if (signUpError.message.includes("already registered")) {
           toast.error("This email is already registered. Try logging in instead.");
         } else {
-          toast.error(error.message);
+          toast.error(signUpError.message);
         }
         return;
       }
 
-      setShowConfirmation(true);
+      // Step 2: Immediately sign in (email confirmation is disabled)
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (signInError) {
+        // Fallback: if auto-login fails, show confirmation page
+        console.error("Auto-login after signup failed:", signInError);
+        setShowConfirmation(true);
+        return;
+      }
+
+      // Step 3: Success! Redirect to onboarding
+      toast.success("Account created! Let's set up your first tank.");
+      router.push("/onboarding");
+      router.refresh();
     } catch {
       toast.error("An unexpected error occurred");
     } finally {
