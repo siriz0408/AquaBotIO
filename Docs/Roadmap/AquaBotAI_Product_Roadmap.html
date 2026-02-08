@@ -1067,6 +1067,34 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
   Ready to Test
 </h3>
 
+<!-- Sprint 10 - Priority Test -->
+<div style="background:var(--surface);border:2px solid var(--cyan);border-radius:12px;margin-bottom:12px">
+  <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+    <div>
+      <h4 style="font-size:0.9rem;font-weight:700">🆕 Signup Flow — Auto-Login (FB-MLE7MCRC Fix)</h4>
+      <span style="font-size:0.75rem;color:var(--text2)">Sprint 10 | Added Feb 8, 2026 | P0 Bug Fix</span>
+    </div>
+    <span class="status-badge status-progress">Priority Test</span>
+  </div>
+  <div style="padding:16px 20px;font-size:0.82rem;color:var(--text2)">
+    <p style="margin-bottom:12px"><strong>What to test:</strong></p>
+    <ul style="padding-left:16px;line-height:1.6">
+      <li>Go to /signup and create a new account with a fresh email</li>
+      <li>Fill in name, email, password (8+ chars with number)</li>
+      <li>Click "Create account"</li>
+      <li><strong>Expected:</strong> Immediately redirected to /onboarding (NO "Check your email" page)</li>
+      <li>Complete the onboarding flow to verify full experience</li>
+    </ul>
+    <div style="margin-top:12px;padding:12px;background:rgba(0,180,216,0.1);border-radius:8px;border:1px solid var(--cyan)">
+      <strong>Bug Fixed:</strong> Previously showed "Check your email" confirmation page despite email confirmation being disabled. Now auto-logs in and redirects to onboarding.
+    </div>
+    <div style="margin-top:12px;padding:12px;background:var(--bg);border-radius:8px">
+      <strong>Sam's Notes:</strong>
+      <textarea id="test-notes-signup" data-feature="signup" placeholder="Add your testing notes here..." onblur="saveTestingNotes('signup',this)" style="width:100%;margin-top:8px;padding:8px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.8rem;min-height:60px;resize:vertical"></textarea>
+    </div>
+  </div>
+</div>
+
 <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:12px">
   <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
     <div>
