@@ -1,6 +1,6 @@
 # AquaBotAI Implementation Status & System Changes
 
-> **Version:** 1.0 | **Last Updated:** February 8, 2026 | **Sprint:** 7 Complete | **MVP:** 88%
+> **Version:** 1.1 | **Last Updated:** February 8, 2026 | **Sprint:** 8 In Progress | **MVP:** 90%
 
 ---
 
@@ -27,7 +27,7 @@ AquaBotAI has been built from spec through 7 sprint cycles. This document maps e
 | `11_Interactive_Dashboards_Reports_Spec.md` | Enhanced Dashboards | NOT STARTED | 0% | P1 feature |
 | `12_API_Integration_Spec.md` | API Integration | PARTIAL | 60% | Core REST APIs built. Missing: Edge Functions, OpenAPI spec, public API |
 | `13_Admin_Portal_Management_Spec.md` | Admin Portal | NOT STARTED | 0% | P2 feature |
-| `00_Data_Model_Schema.md` | Database Schema | DONE | 95% | All P0 tables created. 5 migrations applied to remote |
+| `00_Data_Model_Schema.md` | Database Schema | DONE | 98% | All P0 tables created. 6 migrations applied to remote |
 
 ---
 
@@ -127,6 +127,10 @@ AquaBotAI has been built from spec through 7 sprint cycles. This document maps e
 
 | ID | Severity | Domain | Description | Sprint |
 |----|----------|--------|-------------|--------|
+| B009 | P0 | DB | `check_and_increment_ai_usage` RPC function missing from remote Supabase | Sprint 8 |
+| B010 | P1 | Nav | Bottom tab bar links to non-existent `/parameters` and `/maintenance` routes | Sprint 8 |
+| B011 | P2 | Nav | Quick actions and livestock summary link to non-existent `/new` routes | Sprint 8 |
+| B012 | P2 | Nav | `/notifications` page missing (404) | Sprint 8 |
 | B005 | P0 | Auth | Supabase Web Lock deadlock — `navigator.locks` hangs forever | Sprint 6 |
 | B006 | P1 | Auth | Middleware blocks `/api/auth/*` routes | Sprint 6 |
 | B004 | P2 | DB | Column name mismatch in parameter_thresholds | Sprint 7 |
@@ -164,8 +168,8 @@ AquaBotAI has been built from spec through 7 sprint cycles. This document maps e
 ## 6. Remaining Work to 100% MVP
 
 ### P0 — Must Have for Launch
-1. **AI Chat live test** — Verify Claude responses with new API key
-2. **Build verification** — `npm run build` must pass cleanly
+1. ~~**AI Chat live test** — Verify Claude responses with new API key~~ ✅ Fixed in Sprint 8 (RPC function added)
+2. ~~**Build verification** — `npm run build` must pass cleanly~~ ✅ Verified Sprint 8
 3. **Service Worker registration** — SW exists but isn't activated
 4. **Vercel deployment** — `vercel.json`, env vars, domain
 
@@ -195,6 +199,7 @@ AquaBotAI has been built from spec through 7 sprint cycles. This document maps e
 | 5 | Feb 8 | 65% → 75% | Maintenance Scheduling (CRUD, AI recs, UI) |
 | 6 | Feb 8 | 75% → 80% | Auth deadlock fix (P0), middleware fix (P1), full E2E testing |
 | 7 | Feb 8 | 80% → 88% | DB migration fixes, Species Library live, PWA icons |
+| 8 | Feb 8 | 88% → 90% | AI Chat fix (missing RPC), nav link fixes, notifications page |
 
 ---
 

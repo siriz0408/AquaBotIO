@@ -22,19 +22,19 @@ export function QuickActions({ tankId, className }: QuickActionsProps) {
       icon: FlaskConical,
       label: "Log Parameters",
       color: "#1B998B",
-      href: tankId ? `/tanks/${tankId}/parameters/new` : "/parameters/new",
+      href: tankId ? `/tanks/${tankId}/log` : "/dashboard",
     },
     {
       icon: Plus,
       label: "Add Livestock",
       color: "#0A2540",
-      href: tankId ? `/tanks/${tankId}/livestock/new` : "/livestock/new",
+      href: tankId ? `/tanks/${tankId}/livestock` : "/dashboard",
     },
     {
       icon: CalendarPlus,
       label: "Schedule Task",
       color: "#1B998B",
-      href: tankId ? `/tanks/${tankId}/maintenance/new` : "/maintenance/new",
+      href: tankId ? `/tanks/${tankId}/maintenance` : "/dashboard",
     },
   ];
 

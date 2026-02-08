@@ -57,7 +57,7 @@ export function LivestockSummary({
           </div>
         ))}
         <Link
-          href={tankId ? `/tanks/${tankId}/livestock/new` : "/livestock/new"}
+          href={tankId ? `/tanks/${tankId}/livestock` : "/dashboard"}
           className="bg-brand-teal/10 border-2 border-dashed border-brand-teal rounded-2xl p-4 flex flex-col items-center justify-center hover:bg-brand-teal/20 transition-colors"
         >
           <Plus className="w-8 h-8 text-brand-teal mb-2" />
