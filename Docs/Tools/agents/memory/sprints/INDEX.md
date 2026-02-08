@@ -1,11 +1,12 @@
 # Sprints Index
 
-> Total sprints: 8 (+ docs audit) | Last updated: 2026-02-08
+> Total sprints: 10 (+ docs audit) | Last updated: 2026-02-08
 
 Naming: `sprint_{NN}_summary.md`
 
 | Sprint | Date | Goals | Outcome | Carries |
-|--------|------|-------|---------|---------|
+|--------|------|-------|---------|---------
+| Sprint 10 | 2026-02-08 | Production Deployment | IN PROGRESS | Vercel, Stripe live keys, species expansion |
 | Sprint 3 | 2026-02-08 | AI Chat Engine + Billing | COMPLETED | Action execution, context summarization |
 | Sprint 4 Cycle 1 | 2026-02-08 | Water Params + Species/Livestock | COMPLETED | Custom thresholds, AI trend analysis, stocking density |
 | Sprint 4 Cycle 2 | 2026-02-08 | Thresholds, Trend Analysis, Stocking | COMPLETED | — |
@@ -14,8 +15,28 @@ Naming: `sprint_{NN}_summary.md`
 | Sprint 7 | 2026-02-08 | Production Readiness | COMPLETED | DB fixes, B004/B007/B008, Species live, PWA icons |
 | Docs Audit | 2026-02-08 | Documentation Review | COMPLETED | New specs (14, 15), roadmap/ship readiness updates, wireframe comparison |
 | Sprint 8 | 2026-02-08 | Launch Prep & Design Alignment | COMPLETED | Color palette aligned, SW registered, security headers, AI chat live, build verified |
+| Sprint 9 | 2026-02-08 | AI Chat Rich Experience | COMPLETED | Streaming, species cards, parameter alerts, action buttons, prose CSS |
 
 ## Sprint Details
+
+### Sprint 10 (Production Deployment) — IN PROGRESS
+- **Focus:** Production deployment prep, fix critical UX bugs from feedback
+- **Bug Fixed:** FB-MLE7MCRC — Signup showed "Check your email" page despite email confirmation being disabled
+- **Fix Applied:** Modified `handleEmailSignup` to call `signInWithPassword()` immediately after `signUp()`, then redirect to `/onboarding`
+- **Commit:** `83f5def` - "[Sprint 10] Fix signup flow - auto-login after signup"
+- **Feedback Processed:** 5 items addressed in Supabase feedback table
+- **Progress:** 96% → 97%
+- **Remaining P0:** Vercel deployment, Stripe live keys, species expansion (25 → 200+)
+
+### Sprint 9 (AI Chat Rich Experience)
+- **Focus:** Enhance AI chat per feedback FB-MLE6K4C2
+- **Streaming:** SSE-based streaming with "AquaBot is typing..." indicator
+- **Species Cards:** Claude embeds JSON → SpeciesCard component renders inline with stats + compatibility
+- **Parameter Alerts:** ParameterAlertCard with trend mini-chart + status badge
+- **Action Buttons:** Teal buttons linking to Log Params, Browse Species, Add Livestock, Schedule Task
+- **Prose CSS:** Custom `.chat-prose` styles for links, lists, dividers, blockquotes, code, tables
+- **System Prompt:** Rich formatting instructions + structured output block definitions
+- **Progress:** 93% → 96%
 
 ### Sprint 8 (Launch Prep)
 - **Focus:** Align colors to wireframes, enable PWA, add security headers, verify AI chat
