@@ -241,10 +241,10 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
       </div>
       <div style="display:flex;align-items:center;gap:8px">
         <span style="font-size:0.72rem;color:var(--text2)">Overall MVP Progress</span>
-        <span style="font-size:1.1rem;font-weight:800;color:var(--accent)">99%</span>
+        <span style="font-size:1.1rem;font-weight:800;color:var(--green)">100%</span>
       </div>
       <div class="progress-bar-lg" style="margin-top:6px">
-        <div class="progress-bar-fill" style="width:99%;background:linear-gradient(90deg,var(--green),var(--accent))"></div>
+        <div class="progress-bar-fill" style="width:100%;background:linear-gradient(90deg,var(--green),var(--cyan))"></div>
       </div>
     </div>
     <div class="sprint-meta">
@@ -253,20 +253,20 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
         <div class="si-value" style="color:var(--cyan)">Week 10</div>
       </div>
       <div class="sprint-item">
-        <div class="si-label">Active</div>
-        <div class="si-value" style="color:var(--green)">Sprint 10</div>
+        <div class="si-label">Status</div>
+        <div class="si-value" style="color:var(--green)">MVP COMPLETE</div>
       </div>
       <div class="sprint-item">
-        <div class="si-label">Next Up</div>
-        <div class="si-value" style="color:var(--yellow)">Stripe Live Keys</div>
+        <div class="si-label">Live URL</div>
+        <div class="si-value" style="color:var(--cyan)">aquabotai-mu.vercel.app</div>
       </div>
       <div class="sprint-item">
-        <div class="si-label">MVP Target</div>
-        <div class="si-value" style="color:var(--text2)">Week 14</div>
+        <div class="si-label">Achieved</div>
+        <div class="si-value" style="color:var(--green)">Week 10</div>
       </div>
     </div>
   </div>
-  <div class="sprint-updated">Last updated: Feb 8, 2026 — Sprint 10: Vercel LIVE at aquabotai-mu.vercel.app | Species 180 | Signup fix | Security headers</div>
+  <div class="sprint-updated">Last updated: Feb 8, 2026 — MVP LAUNCH READY | Vercel + Stripe LIVE | All P0 tasks complete</div>
 </div>
 
 <div class="tabs" id="tabs">
@@ -532,6 +532,28 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
     </div>
   </div>
 
+  <div class="feature-card" onclick="toggleCard(this)">
+    <div class="feature-top">
+      <div class="feature-icon" style="background:rgba(34,197,94,0.15);color:var(--green)">💬</div>
+      <div class="feature-info">
+        <h3>AI Chat Embedded Widgets (Priority)</h3>
+        <p>Interactive widgets embedded in AI chat: Quarantine Checklist (prevents tank disasters), Water Change Calculator (removes math confusion), Parameter Troubleshooting (personalized fixes). All AI-powered and contextual.</p>
+        <div class="feature-meta"><span class="tag tag-p1">P1</span><span class="tag tag-weeks">2 weeks</span><span class="tag tag-dep">Needs: AI Chat, Tanks, Params, Maintenance</span><span class="status-badge status-not-started">Not Started</span></div>
+        <div class="feature-progress-row"><div class="progress-bar"><div class="progress-bar-fill" style="width:0%;background:var(--text2)"></div></div><span class="progress-pct" style="color:var(--text2)">0%</span></div>
+      </div>
+    </div>
+    <div class="feature-details">
+      <h4>Research: aquarium-tools-widgets-discovery.md</h4>
+      <ul>
+        <li><strong>Quarantine Checklist Widget:</strong> Interactive checklist when user asks about adding fish. AI personalizes steps, tracks progress, schedules reminders. Prevents 60% first-year mortality.</li>
+        <li><strong>Water Change Calculator:</strong> Shows exact gallons/liters based on tank volume + AI-recommended %. AI suggests % based on nitrate levels, tracks history, schedules maintenance.</li>
+        <li><strong>Parameter Troubleshooting:</strong> Enhanced ParameterAlertCard with personalized fixes. AI correlates spikes with events, provides step-by-step solutions, links to actions.</li>
+        <li>All widgets follow RichMessage parser pattern (reuse species-card, parameter-alert, action-buttons infrastructure)</li>
+        <li>Score: 18-22/25 (high user impact, AI differentiation, quick build)</li>
+      </ul>
+    </div>
+  </div>
+
 </div>
 </div>
 
@@ -630,6 +652,29 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
         <li>Feature flags UI + tier limit configuration</li>
         <li>2FA mandatory for admin accounts</li>
         <li>User impersonation for support debugging</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="feature-card" onclick="toggleCard(this)">
+    <div class="feature-top">
+      <div class="feature-icon" style="background:rgba(34,197,94,0.15);color:var(--green)">🔧</div>
+      <div class="feature-info">
+        <h3>AI Chat Embedded Widgets (Additional)</h3>
+        <p>Additional interactive widgets: Dosing Calculator (400+ products), Stocking Density Calculator, Tank Setup Checklist, Feeding Schedule Calculator, Emergency Response Checklist. Lower priority than Phase 2 widgets.</p>
+        <div class="feature-meta"><span class="tag tag-p2">P2</span><span class="tag tag-weeks">2 weeks</span><span class="tag tag-dep">Needs: AI Chat, Tanks, Params</span><span class="status-badge status-not-started">Not Started</span></div>
+        <div class="feature-progress-row"><div class="progress-bar"><div class="progress-bar-fill" style="width:0%;background:var(--text2)"></div></div><span class="progress-pct" style="color:var(--text2)">0%</span></div>
+      </div>
+    </div>
+    <div class="feature-details">
+      <h4>Research: aquarium-tools-widgets-discovery.md</h4>
+      <ul>
+        <li><strong>Dosing Calculator:</strong> 400+ product database, unit conversions. AI suggests products, calculates dose. Complex product DB required.</li>
+        <li><strong>Stocking Density Calculator:</strong> AI-powered bioload calculator. Requires waste coefficient data per species (deferred from P2).</li>
+        <li><strong>Tank Setup Checklist:</strong> Interactive onboarding checklist. AI guides conversationally, checks off steps.</li>
+        <li><strong>Feeding Schedule Calculator:</strong> Calculates optimal schedule. AI learns patterns, alerts on overfeeding.</li>
+        <li><strong>Emergency Response Checklist:</strong> Step-by-step emergency guide triggered by critical alerts.</li>
+        <li>Scores: 13-17/25 (lower priority than Phase 2 widgets)</li>
       </ul>
     </div>
   </div>
@@ -1673,7 +1718,9 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 <tr><td><strong>Species & Livestock</strong></td><td>700</td><td>2</td><td>80%</td><td>2.5</td><td class="rice-score rice-med">448</td><td><span class="tag tag-p0">P0</span></td><td><div class="rice-bar"><div class="rice-bar-fill" style="width:30%;background:var(--yellow)"></div></div></td></tr>
 <tr><td><strong>Maintenance Scheduling</strong></td><td>600</td><td>2</td><td>80%</td><td>2</td><td class="rice-score rice-med">480</td><td><span class="tag tag-p0">P0</span></td><td><div class="rice-bar"><div class="rice-bar-fill" style="width:32%;background:var(--yellow)"></div></div></td></tr>
 <tr><td><strong>PWA Shell</strong></td><td>1,000</td><td>1</td><td>100%</td><td>1.5</td><td class="rice-score rice-med">667</td><td><span class="tag tag-p0">P0</span></td><td><div class="rice-bar"><div class="rice-bar-fill" style="width:44%;background:var(--yellow)"></div></div></td></tr>
+<tr><td><strong>AI Chat Widgets (Priority)</strong></td><td>800</td><td>3</td><td>85%</td><td>2</td><td class="rice-score rice-high">1,020</td><td><span class="tag tag-p1">P1</span></td><td><div class="rice-bar"><div class="rice-bar-fill" style="width:68%;background:var(--green)"></div></div></td></tr>
 <tr><td><strong>Photo Diagnosis</strong></td><td>400</td><td>2</td><td>50%</td><td>2</td><td class="rice-score rice-med">200</td><td><span class="tag tag-p1">P1</span></td><td><div class="rice-bar"><div class="rice-bar-fill" style="width:13%;background:var(--orange)"></div></div></td></tr>
+<tr><td><strong>AI Chat Widgets (Additional)</strong></td><td>600</td><td>2</td><td>70%</td><td>2</td><td class="rice-score rice-med">420</td><td><span class="tag tag-p2">P2</span></td><td><div class="rice-bar"><div class="rice-bar-fill" style="width:28%;background:var(--yellow)"></div></div></td></tr>
 <tr><td><strong>Equipment Tracking</strong></td><td>350</td><td>1</td><td>80%</td><td>3</td><td class="rice-score rice-low">93</td><td><span class="tag tag-p1">P1</span></td><td><div class="rice-bar"><div class="rice-bar-fill" style="width:6%;background:var(--orange)"></div></div></td></tr>
 <tr><td><strong>Dashboards & Reports</strong></td><td>300</td><td>1</td><td>80%</td><td>2</td><td class="rice-score rice-low">120</td><td><span class="tag tag-p1">P1</span></td><td><div class="rice-bar"><div class="rice-bar-fill" style="width:8%;background:var(--orange)"></div></div></td></tr>
 <tr><td><strong>Admin Portal v1</strong></td><td>5</td><td>3</td><td>100%</td><td>1</td><td class="rice-score rice-low">15</td><td><span class="tag tag-p0">P0</span></td><td><div class="rice-bar"><div class="rice-bar-fill" style="width:1%;background:var(--red)"></div></div></td></tr>
