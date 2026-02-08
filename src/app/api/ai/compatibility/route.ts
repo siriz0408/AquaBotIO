@@ -135,6 +135,7 @@ export async function POST(request: NextRequest) {
       .is("deleted_at", null);
 
     // Transform Supabase response (species is returned as object from join, not array)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const existingLivestock = (existingLivestockRaw || []).map((item: any) => ({
       species_id: item.species_id,
       quantity: item.quantity,
@@ -162,6 +163,7 @@ export async function POST(request: NextRequest) {
     // Check if we have a cached compatibility check
     // Note: compatibility_checks stores species pairs, so we check against first existing species
     // For simplicity, we'll always run AI check if there are multiple species
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let cachedCheck: any = null;
     if (existingLivestock.length > 0 && existingLivestock[0].species_id) {
       const { data: cached } = await supabase

@@ -2,7 +2,6 @@ import { NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { successResponse, errorResponse } from "@/lib/api/response";
 import { waterParameterSchema } from "@/lib/validation/parameters";
-import { z } from "zod";
 
 interface RouteContext {
   params: Promise<{ tankId: string }>;

@@ -1,0 +1,125 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Hide scrollbar but keep functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;  /* Chrome, Safari and Opera */
+  }
+
+  /* Safe area insets for mobile (iOS notch, home indicator) */
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .mb-safe {
+    margin-bottom: env(safe-area-inset-bottom);
+  }
+  .pt-safe {
+    padding-top: env(safe-area-inset-top);
+  }
+  .pl-safe {
+    padding-left: env(safe-area-inset-left);
+  }
+  .pr-safe {
+    padding-right: env(safe-area-inset-right);
+  }
+  /* Combined safe area for full-bleed layouts */
+  .p-safe {
+    padding-top: env(safe-area-inset-top);
+    padding-right: env(safe-area-inset-right);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+  }
+  /* Bottom safe area with additional offset for tab bar */
+  .pb-safe-tab {
+    padding-bottom: calc(env(safe-area-inset-bottom) + 5rem);
+  }
+}
+
+@layer base {
+  :root {
+    /* AquaBotAI Brand Colors */
+    --brand-navy: 213 75% 15%;
+    --brand-cyan: 193 100% 43%;
+    --brand-cyan-light: 193 78% 59%;
+    --brand-cyan-glow: 193 75% 75%;
+    --brand-bg: 210 40% 98%;
+    --brand-teal: 167 78% 35%;
+
+    --background: 210 40% 98%;
+    --foreground: 213 75% 15%;
+    --card: 0 0% 100%;
+    --card-foreground: 213 75% 15%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 213 75% 15%;
+    --primary: 193 100% 43%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 213 75% 15%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+    --accent: 167 78% 35%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 68% 71%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 193 100% 43%;
+    --chart-1: 167 78% 35%;
+    --chart-2: 193 100% 43%;
+    --chart-3: 38 92% 50%;
+    --chart-4: 0 68% 71%;
+    --chart-5: 160 60% 45%;
+    --radius: 0.5rem;
+  }
+  .dark {
+    --background: 213 75% 8%;
+    --foreground: 210 40% 98%;
+    --card: 213 75% 12%;
+    --card-foreground: 210 40% 98%;
+    --popover: 213 75% 12%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 193 100% 43%;
+    --primary-foreground: 213 75% 15%;
+    --secondary: 213 50% 20%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 213 50% 20%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 167 78% 35%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 213 50% 20%;
+    --input: 213 50% 20%;
+    --ring: 193 100% 43%;
+    --chart-1: 167 78% 35%;
+    --chart-2: 193 100% 43%;
+    --chart-3: 38 92% 50%;
+    --chart-4: 0 68% 71%;
+    --chart-5: 160 60% 45%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-brand-bg text-foreground antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  /* Navy headings by default */
+  h1, h2, h3, h4, h5, h6 {
+    @apply text-brand-navy font-semibold;
+  }
+}
