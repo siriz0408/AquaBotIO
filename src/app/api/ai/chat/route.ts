@@ -1,4 +1,4 @@
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { createClient } from "@/lib/supabase/server";
 import { validateChatRequest } from "@/lib/validation/chat";
@@ -125,7 +125,114 @@ export async function POST(request: NextRequest) {
     // Generate system prompt with tank context
     const systemPrompt = generateSystemPrompt(context);
 
-    // Call Anthropic API with retry logic
+    // Store user message in database (before AI call)
+    const { error: userMsgError } = await supabase.from("ai_messages").insert({
+      tank_id,
+      user_id: user.id,
+      role: "user",
+      content: message,
+      model: AI_MODEL,
+    });
+
+    if (userMsgError) {
+      console.error("Failed to store user message:", userMsgError);
+    }
+
+    // Check if client wants streaming
+    const wantsStream = new URL(request.url).searchParams.get("stream") === "true";
+
+    if (wantsStream) {
+      // ── STREAMING MODE ──
+      try {
+        const stream = anthropic.messages.stream({
+          model: AI_MODEL,
+          max_tokens: MAX_TOKENS,
+          system: systemPrompt,
+          messages: messages,
+        });
+
+        let fullContent = "";
+        let inputTokens = 0;
+        let outputTokens = 0;
+
+        const encoder = new TextEncoder();
+
+        const readable = new ReadableStream({
+          async start(controller) {
+            try {
+              // Listen for text chunks
+              stream.on("text", (text) => {
+                fullContent += text;
+                controller.enqueue(
+                  encoder.encode(`data: ${JSON.stringify({ type: "text_delta", text })}\n\n`)
+                );
+              });
+
+              // Wait for the stream to complete
+              const finalMessage = await stream.finalMessage();
+              inputTokens = finalMessage.usage?.input_tokens || 0;
+              outputTokens = finalMessage.usage?.output_tokens || 0;
+
+              // Store assistant message
+              const { data: assistantMsg } = await supabase
+                .from("ai_messages")
+                .insert({
+                  tank_id,
+                  user_id: user.id,
+                  role: "assistant",
+                  content: fullContent,
+                  input_tokens: inputTokens,
+                  output_tokens: outputTokens,
+                  model: AI_MODEL,
+                })
+                .select("id")
+                .single();
+
+              // Update token usage
+              await supabase.rpc("update_ai_token_usage", {
+                user_uuid: user.id,
+                input_count: inputTokens,
+                output_count: outputTokens,
+              });
+
+              // Send done event
+              controller.enqueue(
+                encoder.encode(
+                  `data: ${JSON.stringify({
+                    type: "done",
+                    id: assistantMsg?.id || `msg_${Date.now()}`,
+                    usage: { input_tokens: inputTokens, output_tokens: outputTokens },
+                  })}\n\n`
+                )
+              );
+              controller.close();
+            } catch (err) {
+              console.error("Stream error:", err);
+              controller.enqueue(
+                encoder.encode(`data: ${JSON.stringify({ type: "error", message: "Stream interrupted" })}\n\n`)
+              );
+              controller.close();
+            }
+          },
+        });
+
+        return new NextResponse(readable, {
+          headers: {
+            "Content-Type": "text/event-stream",
+            "Cache-Control": "no-cache",
+            Connection: "keep-alive",
+          },
+        });
+      } catch (error) {
+        console.error("Failed to create stream:", error);
+        return errorResponse(
+          "AI_UNAVAILABLE",
+          "The AI service is temporarily unavailable. Please try again."
+        );
+      }
+    }
+
+    // ── NON-STREAMING MODE (fallback) ──
     let response: Anthropic.Message | null = null;
     let lastError: Error | null = null;
 
@@ -142,7 +249,6 @@ export async function POST(request: NextRequest) {
         lastError = error instanceof Error ? error : new Error(String(error));
         console.error(`Anthropic API attempt ${attempt + 1} failed:`, lastError);
 
-        // Wait before retrying (exponential backoff)
         if (attempt < MAX_RETRIES - 1) {
           await new Promise((resolve) => setTimeout(resolve, Math.pow(2, attempt) * 1000));
         }
@@ -163,22 +269,8 @@ export async function POST(request: NextRequest) {
       .map((block) => (block as Anthropic.TextBlock).text)
       .join("\n");
 
-    // Calculate token usage
     const inputTokens = response.usage?.input_tokens || estimateTokens(systemPrompt + message);
     const outputTokens = response.usage?.output_tokens || estimateTokens(assistantContent);
-
-    // Store user message in database
-    const { error: userMsgError } = await supabase.from("ai_messages").insert({
-      tank_id,
-      user_id: user.id,
-      role: "user",
-      content: message,
-      model: AI_MODEL,
-    });
-
-    if (userMsgError) {
-      console.error("Failed to store user message:", userMsgError);
-    }
 
     // Store assistant message in database
     const { data: assistantMsg, error: assistantMsgError } = await supabase
@@ -199,18 +291,16 @@ export async function POST(request: NextRequest) {
       console.error("Failed to store assistant message:", assistantMsgError);
     }
 
-    // Update token counts in ai_usage table
+    // Update token counts
     const { error: tokenUsageError } = await supabase.rpc("update_ai_token_usage", {
       user_uuid: user.id,
       input_count: inputTokens,
       output_count: outputTokens,
     });
     if (tokenUsageError) {
-      // Non-critical: log but don't fail the request
       console.error("Failed to update token usage:", tokenUsageError);
     }
 
-    // Return response
     return successResponse({
       id: assistantMsg?.id || `msg_${Date.now()}`,
       role: "assistant",

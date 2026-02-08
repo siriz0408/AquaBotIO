@@ -11,15 +11,16 @@ You talk to **one agent** — the PM Orchestrator. It handles everything else au
 1. **PM Orchestrator** — The brain. Plans sprints, **automatically spawns** the other agents, reviews their work, merges code, updates the dashboard, and reports to you.
 2. **Frontend Engineer** — Builds everything users see (pages, buttons, forms, charts). **Auto-spawned by PM.**
 3. **Backend Engineer** — Builds everything behind the scenes (database, APIs, auth, billing). **Auto-spawned by PM.**
+4. **R&D Discovery Agent** — Your product scout. Researches new features, evaluates competitors, specs out ideas, finds opportunities. **You start directly OR PM spawns it.**
 
-You never have to open separate sessions, paste Task Briefs, or manually coordinate between agents. Say "run sprint" to the PM and it does the rest.
+You never have to open separate sessions, paste Task Briefs, or manually coordinate between agents. Say "run sprint" to the PM and it does the rest. Say "R&D mode" to start the R&D agent.
 
 ### Future Agents (unlock as needed)
 
 | Phase | Agents | When to Add |
 |-------|--------|-------------|
 | **Phase B** | Test Engineer, Code Reviewer, Browser Test | When test coverage drops below 70% OR 3+ bugs escape to main |
-| **Phase C** | DB Specialist, UI/UX, Research, DevOps, Docs | When specific expertise needed OR scaling past 5 sprints |
+| **Phase C** | DB Specialist, UI/UX, DevOps, Docs | When specific expertise needed OR scaling past 5 sprints |
 
 ---
 
@@ -60,7 +61,11 @@ You are the Frontend Engineer for AquaBotAI. Read your instructions at Docs/Tool
 You are the Backend Engineer for AquaBotAI. Read your instructions at Docs/Tools/agents/prompts/backend.md and follow them. [Describe the task.]
 ```
 
-But for sprint work, always go through the PM.
+```
+You are the R&D Discovery Agent for AquaBotAI. Read your instructions at Docs/Tools/agents/prompts/rd_agent.md and follow them. [Describe what to research — or say "autonomous discovery" to have it hunt for ideas.]
+```
+
+But for sprint work, always go through the PM. For research and feature ideation, use the R&D agent directly.
 
 ---
 
@@ -176,6 +181,11 @@ Everything goes through the PM. Here's what you can say:
 | "What decisions do you need from me?" | Lists anything waiting on your input |
 | "What should I test?" | Lists features ready for manual testing with instructions |
 | "Fix [specific thing]" | PM spawns the right agent to fix it immediately |
+| **"R&D mode"** | R&D agent scans competitors, community, and your product — returns Top 3 opportunities with scores |
+| "Research [feature idea]" | R&D agent asks clarifying questions, then researches internal docs + external market, delivers scored recommendation |
+| "What should we build next?" | R&D agent audits your product and roadmap, scans market, presents ranked opportunities |
+| "Spec out [feature]" | R&D agent writes a full PRD with user stories, requirements, success metrics, and AI integration points |
+| "What are competitors doing?" | R&D agent researches competitor apps, forums, app reviews, returns competitive landscape update |
 
 ---
 
@@ -212,6 +222,7 @@ This means the codebase gets more reliable over time.
 | What | Where |
 |------|-------|
 | Agent prompts | `Docs/Tools/agents/prompts/` |
+| R&D Discovery Agent | `Docs/Tools/agents/prompts/rd_agent.md` |
 | Task Brief template | `Docs/Tools/agents/prompts/task_brief_template.md` |
 | Team memory | `memory/` (8 bugs, 9 decisions, 8 patterns, 2 mistakes, 7 sprints) |
 | Active Work Board | `memory/active_work.md` |

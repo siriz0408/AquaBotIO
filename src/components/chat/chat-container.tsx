@@ -31,6 +31,7 @@ export function ChatContainer({
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
+  const [isStreaming, setIsStreaming] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -76,7 +77,7 @@ export function ChatContainer({
     loadHistory();
   }, [loadHistory]);
 
-  // Send a message
+  // Send a message with streaming
   const handleSend = async (content: string) => {
     if (!tankId) {
       toast.error("Please select a tank first");
@@ -92,10 +93,20 @@ export function ChatContainer({
     };
     setMessages((prev) => [...prev, userMessage]);
     setIsLoading(true);
+    setIsStreaming(true);
     setError(null);
 
+    // Create a placeholder assistant message for streaming
+    const streamingMsgId = `streaming-${Date.now()}`;
+    const streamingMessage: Message = {
+      id: streamingMsgId,
+      role: "assistant",
+      content: "",
+      created_at: new Date().toISOString(),
+    };
+
     try {
-      const response = await fetch("/api/ai/chat", {
+      const response = await fetch("/api/ai/chat?stream=true", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -104,40 +115,127 @@ export function ChatContainer({
         }),
       });
 
-      const data = await response.json();
+      if (!response.ok) {
+        // Try to parse error from non-streaming response
+        try {
+          const errData = await response.json();
+          if (errData.error?.code === "DAILY_LIMIT_REACHED") {
+            setError("You've reached your daily message limit. Upgrade for more!");
+            toast.error("Daily limit reached", {
+              description: "Upgrade your plan for more messages",
+              action: {
+                label: "Upgrade",
+                onClick: () => (window.location.href = "/billing"),
+              },
+            });
+          } else {
+            setError(errData.error?.message || "Failed to send message");
+            toast.error("Failed to send message", {
+              description: errData.error?.message,
+            });
+          }
+        } catch {
+          setError("Failed to send message");
+          toast.error("Failed to send message");
+        }
+        setMessages((prev) => prev.filter((m) => m.id !== userMessage.id));
+        setIsLoading(false);
+        setIsStreaming(false);
+        return;
+      }
 
-      if (data.success) {
-        // Add assistant message
-        const assistantMessage: Message = {
-          id: data.data.id,
-          role: "assistant",
-          content: data.data.content,
-          created_at: new Date().toISOString(),
-        };
-        setMessages((prev) => [...prev, assistantMessage]);
+      const contentType = response.headers.get("content-type") || "";
+
+      if (contentType.includes("text/event-stream")) {
+        // ── STREAMING response ──
+        // Add the empty streaming message placeholder
+        setMessages((prev) => [...prev, streamingMessage]);
+        setIsLoading(false); // Hide loading dots, show streaming content instead
+
+        const reader = response.body?.getReader();
+        const decoder = new TextDecoder();
+
+        if (!reader) {
+          throw new Error("No readable stream");
+        }
+
+        let accumulatedContent = "";
+        let finalId = streamingMsgId;
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          const chunk = decoder.decode(value, { stream: true });
+          // Parse SSE events
+          const lines = chunk.split("\n");
+
+          for (const line of lines) {
+            if (!line.startsWith("data: ")) continue;
+            const jsonStr = line.slice(6);
+            try {
+              const event = JSON.parse(jsonStr);
+
+              if (event.type === "text_delta") {
+                accumulatedContent += event.text;
+                // Update the streaming message in place
+                setMessages((prev) =>
+                  prev.map((m) =>
+                    m.id === streamingMsgId
+                      ? { ...m, content: accumulatedContent }
+                      : m
+                  )
+                );
+              } else if (event.type === "done") {
+                finalId = event.id;
+                // Replace temp ID with real ID
+                setMessages((prev) =>
+                  prev.map((m) =>
+                    m.id === streamingMsgId ? { ...m, id: finalId } : m
+                  )
+                );
+              } else if (event.type === "error") {
+                toast.error("AI response interrupted");
+              }
+            } catch {
+              // Skip malformed events
+            }
+          }
+        }
 
         // Trigger usage refresh
         window.dispatchEvent(new Event("chat-message-sent"));
       } else {
-        // Handle specific error codes
-        if (data.error?.code === "DAILY_LIMIT_REACHED") {
-          setError("You've reached your daily message limit. Upgrade for more!");
-          toast.error("Daily limit reached", {
-            description: "Upgrade your plan for more messages",
-            action: {
-              label: "Upgrade",
-              onClick: () => (window.location.href = "/billing"),
-            },
-          });
-        } else {
-          setError(data.error?.message || "Failed to send message");
-          toast.error("Failed to send message", {
-            description: data.error?.message,
-          });
-        }
+        // ── NON-STREAMING response (fallback) ──
+        const data = await response.json();
 
-        // Remove the optimistic message on error
-        setMessages((prev) => prev.filter((m) => m.id !== userMessage.id));
+        if (data.success) {
+          const assistantMessage: Message = {
+            id: data.data.id,
+            role: "assistant",
+            content: data.data.content,
+            created_at: new Date().toISOString(),
+          };
+          setMessages((prev) => [...prev, assistantMessage]);
+          window.dispatchEvent(new Event("chat-message-sent"));
+        } else {
+          if (data.error?.code === "DAILY_LIMIT_REACHED") {
+            setError("You've reached your daily message limit. Upgrade for more!");
+            toast.error("Daily limit reached", {
+              description: "Upgrade your plan for more messages",
+              action: {
+                label: "Upgrade",
+                onClick: () => (window.location.href = "/billing"),
+              },
+            });
+          } else {
+            setError(data.error?.message || "Failed to send message");
+            toast.error("Failed to send message", {
+              description: data.error?.message,
+            });
+          }
+          setMessages((prev) => prev.filter((m) => m.id !== userMessage.id));
+        }
       }
     } catch (err) {
       console.error("Error sending message:", err);
@@ -145,11 +243,13 @@ export function ChatContainer({
       toast.error("Network error", {
         description: "Please check your connection and try again",
       });
-
-      // Remove the optimistic message
-      setMessages((prev) => prev.filter((m) => m.id !== userMessage.id));
+      // Remove optimistic messages
+      setMessages((prev) =>
+        prev.filter((m) => m.id !== userMessage.id && m.id !== streamingMsgId)
+      );
     } finally {
       setIsLoading(false);
+      setIsStreaming(false);
     }
   };
 
@@ -196,7 +296,7 @@ export function ChatContainer({
       {isInitialLoading ? (
         <div className="flex-1 flex items-center justify-center bg-brand-bg">
           <div className="flex flex-col items-center gap-2">
-            <Loader2 className="w-8 h-8 animate-spin text-brand-cyan" />
+            <Loader2 className="w-8 h-8 animate-spin text-brand-teal" />
             <span className="text-gray-500 text-sm">Loading chat history...</span>
           </div>
         </div>
@@ -211,6 +311,14 @@ export function ChatContainer({
         </div>
       )}
 
+      {/* Streaming indicator */}
+      {isStreaming && !isLoading && (
+        <div className="px-4 py-1 bg-brand-teal/5 text-brand-teal text-xs text-center flex items-center justify-center gap-1.5">
+          <div className="w-1.5 h-1.5 rounded-full bg-brand-teal animate-pulse" />
+          AquaBot is typing...
+        </div>
+      )}
+
       {/* Error banner */}
       {error && (
         <div className="px-4 py-2 bg-brand-alert/10 text-brand-alert text-sm text-center">
@@ -221,7 +329,7 @@ export function ChatContainer({
       {/* Input */}
       <ChatInput
         onSend={handleSend}
-        isLoading={isLoading}
+        isLoading={isLoading || isStreaming}
         disabled={!tankId}
         showQuickActions={messages.length === 0}
       />

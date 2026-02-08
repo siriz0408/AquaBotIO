@@ -35,6 +35,7 @@ If specs conflict with code, prefer specs unless they are clearly outdated; flag
 | `13_Admin_Portal_Management_Spec.md` | Admin roles, user management, audit logging, feature flags |
 | `14_Implementation_Status.md` | System changes audit — feature matrix, bug tracker, schema status, env config |
 | `15_UI_UX_Design_System.md` | **Canonical UI/UX guide** — colors, typography, layout, components, mobile patterns (from Wireframes) |
+| `16_AI_Chat_Embedded_Widgets_Spec.md` | AI Chat embedded widgets — Quarantine Checklist, Water Change Calculator, Parameter Troubleshooting (P1, Phase 2) |
 | `Open_Questions_Decisions.md` | 89 product decisions — 81 resolved, 8 awaiting input |
 
 **Wireframes** (`Docs/Wireframes/`):

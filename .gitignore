@@ -46,3 +46,4 @@ tsconfig.tsbuildinfo
 *.png
 !public/**/*.png
 !Docs/Wireframes/**/*.png
+.vercel

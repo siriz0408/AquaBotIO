@@ -2,8 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { Bot, User } from "lucide-react";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
+import { RichMessage } from "./rich-message";
 
 interface MessageBubbleProps {
   role: "user" | "assistant" | "system";
@@ -33,7 +32,7 @@ export function MessageBubble({
           "flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center",
           isUser
             ? "bg-primary text-primary-foreground"
-            : "bg-blue-500 text-white"
+            : "bg-gradient-to-br from-brand-teal to-brand-navy text-white"
         )}
       >
         {isUser ? (
@@ -46,26 +45,22 @@ export function MessageBubble({
       {/* Message content */}
       <div
         className={cn(
-          "max-w-[80%] rounded-2xl px-4 py-2",
+          "max-w-[85%] rounded-2xl px-4 py-3",
           isUser
             ? "bg-primary text-primary-foreground rounded-tr-sm"
-            : "bg-muted rounded-tl-sm"
+            : "bg-white shadow-sm border border-gray-100 rounded-tl-sm"
         )}
       >
         {isLoading ? (
           <LoadingDots />
         ) : (
-          <div className={cn("prose prose-sm dark:prose-invert max-w-none", isUser && "prose-invert")}>
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>
-              {content}
-            </ReactMarkdown>
-          </div>
+          <RichMessage content={content} isUser={isUser} />
         )}
 
         {timestamp && (
           <div
             className={cn(
-              "text-xs mt-1 opacity-60",
+              "text-xs mt-2 opacity-60",
               isUser ? "text-right" : "text-left"
             )}
           >
@@ -79,10 +74,10 @@ export function MessageBubble({
 
 function LoadingDots() {
   return (
-    <div className="flex gap-1 py-2">
-      <div className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: "0ms" }} />
-      <div className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: "150ms" }} />
-      <div className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: "300ms" }} />
+    <div className="flex gap-1.5 py-2 px-1">
+      <div className="w-2 h-2 rounded-full bg-brand-teal animate-bounce" style={{ animationDelay: "0ms" }} />
+      <div className="w-2 h-2 rounded-full bg-brand-teal animate-bounce" style={{ animationDelay: "150ms" }} />
+      <div className="w-2 h-2 rounded-full bg-brand-teal animate-bounce" style={{ animationDelay: "300ms" }} />
     </div>
   );
 }

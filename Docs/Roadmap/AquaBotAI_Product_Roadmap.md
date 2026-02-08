@@ -3,18 +3,18 @@
 **AI-Powered Aquarium Management Platform**
 Solo Vibe-Coding Development | Feb 2026 — Aug 2026 (6 Months)
 
-**Last Updated:** February 8, 2026 | **Sprint 8 Complete** | **Overall MVP: 93%**
+**Last Updated:** February 8, 2026 | **Sprint 9 Complete** | **Overall MVP: 96%**
 
 ---
 
-## Current Implementation Status (Sprint 8)
+## Current Implementation Status (Sprint 9)
 
 | Feature | Spec | Status | Notes |
 |---------|------|--------|-------|
 | Scaffolding & Infrastructure | 00, 08, 12 | ✅ DONE | Next.js 14, Supabase, PWA, Tailwind |
 | Auth & Onboarding | 06 | ✅ DONE | Email/password, magic link, Google shell, 5-step wizard |
 | Tank Profiles | 02 | ✅ DONE | CRUD, photo placeholder, tier enforcement |
-| AI Chat Engine | 01 | ⚠️ 95% | Anthropic live, tank-context-aware, non-streaming. Missing: streaming, actions |
+| AI Chat Engine | 01 | ✅ DONE | Streaming, rich formatting, species cards, parameter alerts, action buttons |
 | Subscription & Billing | 07 | ✅ DONE | 14-day trial, 4 tiers, Stripe webhooks |
 | Water Parameters | 03 | ✅ DONE | Log form, charts, trend API, thresholds |
 | Species & Livestock | 04 | ✅ DONE | 25 species seeded, search, filters, compatibility |
@@ -171,13 +171,22 @@ Photo diagnosis, equipment recs, dashboards — features that drive upgrades and
 - **Depends on:** Auth, Billing
 - *Spec: 13_Admin_Portal (Phase 1 only)*
 
+#### 10. AI Chat Embedded Widgets (Priority) — 2 weeks
+- **Quarantine Checklist Widget** — Interactive checklist embedded in chat when user asks about adding new fish. AI personalizes steps, tracks progress, schedules reminders. Prevents 60% first-year mortality from skipped quarantine.
+- **Water Change Calculator Widget** — Calculator showing exact gallons/liters based on tank volume + AI-recommended percentage. AI suggests % based on nitrate levels, tracks history, schedules maintenance.
+- **Parameter Troubleshooting Widget** — Enhanced ParameterAlertCard with personalized troubleshooting. AI correlates parameter spikes with events, provides step-by-step fixes, links to actions.
+- All widgets follow RichMessage parser pattern (species-card, parameter-alert, action-buttons)
+- **Depends on:** AI Chat Engine, Tank Profiles, Water Parameters, Maintenance Scheduling
+- *Research: `Docs/Tools/agents/memory/research/aquarium-tools-widgets-discovery.md`*
+- *Score: 18-22/25 (high user impact, AI differentiation, quick build)*
+
 ### 🚀 MVP PUBLIC LAUNCH — Week 14 (Late May 2026)
 
 ---
 
 ### LATER — Phase 3: Growth Features & Polish (Weeks 15–26, Jun–Aug 2026)
 
-#### 10. Photo Diagnosis — 2 weeks
+#### 11. Photo Diagnosis — 2 weeks
 - Species identification from photos via Claude Sonnet 4.5 vision (> 85% accuracy target)
 - Disease diagnosis with visible symptom detection (> 75% accuracy)
 - Personalized treatment plans with dosing calculated for tank volume
@@ -188,7 +197,7 @@ Photo diagnosis, equipment recs, dashboards — features that drive upgrades and
 - **Depends on:** AI Chat, Species DB, Billing (tier gating)
 - *Spec: 09_Photo_Diagnosis*
 
-#### 11. Equipment Tracking & AI Recommendations — 3 weeks
+#### 12. Equipment Tracking & AI Recommendations — 3 weeks
 - Equipment catalog per tank: filters, heaters, lights, pumps, skimmers, etc.
 - Lifespan tracking with status badges (good, due soon, overdue)
 - Maintenance reminders via push notifications
@@ -199,7 +208,7 @@ Photo diagnosis, equipment recs, dashboards — features that drive upgrades and
 - **Depends on:** Tank Profiles, Maintenance, Billing
 - *Spec: 10_Equipment_Tracking_Recommendations*
 
-#### 12. Interactive Dashboards & Email Reports — 2 weeks
+#### 13. Interactive Dashboards & Email Reports — 2 weeks
 - AI-generated daily health summaries (in-app, Plus+)
 - Weekly email digest with parameter trends and maintenance compliance (Pro)
 - Multi-tank comparison dashboard with color-coded health status (Pro)
@@ -209,7 +218,7 @@ Photo diagnosis, equipment recs, dashboards — features that drive upgrades and
 - **Depends on:** Water Parameters, AI Chat, Billing
 - *Spec: 11_Interactive_Dashboards_Reports*
 
-#### 13. Admin Portal v2 (Custom Dashboard) — 3 weeks
+#### 14. Admin Portal v2 (Custom Dashboard) — 3 weeks
 - Custom React admin dashboard
 - Real-time analytics: DAU, MRR, churn rate, AI usage/cost
 - Content CRUD: species database, equipment defaults, AI system prompts
@@ -220,7 +229,17 @@ Photo diagnosis, equipment recs, dashboards — features that drive upgrades and
 - **Depends on:** Admin v1
 - *Spec: 13_Admin_Portal (Phase 2)*
 
-#### 14. Polish & P2 Explorations — Ongoing
+#### 15. AI Chat Embedded Widgets (Additional) — 2 weeks
+- **Dosing Calculator Widget** — Calculator with 400+ product database. AI suggests products based on problem, calculates dose for tank volume. Unit conversions (mL, drops, teaspoons). Complex product DB required.
+- **Stocking Density Calculator** — AI-powered calculator considering tank size, filtration, existing livestock, species waste output. Requires waste coefficient data per species (deferred from P2).
+- **Tank Setup Checklist Widget** — Interactive onboarding checklist that persists post-onboarding. AI guides through setup conversationally, checks off steps.
+- **Feeding Schedule Calculator** — Calculates optimal feeding schedule based on species, tank size, bioload. AI learns patterns, suggests schedules, alerts on overfeeding.
+- **Emergency Response Checklist** — Step-by-step emergency checklist triggered by critical alerts (ammonia > 1ppm, mass die-off). AI detects emergency, provides immediate action plan.
+- **Depends on:** AI Chat Engine, Tank Profiles, Water Parameters
+- *Research: `Docs/Tools/agents/memory/research/aquarium-tools-widgets-discovery.md`*
+- *Scores: 13-17/25 (lower priority than Phase 2 widgets)*
+
+#### 16. Polish & P2 Explorations — Ongoing
 - Streaming AI responses
 - Voice input/output for AI chat
 - Annual billing + promo codes
@@ -246,10 +265,12 @@ RICE = (Reach × Impact × Confidence) / Effort
 | Water Parameters | 800 | 2 | 80% | 2 | **640** | P0 |
 | Maintenance Scheduling | 600 | 2 | 80% | 2 | **480** | P0 |
 | Species & Livestock | 700 | 2 | 80% | 2.5 | **448** | P0 |
+| AI Chat Widgets (Priority) | 800 | 3 | 85% | 2 | **1,020** | P1 |
 | Photo Diagnosis | 400 | 2 | 50% | 2 | **200** | P1 |
 | Dashboards & Reports | 300 | 1 | 80% | 2 | **120** | P1 |
 | Equipment Tracking | 350 | 1 | 80% | 3 | **93** | P1 |
 | Admin Portal v1 | 5 | 3 | 100% | 1 | **15** | P0 |
+| AI Chat Widgets (Additional) | 600 | 2 | 70% | 2 | **420** | P2 |
 | Admin Portal v2 | 5 | 2 | 50% | 3 | **2** | P1 |
 
 ---
@@ -258,9 +279,9 @@ RICE = (Reach × Impact × Confidence) / Effort
 
 **Must Have** — Auth & Onboarding, AI Chat Engine, Tank Profiles, Water Parameters, Species DB & Livestock, Maintenance Scheduling, Subscription & Billing, PWA Shell, Admin v1
 
-**Should Have** — Photo Diagnosis, Equipment Tracking, Email Reports, Multi-Tank Comparison Dashboard
+**Should Have** — AI Chat Embedded Widgets (Priority: Quarantine Checklist, Water Change Calculator, Parameter Troubleshooting), Photo Diagnosis, Equipment Tracking, Email Reports, Multi-Tank Comparison Dashboard
 
-**Could Have** — Admin v2 Custom UI, Streaming AI, Voice Input, AI Web Search Recommendations
+**Could Have** — AI Chat Embedded Widgets (Additional: Dosing Calculator, Stocking Calculator, Setup Checklist, Feeding Schedule, Emergency Response), Admin v2 Custom UI, Streaming AI, Voice Input, AI Web Search Recommendations
 
 **Won't Have (v1)** — IoT Integration, Native Mobile Apps, Community Features, Annual Billing, Multi-Currency, Admin Phase 3
 
@@ -402,4 +423,4 @@ Billing is the **one opportunity for overlap** — it shares the Auth dependency
 ---
 
 *Generated Feb 7, 2026 — Based on 13 PRD specifications covering 89 resolved product decisions.*
-*Updated Feb 8, 2026 — Sprint 7 complete; 88% MVP; 18 spec documents; Wireframe design system established.*
+*Updated Feb 8, 2026 — Sprint 7 complete; 88% MVP; 19 spec documents; Wireframe design system established.*
