@@ -19,7 +19,7 @@
 | Security Headers | DONE | HSTS, X-Frame, CSP |
 | Build Verification | DONE | Clean build |
 
-**Overall MVP: 98%**
+**Overall MVP: 99%**
 
 ## Sprint 9 Deliverables
 
@@ -36,7 +36,7 @@
 ## Next Sprint: Sprint 10 — Production Deployment
 
 **P0 — Must complete for launch:**
-1. Vercel deployment — `vercel.json`, env vars, domain config
+1. ~~Vercel deployment — `vercel.json`, env vars, domain config~~ ✅ **DONE** (https://aquabotai-mu.vercel.app)
 2. Stripe live keys — configure for real payments
 3. ~~Species data expansion — 25 → 200+ species~~ ✅ **DONE** (180 species)
 
@@ -76,4 +76,4 @@
 | Docs Audit | — | New specs (14, 15), roadmap/ship readiness updates |
 | Sprint 8 | 88% → 93% | Color palette alignment, SW registration, security headers, build verified |
 | Sprint 9 | 93% → 96% | Rich chat (streaming, species cards, parameter alerts, action buttons, prose CSS) |
-| Sprint 10 | 96% → 98% | Signup auto-login fix (FB-MLE7MCRC), security headers fix (B014), species expansion (25→180) |
+| Sprint 10 | 96% → 99% | Signup auto-login fix (FB-MLE7MCRC), security headers fix (B014), species expansion (25→180), Vercel deployment |
