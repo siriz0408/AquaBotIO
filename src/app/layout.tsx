@@ -51,7 +51,7 @@ export const metadata: Metadata = {
       "Your intelligent aquarium companion. Track water parameters, manage livestock, get AI-powered care advice.",
     images: [
       {
-        url: "/og-image.png",
+        url: "/logo.png",
         width: 1200,
         height: 630,
         alt: "AquaBotAI - AI-Powered Aquarium Management",
@@ -63,7 +63,7 @@ export const metadata: Metadata = {
     title: "AquaBotAI - AI-Powered Aquarium Management",
     description:
       "Your intelligent aquarium companion. Track water parameters, manage livestock, get AI-powered care advice.",
-    images: ["/og-image.png"],
+    images: ["/logo.png"],
   },
 };
 
