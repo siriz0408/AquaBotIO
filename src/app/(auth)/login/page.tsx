@@ -278,6 +278,11 @@ function LoginForm() {
             Sign up
           </Link>
         </p>
+        <div className="flex gap-4 text-xs text-muted-foreground">
+          <Link href="/privacy" className="hover:underline">Privacy</Link>
+          <Link href="/terms" className="hover:underline">Terms</Link>
+          <Link href="/support" className="hover:underline">Support</Link>
+        </div>
       </CardFooter>
     </Card>
   );

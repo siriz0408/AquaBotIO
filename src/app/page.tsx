@@ -271,6 +271,12 @@ export default function HomePage() {
             © {new Date().getFullYear()} AquaBotAI. All rights reserved.
           </p>
           <nav className="flex gap-4 text-sm text-muted-foreground">
+            <Link href="/about" className="hover:underline">
+              About
+            </Link>
+            <Link href="/contact" className="hover:underline">
+              Contact
+            </Link>
             <Link href="/privacy" className="hover:underline">
               Privacy
             </Link>

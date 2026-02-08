@@ -43,6 +43,9 @@ export const metadata: Metadata = {
     telephone: false,
   },
   metadataBase: new URL("https://aquabotai-mu.vercel.app"),
+  alternates: {
+    canonical: "https://aquabotai-mu.vercel.app",
+  },
   openGraph: {
     type: "website",
     siteName: "AquaBotAI",

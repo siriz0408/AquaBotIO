@@ -4,10 +4,13 @@ import { Fish } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Terms of Service - Usage Guidelines",
-  description: "AquaBotAI Terms of Service - Read our terms and conditions for using the AI-powered aquarium management platform. Covers subscriptions, billing, acceptable use, and limitations of liability.",
+  description: "AquaBotAI Terms of Service - Terms and conditions for using the AI-powered aquarium platform. Covers subscriptions and billing.",
+  alternates: {
+    canonical: "https://aquabotai-mu.vercel.app/terms",
+  },
   openGraph: {
     title: "Terms of Service | AquaBotAI",
-    description: "AquaBotAI Terms of Service - Read our terms and conditions for using the AI-powered aquarium management platform.",
+    description: "AquaBotAI Terms of Service - Terms and conditions for using the AI-powered aquarium platform.",
     images: ["/og-image.png"],
   },
 };
