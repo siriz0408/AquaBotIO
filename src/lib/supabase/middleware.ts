@@ -44,12 +44,38 @@ export async function updateSession(request: NextRequest) {
   );
   // API auth routes must be accessible without a session (login, signup, magic-link, etc.)
   const isApiAuthRoute = request.nextUrl.pathname.startsWith("/api/auth/");
+  // Onboarding page should be accessible to authenticated users
+  const isOnboardingRoute = request.nextUrl.pathname === "/onboarding";
 
   if (!user && !isPublicRoute && !isApiAuthRoute) {
     // Redirect unauthenticated users to login page
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     return NextResponse.redirect(url);
+  }
+
+  // Check if authenticated user needs to complete onboarding before accessing dashboard
+  if (user && !isPublicRoute && !isApiAuthRoute && !isOnboardingRoute) {
+    // Check if user has completed onboarding
+    const { data: profile } = await supabase
+      .from("users")
+      .select("onboarding_completed")
+      .eq("id", user.id)
+      .single();
+
+    // If profile doesn't exist or onboarding not completed, redirect to onboarding
+    if (!profile || !profile.onboarding_completed) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/onboarding";
+      // Copy cookies to preserve session
+      const redirectResponse = NextResponse.redirect(url);
+      supabaseResponse.cookies.getAll().forEach((cookie) => {
+        redirectResponse.cookies.set(cookie.name, cookie.value, {
+          ...cookie,
+        });
+      });
+      return redirectResponse;
+    }
   }
 
   // IMPORTANT: You *must* return the supabaseResponse object as-is. If you're
