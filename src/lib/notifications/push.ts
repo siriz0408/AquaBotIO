@@ -1,15 +1,24 @@
 /**
  * Push Notification Utility
  *
- * Provides utilities for sending Web Push notifications.
- * Note: Actual sending requires VAPID keys which will be set up later (P2).
- * This module provides the types, interfaces, and stub implementation.
+ * Provides utilities for sending Web Push notifications using the web-push library.
+ * Requires VAPID keys to be configured in environment variables.
  *
  * Spec Reference: 08_PWA_Shell_Spec.md
  */
 
 import { createClient } from "@supabase/supabase-js";
+import webpush from "web-push";
 import type { PushSubscriptionRecord } from "@/lib/validation/notifications";
+
+// Configure web-push with VAPID details
+const vapidPublicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
+const vapidPrivateKey = process.env.VAPID_PRIVATE_KEY;
+const vapidSubject = process.env.VAPID_SUBJECT || "mailto:support@aquabotai.com";
+
+if (vapidPublicKey && vapidPrivateKey) {
+  webpush.setVapidDetails(vapidSubject, vapidPublicKey, vapidPrivateKey);
+}
 
 /**
  * Push notification payload structure
@@ -142,16 +151,8 @@ export async function removeInvalidSubscription(
 /**
  * Send a push notification to a specific user
  *
- * NOTE: This is currently a stub implementation.
- * Actual push notification sending requires:
- * 1. VAPID keys to be configured (VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY)
- * 2. web-push npm package to be installed
- *
- * Once VAPID keys are configured, this function will:
- * 1. Get all push subscriptions for the user
- * 2. Send the notification to each subscription endpoint
- * 3. Handle expired/invalid subscriptions
- * 4. Update last_used_at timestamps
+ * Sends a Web Push notification to all of the user's registered devices.
+ * Automatically handles expired/invalid subscriptions by removing them.
  *
  * @param userId - The user's UUID
  * @param payload - The notification payload
@@ -164,9 +165,6 @@ export async function sendPushNotification(
   type: NotificationType = "system"
 ): Promise<PushResult[]> {
   // Check if VAPID keys are configured
-  const vapidPublicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
-  const vapidPrivateKey = process.env.VAPID_PRIVATE_KEY;
-
   if (!vapidPublicKey || !vapidPrivateKey) {
     console.log(
       "[Push] VAPID keys not configured - push notifications disabled",
@@ -184,7 +182,7 @@ export async function sendPushNotification(
   }
 
   console.log(
-    `[Push] Would send notification to ${subscriptions.length} subscription(s)`,
+    `[Push] Sending notification to ${subscriptions.length} subscription(s)`,
     {
       userId,
       type,
@@ -193,20 +191,62 @@ export async function sendPushNotification(
     }
   );
 
-  // TODO: Implement actual push sending with web-push package
-  // For now, return success for all subscriptions (stub)
-  const results: PushResult[] = subscriptions.map((sub) => ({
-    success: true,
-    subscriptionId: sub.id,
-    endpoint: sub.endpoint,
-  }));
+  const results: PushResult[] = [];
 
-  // Update last_used_at for successful sends
-  for (const result of results) {
-    if (result.success) {
-      await updateSubscriptionLastUsed(result.subscriptionId);
+  for (const sub of subscriptions) {
+    try {
+      // Build the web-push subscription object
+      const pushSubscription: webpush.PushSubscription = {
+        endpoint: sub.endpoint,
+        keys: {
+          auth: sub.auth_key,
+          p256dh: sub.p256dh_key,
+        },
+      };
+
+      // Send the notification
+      await webpush.sendNotification(
+        pushSubscription,
+        JSON.stringify(payload),
+        {
+          TTL: 60 * 60 * 24, // 24 hours
+          urgency: type === "parameter_alert" ? "high" : "normal",
+        }
+      );
+
+      results.push({
+        success: true,
+        subscriptionId: sub.id,
+        endpoint: sub.endpoint,
+      });
+
+      // Update last_used_at timestamp
+      await updateSubscriptionLastUsed(sub.id);
+
+      console.log(`[Push] Successfully sent to ${sub.endpoint.slice(0, 50)}...`);
+    } catch (err) {
+      const error = err as { statusCode?: number; message?: string };
+
+      // Handle specific error codes
+      if (error.statusCode === 410 || error.statusCode === 404) {
+        // Subscription is no longer valid - remove it
+        console.log(`[Push] Subscription expired, removing: ${sub.id}`);
+        await removeInvalidSubscription(sub.id);
+      }
+
+      results.push({
+        success: false,
+        subscriptionId: sub.id,
+        endpoint: sub.endpoint,
+        error: error.message || "Unknown error",
+      });
+
+      console.error(`[Push] Failed to send to ${sub.endpoint.slice(0, 50)}...`, error);
     }
   }
+
+  const successCount = results.filter((r) => r.success).length;
+  console.log(`[Push] Sent ${successCount}/${results.length} notifications`);
 
   return results;
 }

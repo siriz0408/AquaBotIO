@@ -88,11 +88,14 @@ self.addEventListener('push', (event) => {
   const data = event.data.json();
   const options = {
     body: data.body || 'You have a new notification',
-    icon: '/icons/icon-192x192.png',
-    badge: '/icons/icon-192x192.png',
+    icon: data.icon || '/icons/icon-192x192.png',
+    badge: data.badge || '/icons/badge-72x72.png',
     vibrate: [100, 50, 100],
+    tag: data.tag || undefined,
+    requireInteraction: data.requireInteraction || false,
     data: {
       url: data.url || '/',
+      ...data.data, // Pass through custom data
     },
     actions: data.actions || [],
   };
@@ -106,13 +109,39 @@ self.addEventListener('push', (event) => {
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
 
-  const url = event.notification.data?.url || '/';
+  const notificationData = event.notification.data || {};
+  const action = event.action; // Which action button was clicked
+
+  // Handle action button clicks
+  if (action) {
+    console.log('[SW] Notification action clicked:', action, notificationData);
+
+    // Handle specific actions
+    if (action === 'complete' && notificationData.type === 'maintenance_reminder') {
+      // Open maintenance page to mark complete
+      event.waitUntil(
+        clients.openWindow(`/maintenance?complete=${notificationData.taskId || ''}`)
+      );
+      return;
+    }
+
+    if (action === 'snooze') {
+      // Could implement snooze logic here or via API
+      console.log('[SW] Snooze requested for:', notificationData);
+      return;
+    }
+  }
+
+  // Default: open the URL
+  const url = notificationData.url || '/';
 
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then((windowClients) => {
-      // Check if there's already a window open
+      // Check if there's already a window open with the same origin
       for (const client of windowClients) {
-        if (client.url === url && 'focus' in client) {
+        if (new URL(client.url).origin === self.location.origin && 'focus' in client) {
+          // Navigate existing window to the URL
+          client.navigate(url);
           return client.focus();
         }
       }
