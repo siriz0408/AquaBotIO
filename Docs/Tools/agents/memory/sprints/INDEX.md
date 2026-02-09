@@ -1,11 +1,12 @@
 # Sprints Index
 
-> Total sprints: 18 (+ docs audit) | Last updated: 2026-02-09
+> Total sprints: 19 (+ docs audit) | Last updated: 2026-02-09
 
 Naming: `sprint_{NN}_summary.md`
 
 | Sprint | Date | Goals | Outcome | Carries |
 |--------|------|-------|---------|---------
+| Sprint 19 | 2026-02-09 | AI Chat Embedded Widgets | COMPLETE | 3 widgets, quarantine API, parser updates ✅ |
 | Sprint 18 | 2026-02-09 | Push Notifications Infrastructure | COMPLETE | VAPID keys configured, migration applied ✅ |
 | Sprint 17 | 2026-02-09 | Auth Fix + Google OAuth | COMPLETE | Auth fix deployed, Google OAuth enabled |
 | Sprint 16 | 2026-02-09 | Free Tools (Task 18.1) | COMPLETE | — |

@@ -1,8 +1,8 @@
 # Active Work Board
 
-> Last updated: 2026-02-09 | Updated by: PM Orchestrator | Sprint 18 COMPLETE ✅
+> Last updated: 2026-02-09 | Updated by: PM Orchestrator | Sprint 19 COMPLETE ✅
 
-## MILESTONE: MVP Launch-Ready ✅ → Phase 2 Complete ✅ → Pricing Strategy ✅ → Free Tools ✅ → Push Notifications ✅
+## MILESTONE: MVP Launch-Ready ✅ → Phase 2 Complete ✅ → Pricing Strategy ✅ → Free Tools ✅ → Push Notifications ✅ → AI Widgets ✅
 
 | Feature | Status | Progress |
 |---------|--------|----------|
@@ -18,10 +18,12 @@
 | Proactive Alerts | DONE | 100% — Trend detection, alert badge, alerts page |
 | **Pricing Strategy (Spec 18)** | **DONE** | **100% — Backend foundation complete** |
 | **Push Notifications** | **DONE** | **100% — Fully implemented with web-push, ready to use** |
+| **AI Chat Embedded Widgets** | **DONE** | **100% — Water Change Calculator, Quarantine Checklist, Parameter Troubleshooting** |
 
 **Overall MVP: 100%** 🚀
 **Phase 2 (AI Proactive Intelligence): 100%** ✅
 **Spec 18 Backend: 100%** ✅
+**AI Chat Widgets (Spec 16): 100%** ✅
 
 ## Sprint 14 Deliverables (Pricing Strategy Backend)
 
@@ -96,6 +98,19 @@
 | **Sprint 17** | **COMPLETE** | **Auth fix + Google OAuth: retry logic, fallback profile, middleware, Supabase Google provider enabled** |
 | **Sprint 16** | **FREE TOOLS** | **Static calculators for Free tier: Water Change, Stocking, Parameter Reference at /tools** |
 | **Sprint 15** | **VERIFICATION** | **Billing E2E tests updated ($4.99/$9.99/$19.99), webhook code verified, action items for Sam (webhook + env vars)** |
+| **Sprint 19** | **COMPLETE** | **AI Chat Embedded Widgets: Water Change Calculator, Quarantine Checklist, Parameter Troubleshooting** |
+
+## Sprint 19 Deliverables (AI Chat Embedded Widgets)
+
+| What | Details |
+|------|---------|
+| Water Change Calculator Widget | Shows tank volume, nitrate, recommended %, exact gallons; "Schedule Water Change" creates task |
+| Quarantine Checklist Widget | 7-step interactive checklist, progress tracking, species sensitivity, daily reminder scheduling |
+| Parameter Troubleshooting Widget | Explains parameter, lists causes, personalized fix steps, action buttons |
+| quarantine_tracking Table | New DB table for tracking quarantine progress per species |
+| Quarantine API | Full CRUD at `/api/quarantine` with Zod validation |
+| RichMessage Parser | Extended for 3 new widget block types |
+| System Prompt | Updated with widget embedding instructions and JSON schemas |
 
 ## What's Next
 
