@@ -15,6 +15,7 @@ import {
   AIInsights,
   UpcomingMaintenance,
   LivestockSummary,
+  FreeToolsPromo,
 } from "@/components/dashboard";
 
 interface Tank {
@@ -110,7 +111,7 @@ export default function DashboardPage() {
           <div className="w-20 h-20 bg-gradient-to-br from-brand-cyan to-brand-navy rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg">
             <span className="text-4xl">🐠</span>
           </div>
-          <h1 className="text-2xl font-bold text-brand-navy mb-2">
+          <h1 className="fluid-h2 font-bold text-brand-navy mb-2">
             Welcome to AquaBotAI
           </h1>
           <p className="text-gray-600 mb-6 max-w-sm">
@@ -155,6 +156,9 @@ export default function DashboardPage() {
 
         {/* Quick Actions */}
         <QuickActions tankId={selectedTank?.id} />
+
+        {/* Free Tools Promo */}
+        <FreeToolsPromo />
 
         {/* AI Insights */}
         <AIInsights />
