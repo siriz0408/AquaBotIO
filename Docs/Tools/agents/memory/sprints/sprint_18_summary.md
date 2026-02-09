@@ -59,10 +59,12 @@ All push notification configuration has been completed:
 4. **Production redeployed:** ✅
    - New deployment triggered with VAPID keys
 
-**Optional:** Install `web-push` package when ready to implement actual notification sending:
-```bash
-npm install web-push
-```
+5. **web-push package installed:** ✅
+   - Actual push notification sending now works
+   - Service worker handles action buttons
+   - Expired subscriptions auto-removed
+
+**Commit:** `a6da7fb` - feat(notifications): Implement actual push notification sending
 
 ## Verification
 - TypeScript: ✅ PASS
