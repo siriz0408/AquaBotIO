@@ -1,8 +1,8 @@
 # Active Work Board
 
-> Last updated: 2026-02-09 | Updated by: PM Orchestrator | Sprint 17 IN PROGRESS
+> Last updated: 2026-02-09 | Updated by: PM Orchestrator | Sprint 18 COMPLETE ✅
 
-## MILESTONE: MVP Launch-Ready ✅ → Phase 2 Complete ✅ → Pricing Strategy ✅ → Free Tools ✅
+## MILESTONE: MVP Launch-Ready ✅ → Phase 2 Complete ✅ → Pricing Strategy ✅ → Free Tools ✅ → Push Notifications ✅
 
 | Feature | Status | Progress |
 |---------|--------|----------|
@@ -13,10 +13,11 @@
 | Tank Profiles | DONE | 100% |
 | Water Parameters | DONE | 100% |
 | Species & Livestock | DONE | 100% |
-| Maintenance Scheduling | DONE | 95% |
+| Maintenance Scheduling | DONE | 98% — Push infrastructure ready, needs VAPID keys |
 | AI Action Execution | DONE | 100% — Log params, add livestock, schedule tasks from chat |
 | Proactive Alerts | DONE | 100% — Trend detection, alert badge, alerts page |
 | **Pricing Strategy (Spec 18)** | **DONE** | **100% — Backend foundation complete** |
+| **Push Notifications** | **DONE** | **Infrastructure complete — Sam to configure VAPID keys** |
 
 **Overall MVP: 100%** 🚀
 **Phase 2 (AI Proactive Intelligence): 100%** ✅
@@ -88,7 +89,8 @@
 | Sprint 13 | 100% → PROD | Production deployment: Edge Function deployed, Supabase secrets set |
 | **Sprint 14** | **Spec 18** | **Pricing Strategy backend: schema migration, tier limits (0/10/100/500), resolveUserTier(), trend gating, price display ($4.99/$9.99/$19.99)** |
 | **Sprint 14b** | **PROD DEPLOY** | **Stripe prices created, Vercel env vars updated, deployed to production (https://aquabotai-mu.vercel.app)** |
-| **Sprint 17** | **AUTH FIX** | **OAuth/magic link onboarding fix: retry logic, fallback profile creation, middleware enforcement** |
+| **Sprint 18** | **COMPLETE** | **Push Notifications infrastructure: tables, APIs, permission prompt, settings page, usePushNotifications hook** |
+| **Sprint 17** | **COMPLETE** | **Auth fix + Google OAuth: retry logic, fallback profile, middleware, Supabase Google provider enabled** |
 | **Sprint 16** | **FREE TOOLS** | **Static calculators for Free tier: Water Change, Stocking, Parameter Reference at /tools** |
 | **Sprint 15** | **VERIFICATION** | **Billing E2E tests updated ($4.99/$9.99/$19.99), webhook code verified, action items for Sam (webhook + env vars)** |
 
@@ -104,9 +106,15 @@
 - [x] **All Stripe env vars set in Vercel** (verified via `vercel env ls`)
 
 ### P1 Enhancements (After Launch)
-1. Free Tools (Spec 16) — Static calculators for Free tier value
-2. Push notification delivery for critical alerts
+1. ~~Free Tools (Spec 16)~~ — ✅ DONE (Sprint 16)
+2. ~~Push notification infrastructure~~ — ✅ DONE (Sprint 18) — **Sam: Configure VAPID keys + run migration**
 3. Email digest for daily alert summary
 4. Cron job for automatic daily trend analysis
 5. Photo Diagnosis (Claude Vision)
 6. Equipment Tracking
+
+### Sam Action Items (Sprint 18)
+1. Generate VAPID keys: `npx web-push generate-vapid-keys`
+2. Set in Vercel: `NEXT_PUBLIC_VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT=mailto:support@aquabotai.com`
+3. Apply migration: `npx supabase db push`
+4. (Optional) Install web-push: `npm install web-push`
