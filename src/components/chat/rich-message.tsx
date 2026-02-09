@@ -8,6 +8,14 @@ import { ParameterAlertCard } from "./messages/parameter-alert-card";
 import { ActionButtons } from "./action-buttons";
 import { ActionConfirmation, type ActionPayload } from "./action-confirmation";
 import { ProactiveAlertCard, type ProactiveAlert } from "./proactive-alert-card";
+import {
+  WaterChangeCalculatorWidget,
+  type WaterChangeCalculatorData,
+  QuarantineChecklistWidget,
+  type QuarantineChecklistData,
+  ParameterTroubleshootingWidget,
+  type ParameterTroubleshootingData,
+} from "./widgets";
 import { toast } from "sonner";
 
 interface RichMessageProps {
@@ -66,6 +74,18 @@ interface ProactiveAlertSegment {
   type: "proactive-alert";
   data: ProactiveAlert;
 }
+interface WaterChangeCalculatorSegment {
+  type: "water-change-calculator";
+  data: WaterChangeCalculatorData;
+}
+interface QuarantineChecklistSegment {
+  type: "quarantine-checklist";
+  data: QuarantineChecklistData;
+}
+interface ParameterTroubleshootingSegment {
+  type: "parameter-troubleshooting";
+  data: ParameterTroubleshootingData;
+}
 
 type Segment =
   | TextSegment
@@ -73,14 +93,26 @@ type Segment =
   | ParameterAlertSegment
   | ActionButtonsSegment
   | ActionConfirmationSegment
-  | ProactiveAlertSegment;
+  | ProactiveAlertSegment
+  | WaterChangeCalculatorSegment
+  | QuarantineChecklistSegment
+  | ParameterTroubleshootingSegment;
 
-const BLOCK_TYPES = ["species-card", "parameter-alert", "action-buttons", "action-confirmation", "proactive-alert"];
+const BLOCK_TYPES = [
+  "species-card",
+  "parameter-alert",
+  "action-buttons",
+  "action-confirmation",
+  "proactive-alert",
+  "water-change-calculator",
+  "quarantine-checklist",
+  "parameter-troubleshooting",
+];
 
 function parseContent(content: string): Segment[] {
   const segments: Segment[] = [];
   // Match fenced code blocks with our custom language tags
-  const pattern = /```(species-card|parameter-alert|action-buttons|action-confirmation|proactive-alert)\n([\s\S]*?)```/g;
+  const pattern = /```(species-card|parameter-alert|action-buttons|action-confirmation|proactive-alert|water-change-calculator|quarantine-checklist|parameter-troubleshooting)\n([\s\S]*?)```/g;
 
   let lastIndex = 0;
   let match = pattern.exec(content);
@@ -110,6 +142,12 @@ function parseContent(content: string): Segment[] {
         segments.push({ type: "action-confirmation", data: parsed });
       } else if (blockType === "proactive-alert") {
         segments.push({ type: "proactive-alert", data: parsed });
+      } else if (blockType === "water-change-calculator") {
+        segments.push({ type: "water-change-calculator", data: parsed });
+      } else if (blockType === "quarantine-checklist") {
+        segments.push({ type: "quarantine-checklist", data: parsed });
+      } else if (blockType === "parameter-troubleshooting") {
+        segments.push({ type: "parameter-troubleshooting", data: parsed });
       }
     } catch {
       // If JSON parsing fails, render as regular text
@@ -260,6 +298,27 @@ export function RichMessage({
                   onDismiss={handleAlertDismiss}
                   onTakeAction={handleAlertAction}
                 />
+              </div>
+            );
+
+          case "water-change-calculator":
+            return (
+              <div key={index} className="-mx-4 px-4">
+                <WaterChangeCalculatorWidget data={segment.data} />
+              </div>
+            );
+
+          case "quarantine-checklist":
+            return (
+              <div key={index} className="-mx-4 px-4">
+                <QuarantineChecklistWidget data={segment.data} />
+              </div>
+            );
+
+          case "parameter-troubleshooting":
+            return (
+              <div key={index} className="-mx-4 px-4">
+                <ParameterTroubleshootingWidget data={segment.data} />
               </div>
             );
 
