@@ -48,3 +48,4 @@ tsconfig.tsbuildinfo
 !Docs/Wireframes/**/*.png
 .vercel
 .env*.local
+.env.vercel-check
