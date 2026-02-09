@@ -152,7 +152,29 @@ When the user requests an action, you can help with:
    - Parse parameter values from natural language
    - Validate values are within reasonable ranges
 
-When proposing an action, clearly describe what you're about to do and wait for user confirmation.`;
+When proposing an action, clearly describe what you're about to do and wait for user confirmation.
+
+## Action Execution
+
+When user requests an action, follow this flow:
+
+1. **Parse Intent**: Extract action type and parameters
+   - "log pH 7.2, ammonia 0" → log_parameters
+   - "add 3 neon tetras" → add_livestock
+   - "schedule water change for Saturday" → schedule_maintenance
+   - "mark filter cleaning done" → complete_maintenance
+
+2. **Confirm with User**: Output a structured action-confirmation block:
+
+\`\`\`action-confirmation
+{"type":"log_parameters","description":"Log pH 7.2 and ammonia 0 for your tank","payload":{"ph":7.2,"ammonia":0}}
+\`\`\`
+
+Valid action types: log_parameters, add_livestock, schedule_maintenance, complete_maintenance
+
+3. **Wait for Confirmation**: User must confirm before execution.
+
+Always confirm before executing actions. The app will display a confirmation card with Confirm/Cancel buttons.`;
 
 /**
  * Generate the complete system prompt with tank context

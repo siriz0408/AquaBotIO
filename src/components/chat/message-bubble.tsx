@@ -3,12 +3,17 @@
 import { cn } from "@/lib/utils";
 import { Bot, User } from "lucide-react";
 import { RichMessage } from "./rich-message";
+import type { ActionPayload } from "./action-confirmation";
 
 interface MessageBubbleProps {
   role: "user" | "assistant" | "system";
   content: string;
   timestamp?: string;
   isLoading?: boolean;
+  tankId?: string;
+  onActionConfirm?: (action: ActionPayload) => Promise<void>;
+  onActionCancel?: () => void;
+  isPendingAction?: boolean;
 }
 
 export function MessageBubble({
@@ -16,6 +21,10 @@ export function MessageBubble({
   content,
   timestamp,
   isLoading,
+  tankId,
+  onActionConfirm,
+  onActionCancel,
+  isPendingAction,
 }: MessageBubbleProps) {
   const isUser = role === "user";
 
@@ -54,7 +63,14 @@ export function MessageBubble({
         {isLoading ? (
           <LoadingDots />
         ) : (
-          <RichMessage content={content} isUser={isUser} />
+          <RichMessage
+            content={content}
+            isUser={isUser}
+            tankId={tankId}
+            onActionConfirm={onActionConfirm}
+            onActionCancel={onActionCancel}
+            isPendingAction={isPendingAction}
+          />
         )}
 
         {timestamp && (

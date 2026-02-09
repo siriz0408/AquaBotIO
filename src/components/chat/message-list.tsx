@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { MessageBubble } from "./message-bubble";
+import type { ActionPayload } from "./action-confirmation";
 
 interface Message {
   id: string;
@@ -13,9 +14,20 @@ interface Message {
 interface MessageListProps {
   messages: Message[];
   isLoading?: boolean;
+  tankId?: string;
+  onActionConfirm?: (action: ActionPayload) => Promise<void>;
+  onActionCancel?: () => void;
+  isPendingAction?: boolean;
 }
 
-export function MessageList({ messages, isLoading }: MessageListProps) {
+export function MessageList({
+  messages,
+  isLoading,
+  tankId,
+  onActionConfirm,
+  onActionCancel,
+  isPendingAction,
+}: MessageListProps) {
   const bottomRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll to bottom when new messages arrive
@@ -58,6 +70,10 @@ export function MessageList({ messages, isLoading }: MessageListProps) {
           role={message.role}
           content={message.content}
           timestamp={message.created_at}
+          tankId={tankId}
+          onActionConfirm={onActionConfirm}
+          onActionCancel={onActionCancel}
+          isPendingAction={isPendingAction}
         />
       ))}
       {isLoading && (

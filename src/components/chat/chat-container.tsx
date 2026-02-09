@@ -9,6 +9,7 @@ import { EmptyState } from "./empty-state";
 import { useTank } from "@/context/tank-context";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import type { ActionPayload } from "./action-confirmation";
 
 interface Message {
   id: string;
@@ -33,6 +34,7 @@ export function ChatContainer({
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [isStreaming, setIsStreaming] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isPendingAction, setIsPendingAction] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Use prop tankId or active tank from context
@@ -258,6 +260,83 @@ export function ChatContainer({
     handleSend(prompt);
   };
 
+  // Handle action confirmation
+  const handleActionConfirm = useCallback(
+    async (action: ActionPayload) => {
+      if (!tankId) {
+        toast.error("No tank selected");
+        return;
+      }
+
+      setIsPendingAction(true);
+      try {
+        const response = await fetch("/api/ai/actions/execute", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            tank_id: tankId,
+            action_type: action.type,
+            payload: action.payload,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          // Add success message from AI
+          const successMessage: Message = {
+            id: `action-success-${Date.now()}`,
+            role: "assistant",
+            content: `Done! ${action.description} completed successfully.`,
+            created_at: new Date().toISOString(),
+          };
+          setMessages((prev) => [...prev, successMessage]);
+          toast.success("Action completed", {
+            description: action.description,
+          });
+        } else {
+          // Add error message from AI
+          const errorMessage: Message = {
+            id: `action-error-${Date.now()}`,
+            role: "assistant",
+            content: `Sorry, I couldn't complete that action. ${data.error?.message || "Please try again."}`,
+            created_at: new Date().toISOString(),
+          };
+          setMessages((prev) => [...prev, errorMessage]);
+          toast.error("Action failed", {
+            description: data.error?.message || "Please try again",
+          });
+        }
+      } catch (err) {
+        console.error("Error executing action:", err);
+        const errorMessage: Message = {
+          id: `action-error-${Date.now()}`,
+          role: "assistant",
+          content: "Network error. Please check your connection and try again.",
+          created_at: new Date().toISOString(),
+        };
+        setMessages((prev) => [...prev, errorMessage]);
+        toast.error("Network error", {
+          description: "Please check your connection",
+        });
+      } finally {
+        setIsPendingAction(false);
+      }
+    },
+    [tankId]
+  );
+
+  // Handle action cancel
+  const handleActionCancel = useCallback(() => {
+    const cancelMessage: Message = {
+      id: `action-cancel-${Date.now()}`,
+      role: "assistant",
+      content: "No problem! I've cancelled that action. Let me know if you need anything else.",
+      created_at: new Date().toISOString(),
+    };
+    setMessages((prev) => [...prev, cancelMessage]);
+  }, []);
+
   // No tank selected
   if (!tankId) {
     return (
@@ -306,7 +385,14 @@ export function ChatContainer({
         </div>
       ) : (
         <div className="flex-1 overflow-y-auto bg-brand-bg">
-          <MessageList messages={messages} isLoading={isLoading} />
+          <MessageList
+            messages={messages}
+            isLoading={isLoading}
+            tankId={tankId}
+            onActionConfirm={handleActionConfirm}
+            onActionCancel={handleActionCancel}
+            isPendingAction={isPendingAction}
+          />
           <div ref={messagesEndRef} />
         </div>
       )}

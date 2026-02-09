@@ -6,10 +6,15 @@ import remarkGfm from "remark-gfm";
 import { SpeciesCard } from "./messages/species-card";
 import { ParameterAlertCard } from "./messages/parameter-alert-card";
 import { ActionButtons } from "./action-buttons";
+import { ActionConfirmation, type ActionPayload } from "./action-confirmation";
 
 interface RichMessageProps {
   content: string;
   isUser?: boolean;
+  tankId?: string;
+  onActionConfirm?: (action: ActionPayload) => Promise<void>;
+  onActionCancel?: () => void;
+  isPendingAction?: boolean;
 }
 
 // Parse content into segments: markdown text vs structured blocks
@@ -50,19 +55,24 @@ interface ActionButtonsSegment {
   type: "action-buttons";
   data: { label: string; action: string }[];
 }
+interface ActionConfirmationSegment {
+  type: "action-confirmation";
+  data: ActionPayload;
+}
 
 type Segment =
   | TextSegment
   | SpeciesCardSegment
   | ParameterAlertSegment
-  | ActionButtonsSegment;
+  | ActionButtonsSegment
+  | ActionConfirmationSegment;
 
-const BLOCK_TYPES = ["species-card", "parameter-alert", "action-buttons"];
+const BLOCK_TYPES = ["species-card", "parameter-alert", "action-buttons", "action-confirmation"];
 
 function parseContent(content: string): Segment[] {
   const segments: Segment[] = [];
   // Match fenced code blocks with our custom language tags
-  const pattern = /```(species-card|parameter-alert|action-buttons)\n([\s\S]*?)```/g;
+  const pattern = /```(species-card|parameter-alert|action-buttons|action-confirmation)\n([\s\S]*?)```/g;
 
   let lastIndex = 0;
   let match = pattern.exec(content);
@@ -88,6 +98,8 @@ function parseContent(content: string): Segment[] {
         segments.push({ type: "parameter-alert", data: parsed });
       } else if (blockType === "action-buttons") {
         segments.push({ type: "action-buttons", data: parsed });
+      } else if (blockType === "action-confirmation") {
+        segments.push({ type: "action-confirmation", data: parsed });
       }
     } catch {
       // If JSON parsing fails, render as regular text
@@ -117,7 +129,14 @@ function parseContent(content: string): Segment[] {
   return segments;
 }
 
-export function RichMessage({ content, isUser }: RichMessageProps) {
+export function RichMessage({
+  content,
+  isUser,
+  tankId = "",
+  onActionConfirm,
+  onActionCancel,
+  isPendingAction,
+}: RichMessageProps) {
   const segments = useMemo(() => parseContent(content), [content]);
 
   if (isUser) {
@@ -164,6 +183,23 @@ export function RichMessage({ content, isUser }: RichMessageProps) {
 
           case "action-buttons":
             return <ActionButtons key={index} actions={segment.data} />;
+
+          case "action-confirmation":
+            return (
+              <div key={index} className="-mx-4 px-4">
+                <ActionConfirmation
+                  action={segment.data}
+                  tankId={tankId}
+                  onConfirm={
+                    onActionConfirm
+                      ? () => onActionConfirm(segment.data)
+                      : async () => {}
+                  }
+                  onCancel={onActionCancel || (() => {})}
+                  isPending={isPendingAction}
+                />
+              </div>
+            );
 
           default:
             return null;
