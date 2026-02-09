@@ -6,7 +6,7 @@ Naming: `sprint_{NN}_summary.md`
 
 | Sprint | Date | Goals | Outcome | Carries |
 |--------|------|-------|---------|---------
-| Sprint 18 | 2026-02-09 | Push Notifications Infrastructure | COMPLETE | Sam to configure VAPID keys + run migration |
+| Sprint 18 | 2026-02-09 | Push Notifications Infrastructure | COMPLETE | VAPID keys configured, migration applied ✅ |
 | Sprint 17 | 2026-02-09 | Auth Fix + Google OAuth | COMPLETE | Auth fix deployed, Google OAuth enabled |
 | Sprint 16 | 2026-02-09 | Free Tools (Task 18.1) | COMPLETE | — |
 | Sprint 15 | 2026-02-09 | Billing Verification | COMPLETE | Webhook config, Playwright fix |
