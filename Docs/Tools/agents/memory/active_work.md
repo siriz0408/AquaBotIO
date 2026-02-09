@@ -98,8 +98,8 @@
 - [x] Deploy to Vercel production
 - [x] Verify pricing displays correctly on live site
 - [x] Webhook code verified (Sprint 15) — handles 5 events with idempotency
-- [ ] **SAM TODO:** Register webhook endpoint in Stripe Dashboard (see Sprint 15 summary)
-- [ ] **SAM TODO:** Set STRIPE_WEBHOOK_SECRET + price ID env vars in Vercel
+- [x] **Live webhook endpoint configured** (`we_1Syfda1d1AvgoBGom3mj1nBl`)
+- [x] **All Stripe env vars set in Vercel** (verified via `vercel env ls`)
 
 ### P1 Enhancements (After Launch)
 1. Free Tools (Spec 16) — Static calculators for Free tier value

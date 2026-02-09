@@ -43,33 +43,30 @@ Verify the Spec 18 pricing strategy deployment and update tests to match new pri
 - ✅ Idempotency via `webhook_events` table check
 - ✅ Error logging with audit trail
 
-## Action Items for Sam (Before Launch)
+## Stripe Configuration Status ✅
 
-### 1. Register Webhook in Stripe Dashboard
-1. Go to: https://dashboard.stripe.com/webhooks
-2. Click "Add endpoint"
-3. Endpoint URL: `https://aquabotai-mu.vercel.app/api/webhooks/stripe`
-4. Select events:
-   - `checkout.session.completed`
-   - `invoice.paid`
-   - `invoice.payment_failed`
-   - `customer.subscription.updated`
-   - `customer.subscription.deleted`
-5. Copy the signing secret (`whsec_...`)
+### Live Webhook Endpoint — CONFIGURED
+Verified via `stripe webhook_endpoints list --live`:
+- **ID:** `we_1Syfda1d1AvgoBGom3mj1nBl`
+- **URL:** `https://aquabotai-mu.vercel.app/api/webhooks/stripe`
+- **Status:** `enabled`
+- **Events:** `checkout.session.completed`, `customer.subscription.created`, `customer.subscription.updated`, `customer.subscription.deleted`, `invoice.paid`, `invoice.payment_failed`
 
-### 2. Set Environment Variables in Vercel
-Go to Vercel → aquabotai → Settings → Environment Variables
-
-Add/verify these variables:
+### Environment Variables — ALL SET
+Verified via `vercel env ls`:
 ```
-STRIPE_WEBHOOK_SECRET=whsec_... (from step 1)
-STRIPE_PRICE_STARTER_MONTHLY=price_1SyxZc1d1AvgoBGoPQlufFkB
-STRIPE_PRICE_PLUS_MONTHLY=price_1SyxZd1d1AvgoBGoce5fJ0Oz
-STRIPE_PRICE_PRO_MONTHLY=price_1SyxZd1d1AvgoBGodGywCPjP
+STRIPE_WEBHOOK_SECRET         ✅ Production (4h ago)
+STRIPE_SECRET_KEY             ✅ Production (4h ago)
+STRIPE_PRICE_STARTER_MONTHLY  ✅ Production (5h ago)
+STRIPE_PRICE_PLUS_MONTHLY     ✅ Production (5h ago)
+STRIPE_PRICE_PRO_MONTHLY      ✅ Production (4h ago)
 ```
 
-### 3. Test Webhook (Optional)
-After configuring, make a test purchase to verify the full flow.
+### Test Webhook Also Created
+Created via Stripe CLI for development testing:
+- **ID:** `we_1SyzLk1d1AvgoBGopLfdVReJ`
+- **Secret:** `whsec_PTuvcR4r9RV5Ts03SgdJcNdV0qa36yDy`
+- **Mode:** Test
 
 ## Issues Found
 
