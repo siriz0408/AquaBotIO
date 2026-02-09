@@ -298,6 +298,26 @@ export default function SettingsPage() {
             </CardContent>
           </Card>
 
+          {/* Notification Settings */}
+          <Card className="shadow-sm border-gray-200">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Bell className="h-5 w-5" />
+                Notifications
+              </CardTitle>
+              <CardDescription>
+                Manage push notifications and reminder settings
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button variant="outline" className="w-full" asChild>
+                <Link href="/settings/notifications">
+                  Manage Notification Settings
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>
+
           {/* Security / Danger Zone */}
           <Card className="shadow-sm border-gray-200">
             <CardHeader>
