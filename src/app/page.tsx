@@ -54,7 +54,7 @@ export default function HomePage() {
             </Link>
           </div>
           <p className="text-sm text-muted-foreground">
-            14-day free trial • No credit card required
+            7-day free trial • No credit card required
           </p>
         </div>
       </section>
@@ -160,14 +160,14 @@ export default function HomePage() {
                 <CardHeader>
                   <CardTitle>Free</CardTitle>
                   <div className="text-3xl font-bold">$0</div>
-                  <CardDescription>For trying things out</CardDescription>
+                  <CardDescription>Basic tools to get started</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-2 text-sm">
                     <li>1 tank</li>
-                    <li>10 AI messages/day</li>
-                    <li>Basic parameter tracking</li>
-                    <li>Species database access</li>
+                    <li>Parameter logging</li>
+                    <li>Species database</li>
+                    <li>3 maintenance tasks</li>
                   </ul>
                 </CardContent>
               </Card>
@@ -177,17 +177,16 @@ export default function HomePage() {
                 <CardHeader>
                   <CardTitle>Starter</CardTitle>
                   <div className="text-3xl font-bold">
-                    $3.99<span className="text-base font-normal">/mo</span>
+                    $4.99<span className="text-base font-normal">/mo</span>
                   </div>
-                  <CardDescription>For hobbyists</CardDescription>
+                  <CardDescription>Taste of AI assistance</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-2 text-sm">
-                    <li>1 tank</li>
-                    <li>100 AI messages/day</li>
+                    <li>2 tanks</li>
+                    <li>10 AI messages/day</li>
                     <li>Full parameter tracking</li>
-                    <li>Maintenance scheduling</li>
-                    <li>Push notifications</li>
+                    <li>10 tasks per tank</li>
                   </ul>
                 </CardContent>
               </Card>
@@ -200,17 +199,17 @@ export default function HomePage() {
                   </div>
                   <CardTitle>Plus</CardTitle>
                   <div className="text-3xl font-bold">
-                    $7.99<span className="text-base font-normal">/mo</span>
+                    $9.99<span className="text-base font-normal">/mo</span>
                   </div>
-                  <CardDescription>For multiple tanks</CardDescription>
+                  <CardDescription>Full AI-powered management</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-2 text-sm">
                     <li>Up to 5 tanks</li>
-                    <li>200 AI messages/day</li>
-                    <li>Photo diagnosis</li>
-                    <li>Equipment tracking</li>
-                    <li>Everything in Starter</li>
+                    <li>100 AI messages/day</li>
+                    <li>Photo diagnosis (10/day)</li>
+                    <li>AI proactive alerts</li>
+                    <li>AI-enhanced calculators</li>
                   </ul>
                 </CardContent>
               </Card>
@@ -220,17 +219,17 @@ export default function HomePage() {
                 <CardHeader>
                   <CardTitle>Pro</CardTitle>
                   <div className="text-3xl font-bold">
-                    $14.99<span className="text-base font-normal">/mo</span>
+                    $19.99<span className="text-base font-normal">/mo</span>
                   </div>
-                  <CardDescription>For serious aquarists</CardDescription>
+                  <CardDescription>Everything for serious aquarists</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-2 text-sm">
                     <li>Unlimited tanks</li>
-                    <li>Unlimited AI messages</li>
-                    <li>AI equipment recommendations</li>
-                    <li>Email reports</li>
-                    <li>Priority support</li>
+                    <li>500 AI messages/day</li>
+                    <li>Photo diagnosis (30/day)</li>
+                    <li>Equipment recommendations</li>
+                    <li>Weekly email reports</li>
                   </ul>
                 </CardContent>
               </Card>

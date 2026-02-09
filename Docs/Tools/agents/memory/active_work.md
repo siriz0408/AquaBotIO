@@ -1,8 +1,8 @@
 # Active Work Board
 
-> Last updated: 2026-02-09 | Updated by: PM Orchestrator | Sprint 12 COMPLETE
+> Last updated: 2026-02-09 | Updated by: PM Orchestrator | Sprint 14 COMPLETE
 
-## MILESTONE: MVP Launch-Ready ✅ → Phase 2 Complete ✅
+## MILESTONE: MVP Launch-Ready ✅ → Phase 2 Complete ✅ → Pricing Strategy 🚀
 
 | Feature | Status | Progress |
 |---------|--------|----------|
@@ -15,10 +15,25 @@
 | Species & Livestock | DONE | 100% |
 | Maintenance Scheduling | DONE | 95% |
 | AI Action Execution | DONE | 100% — Log params, add livestock, schedule tasks from chat |
-| **Proactive Alerts** | **DONE** | **100% — Trend detection, alert badge, alerts page** |
+| Proactive Alerts | DONE | 100% — Trend detection, alert badge, alerts page |
+| **Pricing Strategy (Spec 18)** | **DONE** | **100% — Backend foundation complete** |
 
 **Overall MVP: 100%** 🚀
 **Phase 2 (AI Proactive Intelligence): 100%** ✅
+**Spec 18 Backend: 100%** ✅
+
+## Sprint 14 Deliverables (Pricing Strategy Backend)
+
+| What | Details |
+|------|---------|
+| Schema Migration | 6 new columns: `billing_interval`, `stripe_price_id`, `tier_override`, `override_reason`, `override_expires_at`, `grace_period_ends_at` |
+| Trial Duration | Updated from 14 days → 7 days (new subscriptions only) |
+| TIER_LIMITS | Updated: Free=0, Starter=10, Plus=100, Pro=500 AI msgs/day |
+| `resolveUserTier()` | Centralized tier resolution with admin/override/trial priority chain |
+| Trend Analysis Gating | Free/Starter users skipped (Plus+ only) |
+| Pricing Display | All UIs updated to $4.99/$9.99/$19.99 |
+| admin_profiles Table | Created for admin tier override |
+| SQL Functions | `check_and_increment_ai_usage` and `get_tier_limits` updated |
 
 ## Sprint 12 Deliverables (Proactive Trend Detection)
 
@@ -68,21 +83,22 @@
 | Sprint 9 | 93% → 96% | Rich chat (streaming, species cards, parameter alerts, action buttons, prose CSS) |
 | Sprint 10 | 96% → 100% | Signup auto-login fix (FB-MLE7MCRC), security headers fix (B014), species expansion (25→180), Vercel deployment, Stripe live keys |
 | Sprint 11 | 96% → 98% | AI Action Execution API, proactive_alerts table, ActionConfirmation/ProactiveAlertBadge/ProactiveAlertCard components |
-| **Sprint 12** | **98% → 100%** | **Trend Analysis Edge Function, alert badge in chat, "any alerts?" query, alerts list page** |
+| Sprint 12 | 98% → 100% | Trend Analysis Edge Function, alert badge in chat, "any alerts?" query, alerts list page |
+| Sprint 13 | 100% → PROD | Production deployment: Edge Function deployed, Supabase secrets set |
+| **Sprint 14** | **Spec 18** | **Pricing Strategy backend: schema migration, tier limits (0/10/100/500), resolveUserTier(), trend gating, price display ($4.99/$9.99/$19.99)** |
 
 ## What's Next
 
-**Phase 2 is COMPLETE.** Ready for production deployment.
+### Remaining for Production Launch
+- [ ] Configure Stripe products in Dashboard ($4.99 Starter, $9.99 Plus, $19.99 Pro)
+- [ ] Get Stripe live keys and set in Vercel env vars
+- [ ] Deploy to Vercel production
+- [ ] Final production smoke test
 
-### P1 Enhancements (Future Sprints)
-1. Push notification delivery for critical alerts
-2. Email digest for daily alert summary
-3. Cron job for automatic daily trend analysis
-4. Photo Diagnosis (Claude Vision)
-5. Equipment Tracking
-
-### Deployment Checklist
-- [ ] Deploy Edge Function: `npx supabase functions deploy analyze-parameter-trends`
-- [ ] Set ANTHROPIC_API_KEY in Supabase secrets
-- [ ] Configure Stripe live keys
-- [ ] Final production testing
+### P1 Enhancements (After Launch)
+1. Free Tools (Spec 16) — Static calculators for Free tier value
+2. Push notification delivery for critical alerts
+3. Email digest for daily alert summary
+4. Cron job for automatic daily trend analysis
+5. Photo Diagnosis (Claude Vision)
+6. Equipment Tracking

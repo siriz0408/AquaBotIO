@@ -85,43 +85,43 @@ export function validatePortalRequest(data: unknown): {
   return { success: true, data: result.data };
 }
 
-// Tier pricing info
+// Tier pricing info - Updated per Spec 18
 export const TIER_PRICING = {
   starter: {
     name: "Starter",
-    price: 399, // in cents
-    priceDisplay: "$3.99",
-    description: "For casual hobbyists with one tank",
+    price: 499, // in cents - changed from 399 per Spec 18
+    priceDisplay: "$4.99",
+    description: "Get a taste of AI assistance",
     features: [
-      "1 tank",
-      "100 AI messages/day",
-      "Water parameter tracking",
-      "Maintenance scheduling",
+      "2 tanks",
+      "10 AI messages/day",
+      "Full parameter tracking",
+      "10 tasks per tank",
     ],
   },
   plus: {
     name: "Plus",
-    price: 799,
-    priceDisplay: "$7.99",
-    description: "For dedicated hobbyists with multiple tanks",
+    price: 999, // changed from 799 per Spec 18
+    priceDisplay: "$9.99",
+    description: "Full AI-powered tank management",
     features: [
       "Up to 5 tanks",
-      "200 AI messages/day",
+      "100 AI messages/day",
       "Photo diagnosis (10/day)",
-      "Priority support",
+      "AI proactive alerts",
     ],
   },
   pro: {
     name: "Pro",
-    price: 1499,
-    priceDisplay: "$14.99",
-    description: "For serious aquarists",
+    price: 1999, // changed from 1499 per Spec 18
+    priceDisplay: "$19.99",
+    description: "Everything for serious aquarists",
     features: [
       "Unlimited tanks",
-      "Unlimited AI messages",
+      "500 AI messages/day",
       "Photo diagnosis (30/day)",
       "Equipment recommendations",
-      "Email reports",
+      "Weekly email reports",
     ],
   },
 } as const;

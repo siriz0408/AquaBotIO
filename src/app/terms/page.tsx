@@ -53,7 +53,7 @@ export default function TermsPage() {
 
           <h2>4. Subscription and Billing</h2>
           <ul>
-            <li>Free trials last 14 days with full access to features</li>
+            <li>Free trials last 7 days with full access to features</li>
             <li>Paid subscriptions are billed monthly or annually</li>
             <li>Cancellations take effect at the end of the billing period</li>
             <li>No refunds for partial months</li>

@@ -300,18 +300,18 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
               </div>
               <CardTitle>You&apos;re all set!</CardTitle>
               <CardDescription>
-                Your 14-day Pro trial has started. Explore all features!
+                Your 7-day Pro trial has started. Explore all features!
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="rounded-lg border p-4">
                 <h4 className="font-medium">What&apos;s included in Pro:</h4>
                 <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
-                  <li>• Unlimited AI conversations</li>
+                  <li>• 500 AI messages/day</li>
                   <li>• Unlimited tanks</li>
-                  <li>• Photo diagnosis</li>
-                  <li>• Advanced analytics</li>
-                  <li>• Email reports</li>
+                  <li>• Photo diagnosis (30/day)</li>
+                  <li>• Equipment recommendations</li>
+                  <li>• Weekly email reports</li>
                 </ul>
               </div>
             </CardContent>

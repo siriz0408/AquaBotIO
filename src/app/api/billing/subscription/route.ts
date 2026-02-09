@@ -34,6 +34,20 @@ export async function GET() {
       return errorResponse("INTERNAL_SERVER_ERROR", "Failed to fetch subscription");
     }
 
+    // Free tier info - per Spec 18: 0 AI messages, basic tools only
+    const FREE_TIER_INFO = {
+      name: "Free",
+      price: 0,
+      priceDisplay: "$0",
+      description: "Basic tools for getting started",
+      features: [
+        "1 tank",
+        "Parameter logging",
+        "Species database",
+        "3 maintenance tasks",
+      ],
+    };
+
     // Default to free tier if no subscription
     if (!subscription) {
       return successResponse({
@@ -43,17 +57,7 @@ export async function GET() {
         trial_ends_at: null,
         current_period_end: null,
         cancel_at_period_end: false,
-        tier_info: {
-          name: "Free",
-          price: 0,
-          priceDisplay: "$0",
-          description: "Basic access with limited features",
-          features: [
-            "1 tank",
-            "10 AI messages/day",
-            "Water parameter tracking",
-          ],
-        },
+        tier_info: FREE_TIER_INFO,
       });
     }
 
@@ -69,17 +73,7 @@ export async function GET() {
     // Get tier info
     const tierInfo =
       effectiveTier === "free"
-        ? {
-            name: "Free",
-            price: 0,
-            priceDisplay: "$0",
-            description: "Basic access with limited features",
-            features: [
-              "1 tank",
-              "10 AI messages/day",
-              "Water parameter tracking",
-            ],
-          }
+        ? FREE_TIER_INFO
         : TIER_PRICING[effectiveTier as keyof typeof TIER_PRICING] || TIER_PRICING.starter;
 
     // Calculate days remaining in trial

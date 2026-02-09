@@ -117,7 +117,7 @@ export default function SignupPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="text-center text-sm text-muted-foreground">
-            <p>Click the link in your email to activate your account and start your 14-day free trial.</p>
+            <p>Click the link in your email to activate your account and start your 7-day free trial.</p>
           </CardContent>
           <CardFooter className="flex flex-col gap-2">
             <Button
@@ -144,7 +144,7 @@ export default function SignupPage() {
           <CardTitle>
           <h1 className="text-2xl">Create your account</h1>
         </CardTitle>
-          <CardDescription>Start your 14-day free trial. No credit card required.</CardDescription>
+          <CardDescription>Start your 7-day free trial. No credit card required.</CardDescription>
         </CardHeader>
 
         <CardContent className="space-y-4">

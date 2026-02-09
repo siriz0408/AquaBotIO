@@ -29,6 +29,7 @@ AquaBotAI has been built from spec through 7 sprint cycles. This document maps e
 | `13_Admin_Portal_Management_Spec.md` | Admin Portal | NOT STARTED | 0% | P2 feature |
 | `16_AI_Chat_Embedded_Widgets_Spec.md` | AI Chat Embedded Widgets | NOT STARTED | 0% | P1 feature — Phase 2 priority (Quarantine Checklist, Water Change Calculator, Parameter Troubleshooting) |
 | `17_AI_Proactive_Intelligence_Spec.md` | AI Proactive Intelligence | **DONE** | **100%** | Action execution API, trend detection Edge Function, alert badge, "any alerts?" query, alerts page |
+| `18_Pricing_Strategy_Spec.md` | Pricing Strategy & Tier Restructuring | **DONE** | **100%** | Schema migration (6 columns), 7-day trial, TIER_LIMITS (0/10/100/500), resolveUserTier(), trend analysis gating, price display ($4.99/$9.99/$19.99) |
 | `00_Data_Model_Schema.md` | Database Schema | DONE | 98% | All P0 tables created. 6 migrations applied to remote |
 
 ---
@@ -208,6 +209,7 @@ AquaBotAI has been built from spec through 7 sprint cycles. This document maps e
 | 10 | Feb 8 | 96% → 96% | Vercel deployment, Stripe live keys, species expansion (25→180) |
 | 11 | Feb 9 | 96% → 98% | AI Action Execution API, proactive_alerts table, ActionConfirmation/ProactiveAlertBadge/ProactiveAlertCard components |
 | 12 | Feb 9 | 98% → 100% | Trend Analysis Edge Function, alert badge in chat header, "any alerts?" query, alerts list page |
+| 14 | Feb 9 | Spec 18 | Pricing Strategy backend: schema migration (6 cols), tier limits (0/10/100/500), resolveUserTier(), trend gating, $4.99/$9.99/$19.99 |
 
 ---
 

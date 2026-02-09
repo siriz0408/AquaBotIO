@@ -5,11 +5,71 @@
  * Called daily via cron job or on-demand after parameter logging.
  *
  * Per Spec 17: AI Proactive Intelligence & Action Execution (R-017.4)
+ * Per Spec 18: AI trend analysis is gated to Plus+ tiers only (R-018.6)
  */
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import Anthropic from "https://esm.sh/@anthropic-ai/sdk@0.39.0";
+
+// ============================================================================
+// Tier Resolution Helper (Spec 18 R-018.4)
+// ============================================================================
+
+/**
+ * Resolve user's effective tier for Edge Function context
+ * Priority chain:
+ * 1. Admin profile (admin_profiles.is_active = true) -> always 'pro'
+ * 2. Tier override (subscriptions.tier_override, not expired) -> override tier
+ * 3. Active trial (subscriptions.status = 'trialing', trial_ends_at > now) -> 'pro'
+ * 4. Active subscription (subscriptions.status = 'active') -> subscriptions.tier
+ * 5. Default -> 'free'
+ */
+async function resolveUserTierForEdgeFunction(
+  supabase: ReturnType<typeof createClient>,
+  userId: string
+): Promise<string> {
+  // 1. Check admin profile first
+  const { data: adminProfile } = await supabase
+    .from("admin_profiles")
+    .select("is_active")
+    .eq("user_id", userId)
+    .eq("is_active", true)
+    .single();
+
+  if (adminProfile) return "pro";
+
+  // 2. Check subscription
+  const { data: subscription } = await supabase
+    .from("subscriptions")
+    .select("tier, status, trial_ends_at, tier_override, override_expires_at")
+    .eq("user_id", userId)
+    .single();
+
+  if (!subscription) return "free";
+
+  // Check tier override
+  if (subscription.tier_override) {
+    const notExpired =
+      !subscription.override_expires_at ||
+      new Date(subscription.override_expires_at) > new Date();
+    if (notExpired) return subscription.tier_override;
+  }
+
+  // Check trial
+  const isTrialing =
+    subscription.status === "trialing" &&
+    subscription.trial_ends_at &&
+    new Date(subscription.trial_ends_at) > new Date();
+  if (isTrialing) return "pro";
+
+  // Active subscription
+  if (subscription.status === "active") {
+    return subscription.tier || "free";
+  }
+
+  return "free";
+}
 
 // ============================================================================
 // Types
@@ -513,6 +573,24 @@ serve(async (req: Request) => {
           error: { code: "NOT_FOUND", message: "Tank not found" },
         }),
         { status: 404, headers: corsHeaders }
+      );
+    }
+
+    // R-018.6: Check user tier - only Plus+ gets AI trend analysis
+    const userTier = await resolveUserTierForEdgeFunction(supabase, tank.user_id);
+    if (userTier === "free" || userTier === "starter") {
+      return new Response(
+        JSON.stringify({
+          success: true,
+          data: {
+            tank_id,
+            alerts_generated: 0,
+            message: "AI trend analysis requires Plus or Pro subscription.",
+            skipped_reason: "tier_restriction",
+            user_tier: userTier,
+          },
+        }),
+        { status: 200, headers: corsHeaders }
       );
     }
 
