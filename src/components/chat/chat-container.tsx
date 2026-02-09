@@ -274,8 +274,8 @@ export function ChatContainer({
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
+            action: action.type,
             tank_id: tankId,
-            action_type: action.type,
             payload: action.payload,
           }),
         });
