@@ -63,8 +63,9 @@
 | `SUPABASE_SERVICE_ROLE_KEY` | ✅ Set |
 | `ANTHROPIC_API_KEY` | ✅ Set — VERIFIED WORKING |
 | `NEXT_PUBLIC_APP_URL` | ✅ Set |
-| `STRIPE_SECRET_KEY` | ❌ Not set |
-| `STRIPE_WEBHOOK_SECRET` | ❌ Not set |
+| `STRIPE_SECRET_KEY` | ✅ Set (Vercel + .env.local) |
+| `STRIPE_WEBHOOK_SECRET` | ✅ Set (Vercel + .env.local) |
+| `STRIPE_PRICE_*` | ✅ Set — New prices ($4.99/$9.99/$19.99) |
 | `RESEND_API_KEY` | ❌ Not set |
 | `SENTRY_DSN` | ❌ Not set |
 
@@ -86,14 +87,16 @@
 | Sprint 12 | 98% → 100% | Trend Analysis Edge Function, alert badge in chat, "any alerts?" query, alerts list page |
 | Sprint 13 | 100% → PROD | Production deployment: Edge Function deployed, Supabase secrets set |
 | **Sprint 14** | **Spec 18** | **Pricing Strategy backend: schema migration, tier limits (0/10/100/500), resolveUserTier(), trend gating, price display ($4.99/$9.99/$19.99)** |
+| **Sprint 14b** | **PROD DEPLOY** | **Stripe prices created, Vercel env vars updated, deployed to production (https://aquabotai-mu.vercel.app)** |
 
 ## What's Next
 
-### Remaining for Production Launch
-- [ ] Configure Stripe products in Dashboard ($4.99 Starter, $9.99 Plus, $19.99 Pro)
-- [ ] Get Stripe live keys and set in Vercel env vars
-- [ ] Deploy to Vercel production
-- [ ] Final production smoke test
+### Production Launch — COMPLETE ✅
+- [x] Configure Stripe products in Dashboard ($4.99 Starter, $9.99 Plus, $19.99 Pro)
+- [x] Get Stripe live keys and set in Vercel env vars
+- [x] Deploy to Vercel production
+- [x] Verify pricing displays correctly on live site
+- [ ] Stripe webhook endpoint configuration (verify in Stripe Dashboard)
 
 ### P1 Enhancements (After Launch)
 1. Free Tools (Spec 16) — Static calculators for Free tier value
