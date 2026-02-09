@@ -1,11 +1,12 @@
 # Sprints Index
 
-> Total sprints: 15 (+ docs audit) | Last updated: 2026-02-09
+> Total sprints: 16 (+ docs audit) | Last updated: 2026-02-09
 
 Naming: `sprint_{NN}_summary.md`
 
 | Sprint | Date | Goals | Outcome | Carries |
 |--------|------|-------|---------|---------
+| Sprint 16 | 2026-02-09 | Free Tools (Task 18.1) | COMPLETE | — |
 | Sprint 15 | 2026-02-09 | Billing Verification | COMPLETE | Webhook config, Playwright fix |
 | Sprint 14b | 2026-02-09 | Pricing Production Deploy | COMPLETE | — |
 | Sprint 14 | 2026-02-09 | Pricing Strategy Backend | COMPLETE | — |

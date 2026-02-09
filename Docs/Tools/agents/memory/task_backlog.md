@@ -36,17 +36,17 @@
 **Dependencies:** Spec 16 (Free Tools) must ship first
 
 #### Task 18.1: Free Tools (Pre-Requisite Sprint)
-- **Status:** `PENDING`
+- **Status:** `COMPLETED` ✅ (Sprint 16)
 - **Agent:** Frontend Engineer
-- **Effort:** 1-2 sprints
+- **Effort:** 1 sprint
 - **Description:** Build static (non-AI) versions of key tools so Free tier has value
 - **Deliverables:**
-  - [ ] Static water change calculator (tank volume × percentage = gallons)
-  - [ ] Static stocking density calculator (basic fish-inches-per-gallon formula)
-  - [ ] Basic parameter reference guide (safe/warning/danger zones table)
-  - [ ] Tools accessible to ALL tiers including Free
+  - [x] Static water change calculator (tank volume × percentage = gallons)
+  - [x] Static stocking density calculator (basic fish-inches-per-gallon formula)
+  - [x] Basic parameter reference guide (safe/warning/danger zones table)
+  - [x] Tools accessible to ALL tiers including Free
 - **Reference:** Spec 16 (AI Chat Embedded Widgets) for tool designs
-- **Notes:** AI-enhanced versions come later; this builds the static base
+- **Completed:** Sprint 16 — Commit `ad218a2`
 
 #### Task 18.2: Pricing Backend (Schema + Stripe + Limits)
 - **Status:** `COMPLETED` ✅ (Sprint 14)

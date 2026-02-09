@@ -1,8 +1,8 @@
 # Active Work Board
 
-> Last updated: 2026-02-09 | Updated by: PM Orchestrator | Sprint 15 COMPLETE
+> Last updated: 2026-02-09 | Updated by: PM Orchestrator | Sprint 16 COMPLETE
 
-## MILESTONE: MVP Launch-Ready ✅ → Phase 2 Complete ✅ → Pricing Strategy 🚀
+## MILESTONE: MVP Launch-Ready ✅ → Phase 2 Complete ✅ → Pricing Strategy ✅ → Free Tools ✅
 
 | Feature | Status | Progress |
 |---------|--------|----------|
@@ -88,6 +88,7 @@
 | Sprint 13 | 100% → PROD | Production deployment: Edge Function deployed, Supabase secrets set |
 | **Sprint 14** | **Spec 18** | **Pricing Strategy backend: schema migration, tier limits (0/10/100/500), resolveUserTier(), trend gating, price display ($4.99/$9.99/$19.99)** |
 | **Sprint 14b** | **PROD DEPLOY** | **Stripe prices created, Vercel env vars updated, deployed to production (https://aquabotai-mu.vercel.app)** |
+| **Sprint 16** | **FREE TOOLS** | **Static calculators for Free tier: Water Change, Stocking, Parameter Reference at /tools** |
 | **Sprint 15** | **VERIFICATION** | **Billing E2E tests updated ($4.99/$9.99/$19.99), webhook code verified, action items for Sam (webhook + env vars)** |
 
 ## What's Next
