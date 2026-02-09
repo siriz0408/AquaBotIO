@@ -361,6 +361,7 @@ export function ChatContainer({
     <div className="flex flex-col h-full">
       {/* Header */}
       <ChatTopBar
+        tankId={tankId}
         tankName={activeTank?.name || "Tank"}
         tankType={activeTank?.type}
         tankVolume={activeTank?.volume_gallons}

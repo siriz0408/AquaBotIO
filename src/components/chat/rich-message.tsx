@@ -7,6 +7,8 @@ import { SpeciesCard } from "./messages/species-card";
 import { ParameterAlertCard } from "./messages/parameter-alert-card";
 import { ActionButtons } from "./action-buttons";
 import { ActionConfirmation, type ActionPayload } from "./action-confirmation";
+import { ProactiveAlertCard, type ProactiveAlert } from "./proactive-alert-card";
+import { toast } from "sonner";
 
 interface RichMessageProps {
   content: string;
@@ -15,6 +17,7 @@ interface RichMessageProps {
   onActionConfirm?: (action: ActionPayload) => Promise<void>;
   onActionCancel?: () => void;
   isPendingAction?: boolean;
+  onAlertDismiss?: (alertId: string) => void;
 }
 
 // Parse content into segments: markdown text vs structured blocks
@@ -59,20 +62,25 @@ interface ActionConfirmationSegment {
   type: "action-confirmation";
   data: ActionPayload;
 }
+interface ProactiveAlertSegment {
+  type: "proactive-alert";
+  data: ProactiveAlert;
+}
 
 type Segment =
   | TextSegment
   | SpeciesCardSegment
   | ParameterAlertSegment
   | ActionButtonsSegment
-  | ActionConfirmationSegment;
+  | ActionConfirmationSegment
+  | ProactiveAlertSegment;
 
-const BLOCK_TYPES = ["species-card", "parameter-alert", "action-buttons", "action-confirmation"];
+const BLOCK_TYPES = ["species-card", "parameter-alert", "action-buttons", "action-confirmation", "proactive-alert"];
 
 function parseContent(content: string): Segment[] {
   const segments: Segment[] = [];
   // Match fenced code blocks with our custom language tags
-  const pattern = /```(species-card|parameter-alert|action-buttons|action-confirmation)\n([\s\S]*?)```/g;
+  const pattern = /```(species-card|parameter-alert|action-buttons|action-confirmation|proactive-alert)\n([\s\S]*?)```/g;
 
   let lastIndex = 0;
   let match = pattern.exec(content);
@@ -100,6 +108,8 @@ function parseContent(content: string): Segment[] {
         segments.push({ type: "action-buttons", data: parsed });
       } else if (blockType === "action-confirmation") {
         segments.push({ type: "action-confirmation", data: parsed });
+      } else if (blockType === "proactive-alert") {
+        segments.push({ type: "proactive-alert", data: parsed });
       }
     } catch {
       // If JSON parsing fails, render as regular text
@@ -136,8 +146,49 @@ export function RichMessage({
   onActionConfirm,
   onActionCancel,
   isPendingAction,
+  onAlertDismiss,
 }: RichMessageProps) {
   const segments = useMemo(() => parseContent(content), [content]);
+
+  // Handle alert dismissal
+  const handleAlertDismiss = async (alertId: string) => {
+    try {
+      const response = await fetch("/api/ai/alerts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "dismiss",
+          alert_id: alertId,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        toast.success("Alert dismissed");
+        // Trigger refresh of alert counts
+        window.dispatchEvent(new Event("alerts-updated"));
+        if (onAlertDismiss) {
+          onAlertDismiss(alertId);
+        }
+      } else {
+        toast.error(data.error?.message || "Failed to dismiss alert");
+      }
+    } catch (error) {
+      console.error("Error dismissing alert:", error);
+      toast.error("Failed to dismiss alert");
+    }
+  };
+
+  // Handle taking action on alert suggestion
+  const handleAlertAction = (action: string) => {
+    // For now, just show a toast with the suggestion
+    // In future, this could trigger the actual action flow
+    toast.info(action, {
+      description: "Follow this suggestion to address the alert",
+      duration: 5000,
+    });
+  };
 
   if (isUser) {
     // User messages are always plain markdown
@@ -197,6 +248,17 @@ export function RichMessage({
                   }
                   onCancel={onActionCancel || (() => {})}
                   isPending={isPendingAction}
+                />
+              </div>
+            );
+
+          case "proactive-alert":
+            return (
+              <div key={index} className="-mx-4">
+                <ProactiveAlertCard
+                  alert={segment.data}
+                  onDismiss={handleAlertDismiss}
+                  onTakeAction={handleAlertAction}
                 />
               </div>
             );

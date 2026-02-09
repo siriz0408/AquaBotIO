@@ -98,6 +98,20 @@
 - `npm run lint` — PASS (no new ESLint errors)
 - Supabase migration — VERIFIED (proactive_alerts table live with RLS)
 
+### E2E Testing (Playwright MCP)
+- **Date:** 2026-02-09
+- **Test user:** test-sprint11@aquabotai.com
+- **Test tank:** "Test Tank Sprint 11" (55 gal freshwater)
+- **Test flow:**
+  1. User sends: "I just tested my water. pH is 7.2, ammonia 0, nitrite 0, nitrate 15. Can you log these for me?"
+  2. AI responds with ActionConfirmation component showing data preview
+  3. User clicks Confirm
+  4. Parameters saved to `water_parameters` table (verified via SQL query)
+  5. Success message displayed: "Done! Log water parameters... completed successfully."
+- **Bug found:** `action_type` → `action` key mismatch in chat-container.tsx
+- **Bug fixed:** Commit `ee8fea6`
+- **Result:** PASS — Full E2E action execution working
+
 ## Decisions Made
 1. **Discriminated union for action schema** — Better TypeScript inference
 2. **Species lookup by name** — Allows "add 3 neon tetras" without species_id

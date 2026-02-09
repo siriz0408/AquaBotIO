@@ -177,6 +177,71 @@ Valid action types: log_parameters, add_livestock, schedule_maintenance, complet
 Always confirm before executing actions. The app will display a confirmation card with Confirm/Cancel buttons.`;
 
 /**
+ * Alert query instructions for proactive intelligence
+ */
+const ALERT_QUERY_INSTRUCTIONS = `
+## Proactive Alert Queries
+
+When the user asks about alerts or tank status using phrases like:
+- "any alerts?"
+- "check my tank"
+- "how's my tank?"
+- "anything I should know?"
+- "status check"
+- "any issues?"
+- "any problems?"
+- "tank health"
+
+You should query for active proactive alerts and display them using the proactive-alert code block format.
+
+### Proactive Alert Card (use when showing detected trends or alerts)
+
+\`\`\`proactive-alert
+{"id":"alert-uuid","parameter":"pH","current_value":7.2,"unit":"","trend_direction":"decreasing","projection_text":"pH has been dropping 0.1 per week for 3 weeks. At this rate, it will reach the danger zone in 2 weeks.","likely_cause":"This trend started after you added 3 new fish on Feb 1","suggested_action":"Consider doing a 20% water change and checking your KH levels","severity":"warning"}
+\`\`\`
+
+- **id**: Unique alert identifier (from database)
+- **parameter**: The water parameter name (pH, ammonia, nitrite, nitrate, temperature, etc.)
+- **current_value**: The latest measured value
+- **unit**: Unit of measurement (ppm, °F, etc. - can be empty for pH)
+- **trend_direction**: One of "increasing", "decreasing", "stable", "spiking"
+- **projection_text**: AI-generated text describing the trend and projection
+- **likely_cause**: AI-generated correlation with recent events (optional)
+- **suggested_action**: AI-generated recommended action
+- **severity**: One of "info", "warning", "alert"
+
+When there are no active alerts, respond positively:
+"Great news! Your tank looks healthy with no concerning trends detected. Keep up the good work with your regular maintenance!"
+
+When there are alerts, introduce them clearly:
+"I've detected some trends that need your attention:"
+
+Then include a proactive-alert block for each alert.
+
+## Proactive Trend Detection
+
+When analyzing parameters, proactively detect concerning trends:
+
+1. **Trend Analysis**: Look for:
+   - Gradual increases/decreases over 7+ days
+   - Accelerating trends (rate of change increasing)
+   - Parameters approaching danger zones
+   - Pattern breaks (sudden changes)
+
+2. **Event Correlation**: Correlate parameter changes with:
+   - Recent livestock additions (last 7 days)
+   - Maintenance actions (water changes, filter cleaning)
+   - Equipment changes
+
+3. **Alert Severity**:
+   - **info**: Minor trend, no immediate concern
+   - **warning**: Needs attention soon, not urgent
+   - **alert**: Requires immediate action
+
+4. **Always be proactive**: If you notice concerning trends in the tank context, mention them even if the user didn't ask.`;
+
+
+/**
  * Generate the complete system prompt with tank context
  */
 export function generateSystemPrompt(context: TankContext | null): string {
@@ -199,6 +264,9 @@ export function generateSystemPrompt(context: TankContext | null): string {
 
   // Add action instructions
   parts.push(ACTION_INSTRUCTIONS);
+
+  // Add alert query instructions
+  parts.push(ALERT_QUERY_INSTRUCTIONS);
 
   // Add current date for context
   parts.push(`\n## Current Date: ${new Date().toISOString().split("T")[0]}`);

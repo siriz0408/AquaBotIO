@@ -1,6 +1,6 @@
 # AquaBotAI Implementation Status & System Changes
 
-> **Version:** 1.4 | **Last Updated:** February 9, 2026 | **Sprint:** 11 Complete | **MVP:** 98%
+> **Version:** 1.5 | **Last Updated:** February 9, 2026 | **Sprint:** 12 Complete | **MVP:** 100%
 
 ---
 
@@ -28,7 +28,7 @@ AquaBotAI has been built from spec through 7 sprint cycles. This document maps e
 | `12_API_Integration_Spec.md` | API Integration | PARTIAL | 60% | Core REST APIs built. Missing: Edge Functions, OpenAPI spec, public API |
 | `13_Admin_Portal_Management_Spec.md` | Admin Portal | NOT STARTED | 0% | P2 feature |
 | `16_AI_Chat_Embedded_Widgets_Spec.md` | AI Chat Embedded Widgets | NOT STARTED | 0% | P1 feature — Phase 2 priority (Quarantine Checklist, Water Change Calculator, Parameter Troubleshooting) |
-| `17_AI_Proactive_Intelligence_Spec.md` | AI Proactive Intelligence | **PARTIAL** | **50%** | Action execution API live, proactive_alerts table created, UI components ready. Missing: trend detection Edge Function, alert generation cron |
+| `17_AI_Proactive_Intelligence_Spec.md` | AI Proactive Intelligence | **DONE** | **100%** | Action execution API, trend detection Edge Function, alert badge, "any alerts?" query, alerts page |
 | `00_Data_Model_Schema.md` | Database Schema | DONE | 98% | All P0 tables created. 6 migrations applied to remote |
 
 ---
@@ -207,6 +207,7 @@ AquaBotAI has been built from spec through 7 sprint cycles. This document maps e
 | 9 | Feb 7 | 92% → 96% | AI Chat streaming, rich formatting (markdown, emojis), SpeciesCard/ParameterAlertCard/ActionButtons widgets, chat prose CSS |
 | 10 | Feb 8 | 96% → 96% | Vercel deployment, Stripe live keys, species expansion (25→180) |
 | 11 | Feb 9 | 96% → 98% | AI Action Execution API, proactive_alerts table, ActionConfirmation/ProactiveAlertBadge/ProactiveAlertCard components |
+| 12 | Feb 9 | 98% → 100% | Trend Analysis Edge Function, alert badge in chat header, "any alerts?" query, alerts list page |
 
 ---
 

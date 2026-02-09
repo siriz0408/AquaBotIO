@@ -258,6 +258,31 @@ export interface AuditLog {
   created_at: string;
 }
 
+// Proactive alerts types (Spec 17)
+export type AlertSeverity = "info" | "warning" | "alert";
+export type AlertStatus = "active" | "dismissed" | "resolved";
+export type TrendDirection = "increasing" | "decreasing" | "stable" | "spiking";
+
+export interface ProactiveAlert {
+  id: string;
+  tank_id: string;
+  user_id: string;
+  parameter: string;
+  current_value: number | null;
+  unit: string | null;
+  trend_direction: TrendDirection;
+  trend_rate: number | null;
+  projection_text: string | null;
+  likely_cause: string | null;
+  suggested_action: string | null;
+  severity: AlertSeverity;
+  status: AlertStatus;
+  created_at: string;
+  dismissed_at: string | null;
+  resolved_at: string | null;
+  resolved_by_action_id: string | null;
+}
+
 // Database schema type for Supabase client
 export interface Database {
   public: {
@@ -321,6 +346,11 @@ export interface Database {
         Row: AIUsage;
         Insert: Omit<AIUsage, "id" | "created_at" | "updated_at">;
         Update: Partial<Omit<AIUsage, "id" | "created_at">>;
+      };
+      proactive_alerts: {
+        Row: ProactiveAlert;
+        Insert: Omit<ProactiveAlert, "id" | "created_at">;
+        Update: Partial<Omit<ProactiveAlert, "id" | "created_at">>;
       };
     };
     Views: Record<string, never>;
