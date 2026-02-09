@@ -1,7 +1,7 @@
 # Memory System — Master Index
 
-> Last updated: 2026-02-08
-> Total entries: 31 (8 bugs, 9 decisions, 8 patterns, 2 mistakes, 10 sprints + docs audit)
+> Last updated: 2026-02-09
+> Total entries: 32 (8 bugs, 9 decisions, 8 patterns, 2 mistakes, 15 sprints + docs audit)
 > System version: v2 (updated with auto-spawn agent system + Supabase feedback)
 
 ## How This Works
@@ -30,7 +30,7 @@ Memory is populated through two loops:
 | Decisions | `decisions/` | 9 | Architecture choices and reasoning |
 | Patterns | `patterns/` | 8 | Proven solutions that work |
 | Mistakes | `mistakes/` | 2 | What went wrong and how to prevent it |
-| Sprints | `sprints/` | 10 (+ docs audit) | Sprint summaries and outcomes |
+| Sprints | `sprints/` | 15 (+ docs audit) | Sprint summaries and outcomes |
 | Feedback | `feedback/` | 0 | Sam's feedback and how we acted on it |
 | Agent Notes | `agent_notes/` | 0 | Per-agent working notes and gotchas |
 | Archive | `archive/` | 0 | Resolved entries older than 60 days |

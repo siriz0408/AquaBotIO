@@ -1,12 +1,18 @@
 # Sprints Index
 
-> Total sprints: 10 (+ docs audit) | Last updated: 2026-02-08
+> Total sprints: 15 (+ docs audit) | Last updated: 2026-02-09
 
 Naming: `sprint_{NN}_summary.md`
 
 | Sprint | Date | Goals | Outcome | Carries |
 |--------|------|-------|---------|---------
-| Sprint 10 | 2026-02-08 | Production Deployment | IN PROGRESS | Vercel, Stripe live keys, species expansion |
+| Sprint 15 | 2026-02-09 | Billing Verification | COMPLETE | Webhook config, Playwright fix |
+| Sprint 14b | 2026-02-09 | Pricing Production Deploy | COMPLETE | — |
+| Sprint 14 | 2026-02-09 | Pricing Strategy Backend | COMPLETE | — |
+| Sprint 13 | 2026-02-09 | Production Deployment | COMPLETE | — |
+| Sprint 12 | 2026-02-09 | Proactive Trend Detection | COMPLETE | — |
+| Sprint 11 | 2026-02-09 | AI Action Execution | COMPLETE | — |
+| Sprint 10 | 2026-02-08 | Production Deployment | COMPLETE | — |
 | Sprint 3 | 2026-02-08 | AI Chat Engine + Billing | COMPLETED | Action execution, context summarization |
 | Sprint 4 Cycle 1 | 2026-02-08 | Water Params + Species/Livestock | COMPLETED | Custom thresholds, AI trend analysis, stocking density |
 | Sprint 4 Cycle 2 | 2026-02-08 | Thresholds, Trend Analysis, Stocking | COMPLETED | — |

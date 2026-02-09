@@ -96,11 +96,11 @@ test.describe('Billing Page', () => {
       const isOnBillingPage = await page.url().includes('/billing');
 
       if (isOnBillingPage) {
-        // Verify pricing is displayed
+        // Verify pricing is displayed (Spec 18 pricing: $0/$4.99/$9.99/$19.99)
         await expect(page.getByText('$0')).toBeVisible({ timeout: 5000 }).catch(() => {});
-        await expect(page.getByText('$3.99')).toBeVisible({ timeout: 5000 }).catch(() => {});
-        await expect(page.getByText('$7.99')).toBeVisible({ timeout: 5000 }).catch(() => {});
-        await expect(page.getByText('$14.99')).toBeVisible({ timeout: 5000 }).catch(() => {});
+        await expect(page.getByText('$4.99')).toBeVisible({ timeout: 5000 }).catch(() => {});
+        await expect(page.getByText('$9.99')).toBeVisible({ timeout: 5000 }).catch(() => {});
+        await expect(page.getByText('$19.99')).toBeVisible({ timeout: 5000 }).catch(() => {});
       }
     });
 
@@ -302,9 +302,9 @@ test.describe('Pricing Page (Public)', () => {
       }
     });
 
-    // Pricing should be visible on landing page
+    // Pricing should be visible on landing page (Spec 18 pricing)
     await expect(page.getByText('Free', { exact: true })).toBeVisible({ timeout: 5000 }).catch(() => {});
-    await expect(page.getByText('$3.99/mo')).toBeVisible({ timeout: 5000 }).catch(() => {});
+    await expect(page.getByText('$4.99/mo')).toBeVisible({ timeout: 5000 }).catch(() => {});
   });
 
   test('should have Get Started buttons on pricing cards', async ({ page }) => {
