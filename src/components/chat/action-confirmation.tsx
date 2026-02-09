@@ -4,6 +4,7 @@ import { useState } from "react";
 import { FlaskConical, Fish, Calendar, CheckCircle2, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { useHapticFeedback } from "@/hooks/use-haptic-feedback";
 
 export type ActionType =
   | "log_parameters"
@@ -53,11 +54,13 @@ export function ActionConfirmation({
   className,
 }: ActionConfirmationProps) {
   const [isConfirming, setIsConfirming] = useState(false);
+  const { trigger: triggerHaptic } = useHapticFeedback();
 
   const config = ACTION_CONFIG[action.type];
   const Icon = config?.icon || FlaskConical;
 
   const handleConfirm = async () => {
+    triggerHaptic("success");
     setIsConfirming(true);
     try {
       await onConfirm();
@@ -116,6 +119,7 @@ export function ActionConfirmation({
         <Button
           onClick={handleConfirm}
           disabled={loading}
+          noHaptic
           className="bg-[#1B998B] hover:bg-[#1B998B]/90 text-white rounded-xl"
         >
           {loading ? (

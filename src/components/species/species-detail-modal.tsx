@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import Image from "next/image";
 import { X, Thermometer, Droplets, Ruler, Fish, Plus, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -55,13 +56,7 @@ export function SpeciesDetailModal({
   const [isLoadingTanks, setIsLoadingTanks] = useState(false);
   const [showTankPicker, setShowTankPicker] = useState(false);
 
-  useEffect(() => {
-    if (isOpen && showAddButton) {
-      loadTanks();
-    }
-  }, [isOpen, showAddButton]);
-
-  const loadTanks = async () => {
+  const loadTanks = useCallback(async () => {
     setIsLoadingTanks(true);
     try {
       const {
@@ -83,7 +78,13 @@ export function SpeciesDetailModal({
     } finally {
       setIsLoadingTanks(false);
     }
-  };
+  }, [supabase]);
+
+  useEffect(() => {
+    if (isOpen && showAddButton) {
+      loadTanks();
+    }
+  }, [isOpen, showAddButton, loadTanks]);
 
   const handleAddToTank = (tankId: string) => {
     if (onAddToTank) {
@@ -139,12 +140,15 @@ export function SpeciesDetailModal({
         </button>
 
         {/* Photo */}
-        <div className="aspect-video bg-gradient-to-br from-brand-cyan/20 to-purple-500/20 flex items-center justify-center">
+        <div className="aspect-video bg-gradient-to-br from-brand-cyan/20 to-purple-500/20 flex items-center justify-center relative">
           {species.photo_url ? (
-            <img
+            <Image
               src={species.photo_url}
               alt={species.common_name}
-              className="w-full h-full object-cover"
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, 500px"
+              priority
             />
           ) : (
             <span className="text-6xl">

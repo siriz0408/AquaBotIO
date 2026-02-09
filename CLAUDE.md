@@ -36,7 +36,9 @@ If specs conflict with code, prefer specs unless they are clearly outdated; flag
 | `14_Implementation_Status.md` | System changes audit — feature matrix, bug tracker, schema status, env config |
 | `15_UI_UX_Design_System.md` | **Canonical UI/UX guide** — colors, typography, layout, components, mobile patterns (from Wireframes) |
 | `16_AI_Chat_Embedded_Widgets_Spec.md` | AI Chat embedded widgets — Quarantine Checklist, Water Change Calculator, Parameter Troubleshooting (P1, Phase 2) |
-| `Open_Questions_Decisions.md` | 89 product decisions — 81 resolved, 8 awaiting input |
+| `17_AI_Proactive_Intelligence_Spec.md` | AI proactive alerts & action execution — Trend detection, proactive alerts, conversational action execution (P1, Phase 2) |
+| `18_Pricing_Strategy_Spec.md` | Pricing restructuring — Revised tiers ($0/$4.99/$9.99/$19.99), 7-day trial, admin/beta override, schema fixes, backend AI gating, GTM strategy |
+| `Open_Questions_Decisions.md` | 89+ product decisions — 83 resolved, 6 awaiting input (Q4.4 and Q4.5 updated by Spec 18) |
 
 **Wireframes** (`Docs/Wireframes/`):
 

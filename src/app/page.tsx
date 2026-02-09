@@ -31,12 +31,12 @@ export default function HomePage() {
           <div className="rounded-full bg-brand-cyan/10 px-4 py-1.5 text-sm font-medium text-brand-cyan dark:bg-brand-cyan/10 dark:text-brand-cyan-light">
             AI-Powered Aquarium Care
           </div>
-          <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
+          <h1 className="fluid-h1 font-bold tracking-tight">
             Your Aquarium&apos;s
             <span className="text-brand-cyan"> Intelligent </span>
             Companion
           </h1>
-          <p className="max-w-2xl text-lg text-muted-foreground md:text-xl">
+          <p className="max-w-2xl fluid-body-lg text-muted-foreground">
             Track water parameters, manage livestock, get personalized AI advice, and never miss a
             maintenance task. AquaBotAI makes aquarium care effortless.
           </p>
@@ -63,7 +63,7 @@ export default function HomePage() {
       <section id="features" className="container py-24">
         <div className="mx-auto flex max-w-5xl flex-col items-center gap-12">
           <div className="text-center">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+            <h2 className="fluid-h2 font-bold tracking-tight">
               Everything You Need for Healthy Aquariums
             </h2>
             <p className="mt-4 text-lg text-muted-foreground">
@@ -146,7 +146,7 @@ export default function HomePage() {
         <div className="container">
           <div className="mx-auto flex max-w-5xl flex-col items-center gap-12">
             <div className="text-center">
-              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+              <h2 className="fluid-h2 font-bold tracking-tight">
                 Simple, Transparent Pricing
               </h2>
               <p className="mt-4 text-lg text-muted-foreground">
@@ -241,7 +241,7 @@ export default function HomePage() {
       {/* CTA Section */}
       <section className="container py-24 text-center">
         <div className="mx-auto max-w-2xl">
-          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+          <h2 className="fluid-h2 font-bold tracking-tight">
             Ready to Transform Your Aquarium Care?
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">

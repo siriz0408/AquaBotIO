@@ -339,8 +339,15 @@ Implement as middleware/utility functions:
 
 ---
 
-**Document Status:** Initial Draft
-**Last Updated:** 2026-02-07
+---
+
+> **IMPORTANT: Pricing Restructuring Pending**
+> The tier structure, pricing, and trial duration in this spec are being superseded by **Spec 18 (Pricing Strategy & Tier Restructuring)**. Spec 18 introduces revised prices ($0/$4.99/$9.99/$19.99), 7-day trial (from 14-day), admin/beta override mechanisms, and a "free tools + AI premium" GTM strategy. This spec (07) remains the source of truth for Stripe integration patterns, webhook handling, grace period logic, and billing architecture. See `18_Pricing_Strategy_Spec.md` for the updated tier matrix and feature gating.
+
+---
+
+**Document Status:** Initial Draft — Pricing Pending Update (See Spec 18)
+**Last Updated:** 2026-02-09
 **Author:** Product & Engineering Team
-**Next Review:** After Phase 1 MVP launch
+**Next Review:** After Spec 18 implementation
 

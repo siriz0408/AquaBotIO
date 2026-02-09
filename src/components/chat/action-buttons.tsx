@@ -72,9 +72,9 @@ export function ActionButtons({ actions, className }: ActionButtonsProps) {
             <button
               key={index}
               onClick={() => router.push(url)}
-              className="inline-flex items-center gap-1.5 px-3 py-2 bg-brand-teal/10 hover:bg-brand-teal/20 text-brand-teal rounded-xl text-xs font-medium transition-all active:scale-95 border border-brand-teal/20"
+              className="inline-flex items-center gap-2 px-4 py-3 min-h-[44px] bg-brand-teal/10 hover:bg-brand-teal/20 text-brand-teal rounded-xl text-sm font-medium transition-all active:scale-95 border border-brand-teal/20"
             >
-              <Icon className="w-3.5 h-3.5" />
+              <Icon className="w-4 h-4" />
               <span>{action.label}</span>
             </button>
           );

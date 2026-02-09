@@ -7,6 +7,7 @@ import type {
   ToastActionElement,
   ToastProps,
 } from "@/components/ui/toast"
+import { triggerHaptic, type HapticPattern } from "@/hooks/use-haptic-feedback"
 
 const TOAST_LIMIT = 1
 const TOAST_REMOVE_DELAY = 1000000
@@ -143,8 +144,19 @@ function dispatch(action: Action) {
 
 type Toast = Omit<ToasterToast, "id">
 
+// Map toast variants to haptic patterns
+const TOAST_HAPTIC_MAP: Record<string, HapticPattern> = {
+  destructive: "error",
+}
+
 function toast({ ...props }: Toast) {
   const id = genId()
+
+  // Trigger haptic feedback based on variant
+  const hapticPattern = props.variant ? TOAST_HAPTIC_MAP[props.variant] : undefined
+  if (hapticPattern) {
+    triggerHaptic(hapticPattern)
+  }
 
   const update = (props: ToasterToast) =>
     dispatch({

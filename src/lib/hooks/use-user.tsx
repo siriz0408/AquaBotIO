@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, useCallback, ReactNode } from "react";
 import { User } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/client";
 
@@ -49,7 +49,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
 
   const supabase = createClient();
 
-  const fetchProfile = async (userId: string) => {
+  const fetchProfile = useCallback(async (userId: string) => {
     const { data, error } = await supabase
       .from("users")
       .select("*")
@@ -62,9 +62,9 @@ export function UserProvider({ children }: { children: ReactNode }) {
     }
 
     return data as UserProfile;
-  };
+  }, [supabase]);
 
-  const fetchSubscription = async (userId: string) => {
+  const fetchSubscription = useCallback(async (userId: string) => {
     const { data, error } = await supabase
       .from("subscriptions")
       .select("*")
@@ -77,7 +77,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
     }
 
     return data as Subscription;
-  };
+  }, [supabase]);
 
   const refreshProfile = async () => {
     if (!user) return;
@@ -104,7 +104,6 @@ export function UserProvider({ children }: { children: ReactNode }) {
     setSubscription(null);
   };
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const initializeAuth = async () => {
       try {
@@ -157,7 +156,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
     return () => {
       authSubscription.unsubscribe();
     };
-  }, []);
+  }, [supabase, fetchProfile, fetchSubscription]);
 
   return (
     <UserContext.Provider

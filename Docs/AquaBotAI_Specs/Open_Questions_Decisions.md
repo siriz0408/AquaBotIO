@@ -444,18 +444,18 @@ Cancel anytime — access continues until period end. No refunds issued. Simple,
 ---
 
 ### Q4.4 — Free Tier Long-Term Strategy
-**Source:** Spec 07 [Business]
+**Source:** Spec 07 [Business] — **Updated by Spec 18**
 
-**✅ DECISION: Maintain permanent free tier**
-Free tier drives user acquisition and word-of-mouth. 1 tank + 10 AI messages/day gives enough value to hook users. Conversion happens when users want: more tanks, photo diagnosis, maintenance scheduling, or more AI messages. No "pay what you want" — clear tier structure.
+**✅ DECISION (REVISED — Spec 18): Free tools, 0 AI messages post-trial**
+Free tier provides basic non-AI tools (parameter logging, species DB, static calculators) to attract users at zero AI cost. 0 AI messages post-trial — AI chat is the upgrade driver. Users see what AI CAN do via teasers/prompts but must upgrade to Starter ($4.99) for even limited AI access. GTM strategy: "free tools + AI premium." See `18_Pricing_Strategy_Spec.md` for full tier matrix.
 
 ---
 
 ### Q4.5 — Target Tier Distribution
-**Source:** Spec 07 [Business]
+**Source:** Spec 07 [Business] — **Updated by Spec 18**
 
-**✅ DECISION: Validate assumption of 60/20/15/5 (Free/Starter/Plus/Pro)**
-More conservative than the 40/40/20 assumption. Most users stay free. Starter converts the budget-conscious. Plus is the sweet spot (multi-tank, photo diagnosis). Pro is power users. Track and adjust pricing based on actual conversion data.
+**✅ DECISION (REVISED — Spec 18): 55/25/15/5 (Free/Starter/Plus/Pro) with new prices**
+New tier structure: Free ($0) / Starter ($4.99) / Plus ($9.99) / Pro ($19.99). Starter is the "competitor replacement" tier (all tools + taste of AI). Plus is the "AI power" tier (AI-enhanced tools, photo dx, proactive alerts). Pro is "everything" ($19.99). Distribution assumes free tools attract larger free base; AI upsell converts them. See `18_Pricing_Strategy_Spec.md` for full cost model.
 
 ---
 

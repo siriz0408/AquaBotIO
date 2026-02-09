@@ -133,36 +133,34 @@ export function TaskCard({ task, logs = [], onComplete, onEdit }: TaskCardProps)
             )}
           </div>
 
-          {/* Actions */}
+          {/* Actions - min 44px touch targets */}
           <div className="flex items-center gap-1 shrink-0">
             <Button
               variant="ghost"
               size="sm"
               onClick={() => onComplete(task.id)}
-              className="h-8 text-xs"
+              className="text-xs"
             >
-              <CheckCircle2 className="h-3 w-3 mr-1" />
+              <CheckCircle2 className="h-4 w-4 mr-1" />
               Complete
             </Button>
             <Button
               variant="ghost"
               size="icon"
               onClick={() => onEdit(task)}
-              className="h-8 w-8"
             >
-              <Edit className="h-3 w-3" />
+              <Edit className="h-4 w-4" />
             </Button>
             {logs.length > 0 && (
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => setIsExpanded(!isExpanded)}
-                className="h-8 w-8"
               >
                 {isExpanded ? (
-                  <ChevronUp className="h-3 w-3" />
+                  <ChevronUp className="h-4 w-4" />
                 ) : (
-                  <ChevronDown className="h-3 w-3" />
+                  <ChevronDown className="h-4 w-4" />
                 )}
               </Button>
             )}

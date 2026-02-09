@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { Trash2, MoreVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -44,12 +45,14 @@ export function LivestockCard({
       )}
     >
       {/* Icon */}
-      <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-xl">
+      <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-xl relative overflow-hidden">
         {livestock.species?.photo_url ? (
-          <img
+          <Image
             src={livestock.species.photo_url}
             alt={speciesName}
-            className="w-full h-full object-cover rounded-full"
+            fill
+            className="object-cover"
+            sizes="40px"
           />
         ) : (
           TYPE_EMOJIS[speciesType as keyof typeof TYPE_EMOJIS] || "🐟"
@@ -74,11 +77,11 @@ export function LivestockCard({
         </div>
       </div>
 
-      {/* Actions */}
+      {/* Actions - min 44px touch target */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon" className="h-8 w-8">
-            <MoreVertical className="h-4 w-4" />
+          <Button variant="ghost" size="icon">
+            <MoreVertical className="h-5 w-5" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">

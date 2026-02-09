@@ -4,19 +4,30 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Fish, Home, FlaskConical, Calendar, MessageSquare, Settings, Bell } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useTank } from "@/context/tank-context";
 
 interface NavLink {
   id: string;
   label: string;
   icon: typeof Home;
-  href: string;
+  href: string | ((tankId: string | null) => string);
 }
 
 const navLinks: NavLink[] = [
   { id: "home", label: "Dashboard", icon: Home, href: "/dashboard" },
-  { id: "parameters", label: "Parameters", icon: FlaskConical, href: "/parameters" },
+  {
+    id: "parameters",
+    label: "Parameters",
+    icon: FlaskConical,
+    href: (tankId) => tankId ? `/tanks/${tankId}/parameters` : "/dashboard"
+  },
   { id: "species", label: "Species", icon: Fish, href: "/species" },
-  { id: "maintenance", label: "Maintenance", icon: Calendar, href: "/maintenance" },
+  {
+    id: "maintenance",
+    label: "Maintenance",
+    icon: Calendar,
+    href: (tankId) => tankId ? `/tanks/${tankId}/maintenance` : "/dashboard"
+  },
   { id: "chat", label: "AI Chat", icon: MessageSquare, href: "/chat" },
 ];
 
@@ -27,10 +38,26 @@ interface DesktopNavbarProps {
 
 export function DesktopNavbar({ className, hasNotifications = false }: DesktopNavbarProps) {
   const pathname = usePathname();
+  const { activeTank } = useTank();
 
-  const isActive = (href: string) => {
+  const getHref = (link: NavLink): string => {
+    if (typeof link.href === "function") {
+      return link.href(activeTank?.id ?? null);
+    }
+    return link.href;
+  };
+
+  const isActive = (link: NavLink) => {
+    const href = getHref(link);
     if (href === "/dashboard") {
       return pathname === "/dashboard" || pathname === "/";
+    }
+    // For tank-specific routes, also match if we're on any tank's version
+    if (link.id === "parameters") {
+      return pathname.includes("/parameters");
+    }
+    if (link.id === "maintenance") {
+      return pathname.includes("/maintenance");
     }
     return pathname.startsWith(href);
   };
@@ -52,13 +79,14 @@ export function DesktopNavbar({ className, hasNotifications = false }: DesktopNa
         {/* Navigation Links */}
         <nav className="flex items-center gap-1">
           {navLinks.map((link) => {
-            const active = isActive(link.href);
+            const active = isActive(link);
             const Icon = link.icon;
+            const href = getHref(link);
 
             return (
               <Link
                 key={link.id}
-                href={link.href}
+                href={href}
                 className={cn(
                   "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors",
                   active
@@ -73,20 +101,20 @@ export function DesktopNavbar({ className, hasNotifications = false }: DesktopNa
           })}
         </nav>
 
-        {/* Right Actions */}
-        <div className="flex items-center gap-2">
+        {/* Right Actions - min 44px touch targets */}
+        <div className="flex items-center gap-1">
           <Link
             href="/notifications"
-            className="relative p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            className="relative p-3 rounded-lg hover:bg-gray-100 transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
           >
             <Bell className="h-5 w-5 text-gray-600" />
             {hasNotifications && (
-              <span className="absolute top-1 right-1 w-2 h-2 bg-brand-alert rounded-full" />
+              <span className="absolute top-2 right-2 w-2 h-2 bg-brand-alert rounded-full" />
             )}
           </Link>
           <Link
             href="/settings"
-            className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            className="p-3 rounded-lg hover:bg-gray-100 transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
           >
             <Settings className="h-5 w-5 text-gray-600" />
           </Link>

@@ -57,9 +57,7 @@ export async function handleCheckoutCompleted(
     .eq("id", userId);
 
   // Get subscription details from Stripe
-  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
-    apiVersion: "2025-02-24.acacia",
-  });
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "");
 
   const subscription = await stripe.subscriptions.retrieve(subscriptionId);
 
@@ -119,9 +117,7 @@ export async function handleInvoicePaid(invoice: Stripe.Invoice) {
   }
 
   // Get subscription from Stripe
-  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
-    apiVersion: "2025-02-24.acacia",
-  });
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "");
 
   const subscription = await stripe.subscriptions.retrieve(subscriptionId);
 

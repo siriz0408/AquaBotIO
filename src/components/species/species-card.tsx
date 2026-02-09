@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import type { Species } from "@/types/database";
@@ -39,12 +40,14 @@ export function SpeciesCard({ species, onClick, className }: SpeciesCardProps) {
       onClick={onClick}
     >
       {/* Photo placeholder */}
-      <div className="aspect-video bg-gradient-to-br from-brand-cyan/20 to-purple-500/20 flex items-center justify-center">
+      <div className="aspect-video bg-gradient-to-br from-brand-cyan/20 to-purple-500/20 flex items-center justify-center relative">
         {species.photo_url ? (
-          <img
+          <Image
             src={species.photo_url}
             alt={species.common_name}
-            className="w-full h-full object-cover"
+            fill
+            className="object-cover"
+            sizes="(max-width: 768px) 100vw, 300px"
           />
         ) : (
           <span className="text-4xl">

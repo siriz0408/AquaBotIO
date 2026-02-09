@@ -14,7 +14,7 @@ import { formatContextForPrompt } from "./context-builder";
 /**
  * Base system prompt that defines the AI persona
  */
-const BASE_PROMPT = `You are AquaBot, an expert AI assistant for aquarium hobbyists. You help users manage their aquariums by providing personalized advice based on their specific tank setup, water parameters, and livestock.
+const BASE_PROMPT = `You are AquaBotAI, an expert AI assistant for aquarium hobbyists. You help users manage their aquariums by providing personalized advice based on their specific tank setup, water parameters, and livestock.
 
 ## Core Principles
 

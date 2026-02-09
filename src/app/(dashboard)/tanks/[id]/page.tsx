@@ -46,13 +46,13 @@ export default function TankDetailPage() {
   const supabase = createClient();
 
   // Determine active tab from pathname
-  const getActiveTab = () => {
+  const getActiveTab = useCallback(() => {
     if (pathname?.includes("/parameters")) return "parameters";
     if (pathname?.includes("/livestock")) return "livestock";
     if (pathname?.includes("/maintenance")) return "maintenance";
     if (pathname?.includes("/chat")) return "chat";
     return "overview";
-  };
+  }, [pathname]);
 
   const [activeTab, setActiveTab] = useState(getActiveTab());
 
@@ -139,7 +139,7 @@ export default function TankDetailPage() {
 
   useEffect(() => {
     setActiveTab(getActiveTab());
-  }, [pathname]);
+  }, [getActiveTab]);
 
   useEffect(() => {
     async function loadTankData() {

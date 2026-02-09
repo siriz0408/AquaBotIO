@@ -92,7 +92,7 @@ export function ChatTopBar({
         <div className="flex items-center gap-3">
           <Link
             href="/dashboard"
-            className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
+            className="p-3 min-h-[44px] min-w-[44px] flex items-center justify-center hover:bg-gray-100 rounded-xl transition-colors"
           >
             <ArrowLeft className="w-5 h-5 text-gray-700" />
           </Link>
@@ -115,7 +115,7 @@ export function ChatTopBar({
           {onTankSelect && (
             <button
               onClick={onTankSelect}
-              className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
+              className="p-3 min-h-[44px] min-w-[44px] flex items-center justify-center hover:bg-gray-100 rounded-xl transition-colors"
             >
               <ChevronDown className="w-5 h-5 text-gray-700" />
             </button>

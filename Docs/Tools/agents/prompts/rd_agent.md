@@ -28,7 +28,7 @@ Read these before doing any research (load only what's relevant to the current i
 | **Roadmap** | `Docs/Roadmap/AquaBotAI_Product_Roadmap.md` | Now/Next/Later roadmap, RICE scores, milestones |
 | **Sprint History** | `Docs/Tools/agents/memory/sprints/INDEX.md` | What's been built, sprint by sprint |
 | **User Feedback** | `Docs/Tools/agents/memory/feedback/` | What Sam has flagged or requested |
-| **Feature Specs** | `Docs/AquaBotAI_Specs/` (00-16) | Detailed specs for every feature area |
+| **Feature Specs** | `Docs/AquaBotAI_Specs/` (00-18) | Detailed specs for every feature area |
 | **Decisions** | `Docs/Tools/agents/memory/decisions/` | Architecture choices and reasoning |
 | **Patterns** | `Docs/Tools/agents/memory/patterns/` | Reusable solutions that worked |
 
@@ -354,7 +354,7 @@ When Sam says "spec it out" after reviewing your research, shift into spec-writi
 9. **Data Model Changes** — New tables/columns (reference `00_Data_Model_Schema.md`)
 10. **Open Questions** — What needs deciding before building
 
-Save specs to `Docs/AquaBotAI_Specs/` following the naming convention: `17_Feature_Name_Spec.md`, `18_...`, etc.
+Save specs to `Docs/AquaBotAI_Specs/` following the naming convention: `18_Feature_Name_Spec.md`, `19_...`, etc.
 
 ---
 

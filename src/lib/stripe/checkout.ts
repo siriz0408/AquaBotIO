@@ -52,8 +52,8 @@ export async function createCheckoutSession({
         tier,
       },
     },
-    // Enable automatic tax calculation
-    automatic_tax: { enabled: true },
+    // Automatic tax disabled until Stripe Tax is configured in Dashboard
+    // automatic_tax: { enabled: true },
     // Allow promotion codes
     allow_promotion_codes: true,
     // Customer handling

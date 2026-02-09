@@ -24,7 +24,7 @@ Read `CLAUDE.md` for the full tech stack, coding standards, and project rules. K
 - **Tech:** Next.js 14, TypeScript, Tailwind, shadcn/ui, Supabase, Claude AI, Stripe, Vercel
 - **Phase:** MVP development (P0 features)
 - **Target:** Late May 2026 (~Week 14)
-- **Specs:** 19 spec docs in `Docs/AquaBotAI_Specs/` (includes `14_Implementation_Status.md` and `15_UI_UX_Design_System.md`)
+- **Specs:** 21 spec docs in `Docs/AquaBotAI_Specs/` (includes `14_Implementation_Status.md`, `15_UI_UX_Design_System.md`, and `18_Pricing_Strategy_Spec.md`)
 - **Wireframes:** `Docs/Wireframes/` — Figma-exported React components, **source of truth for all UI**
 - **Ship Readiness:** 6 docs in `Docs/Ship_Readiness/`
 - **Roadmap:** `Docs/Roadmap/AquaBotAI_Product_Roadmap.md`
@@ -114,7 +114,7 @@ Every agent gets a **~50-line Task Brief** instead of loading entire docs. You b
    - Project ID: AquaBotAI, current phase, tech stack summary
    - CLAUDE.md Essentials: Critical coding rules only (not the full 460 lines)
    - Memory Index: Table of contents with 1-line summaries
-   - Spec Index: All 19 specs with brief purpose
+   - Spec Index: All 20 specs with brief purpose
    - Code Map: Directory structure — which files belong to which features
    - Active Work Board snapshot: What every agent is currently doing
    - **Design System reference** (for Frontend tasks): Brand colors, layout rules, wireframe mapping from `15_UI_UX_Design_System.md`
@@ -160,11 +160,18 @@ Instead of loading a full 400-line spec:
 
 You maintain `memory/active_work.md` — the team's whiteboard showing what every agent is working on.
 
+**Related:** `memory/task_backlog.md` — Central task list for sprint planning. Tasks move from backlog → sprint plan → active work → completed.
+
 ### Update the board when:
 - Assigning a new task to an agent
 - An agent completes or changes status on a task
 - Dependencies shift
 - A conflict is detected
+
+### Update task backlog when:
+- New tasks identified (from specs, feedback, bugs, research)
+- Tasks assigned to sprint (status: `PENDING` → `PLANNED`)
+- Tasks completed (status: `IN_PROGRESS` → `COMPLETED`)
 
 ### Fields:
 | Agent | Task | Branch | Key Files | Depends On | Status |
@@ -204,6 +211,9 @@ Auth → Tanks → AI Chat → Parameters. What's unblocked? What can run in par
 
 ### Step 5: Check Bug Backlog
 P0 bugs block the sprint. P1 bugs get scheduled first. Check `memory/bugs/INDEX.md`.
+
+### Step 5.5: Review Task Backlog
+Check `memory/task_backlog.md` for pending tasks from specs, feedback, research, or handoffs. Prioritize P0 tasks (pre-launch), then P1 (post-launch). Update task status from `PENDING` → `PLANNED` when assigning to sprint. Tasks with dependencies must be sequenced correctly.
 
 ### Step 6: Review Ship Readiness
 Are we accumulating security debt? Missing tests? Check the 6 ship readiness docs.
@@ -566,7 +576,7 @@ Track these every sprint, not just at launch:
 - **Always check Sam's feedback FIRST** — query `SELECT * FROM feedback WHERE status = 'pending'` at the start of every run. Sam's feedback drives priorities.
 - **Always respond to feedback** — update `status` and `pm_notes` in the `feedback` table so Sam knows you read it.
 - CLAUDE.md is the source of truth for coding standards. Always reference it.
-- Specs in `Docs/AquaBotAI_Specs/` (19 docs) are the source of truth for features. Code follows specs.
+- Specs in `Docs/AquaBotAI_Specs/` (20 docs) are the source of truth for features. Code follows specs.
 - Wireframes in `Docs/Wireframes/` are the source of truth for UI design. Code follows wireframes.
 - `15_UI_UX_Design_System.md` is the canonical design guide — MANDATORY for all Frontend tasks.
 - If specs conflict with code, prefer specs unless clearly outdated — flag the conflict.

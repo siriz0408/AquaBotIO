@@ -64,12 +64,13 @@ export function BottomTabBar({ className, hasUnreadChat = false }: BottomTabBarP
 
   return (
     <nav
+      aria-label="Main navigation"
       className={cn(
         "fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-40 pb-safe md:hidden",
         className
       )}
     >
-      <div className="flex items-center justify-around px-2 py-2">
+      <div className="flex items-center justify-around px-2 py-2" role="list">
         {tabs.map((tab) => {
           const active = isActive(tab);
           const href = getHref(tab);
@@ -79,20 +80,30 @@ export function BottomTabBar({ className, hasUnreadChat = false }: BottomTabBarP
             <Link
               key={tab.id}
               href={href}
+              role="listitem"
+              aria-current={active ? "page" : undefined}
               className={cn(
                 "flex flex-col items-center gap-1 px-3 py-2 rounded-xl transition-all relative",
+                "min-h-[44px] min-w-[44px]", // WCAG 2.5.5 touch target
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal focus-visible:ring-offset-2",
                 active
                   ? "text-brand-teal"
                   : "text-gray-500 hover:text-gray-700 active:scale-95"
               )}
             >
               {tab.id === "chat" && hasUnreadChat && (
-                <span className="absolute top-1 right-2 w-2 h-2 bg-brand-alert rounded-full" />
+                <span
+                  className="absolute top-1 right-2 w-2 h-2 bg-brand-alert rounded-full"
+                  aria-label="Unread messages"
+                />
               )}
-              <Icon className="w-5 h-5" />
+              <Icon className="w-5 h-5" aria-hidden="true" />
               <span className="text-xs font-medium">{tab.label}</span>
               {active && (
-                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 bg-brand-teal rounded-full" />
+                <div
+                  className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 bg-brand-teal rounded-full"
+                  aria-hidden="true"
+                />
               )}
             </Link>
           );

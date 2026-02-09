@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import Image from "next/image";
 import { X, Search, Plus, Minus, Loader2, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -192,12 +193,14 @@ export function AddLivestockModal({
               {selectedSpecies ? (
                 <div className="p-4 rounded-lg border bg-muted/30">
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-lg bg-muted flex items-center justify-center text-2xl">
+                    <div className="w-12 h-12 rounded-lg bg-muted flex items-center justify-center text-2xl relative overflow-hidden">
                       {selectedSpecies.photo_url ? (
-                        <img
+                        <Image
                           src={selectedSpecies.photo_url}
                           alt={selectedSpecies.common_name}
-                          className="w-full h-full object-cover rounded-lg"
+                          fill
+                          className="object-cover"
+                          sizes="48px"
                         />
                       ) : (
                         "🐟"
@@ -297,12 +300,14 @@ export function AddLivestockModal({
                           onClick={() => handleSelectSpecies(species)}
                           className="w-full flex items-center gap-3 p-3 rounded-lg border hover:bg-muted/50 transition-colors text-left"
                         >
-                          <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center text-xl">
+                          <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center text-xl relative overflow-hidden">
                             {species.photo_url ? (
-                              <img
+                              <Image
                                 src={species.photo_url}
                                 alt={species.common_name}
-                                className="w-full h-full object-cover rounded-lg"
+                                fill
+                                className="object-cover"
+                                sizes="40px"
                               />
                             ) : (
                               "🐟"
