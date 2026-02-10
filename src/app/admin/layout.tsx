@@ -25,9 +25,10 @@ export default async function AdminLayout({
 
   // Check if user is an admin
   const { data: adminProfile } = await supabase
-    .from("admin_profiles")
-    .select("role, user_id")
+    .from("admin_users")
+    .select("role, user_id, is_active")
     .eq("user_id", user.id)
+    .eq("is_active", true)
     .single();
 
   if (!adminProfile) {
@@ -38,14 +39,14 @@ export default async function AdminLayout({
   // Get user display info
   const { data: userData } = await supabase
     .from("users")
-    .select("email, display_name")
+    .select("email, full_name")
     .eq("id", user.id)
     .single();
 
   const adminUser = {
     id: user.id,
     email: userData?.email || user.email || "",
-    display_name: userData?.display_name || null,
+    display_name: userData?.full_name || null,
     role: adminProfile.role as "super_admin" | "content_admin" | "support_admin",
   };
 
