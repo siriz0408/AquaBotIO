@@ -1,6 +1,6 @@
 # AquaBotAI Implementation Status & System Changes
 
-> **Version:** 1.5 | **Last Updated:** February 9, 2026 | **Sprint:** 12 Complete | **MVP:** 100%
+> **Version:** 1.6 | **Last Updated:** February 10, 2026 | **Sprint:** 20 Complete | **MVP:** 100%
 
 ---
 
@@ -22,12 +22,12 @@ AquaBotAI has been built from spec through 7 sprint cycles. This document maps e
 | `03_Water_Parameters_Analysis_Spec.md` | Water Parameters | DONE | 100% | Log form, current display, history widget, API route, trend analysis API |
 | `04_Species_Database_Livestock_Spec.md` | Species & Livestock | DONE | 100% | 180 species seeded, search, filters, livestock list, add-to-tank, compatibility API |
 | `05_Maintenance_Scheduling_Spec.md` | Maintenance Scheduling | DONE | 95% | CRUD, recurring tasks, completion tracking, summary widget. Missing: push notifications |
-| `09_Photo_Diagnosis_Spec.md` | Photo Diagnosis | NOT STARTED | 0% | P1 feature — requires Claude Vision |
+| `09_Photo_Diagnosis_Spec.md` | Photo Diagnosis | **DONE** | **100%** | Claude Vision species ID + disease diagnosis, PhotoDiagnosisCard, tier gating (Plus:10/Pro:30), treatment plans |
 | `10_Equipment_Tracking_Recommendations_Spec.md` | Equipment Tracking | NOT STARTED | 0% | P2 feature |
 | `11_Interactive_Dashboards_Reports_Spec.md` | Enhanced Dashboards | NOT STARTED | 0% | P1 feature |
 | `12_API_Integration_Spec.md` | API Integration | PARTIAL | 60% | Core REST APIs built. Missing: Edge Functions, OpenAPI spec, public API |
 | `13_Admin_Portal_Management_Spec.md` | Admin Portal | NOT STARTED | 0% | P2 feature |
-| `16_AI_Chat_Embedded_Widgets_Spec.md` | AI Chat Embedded Widgets | NOT STARTED | 0% | P1 feature — Phase 2 priority (Quarantine Checklist, Water Change Calculator, Parameter Troubleshooting) |
+| `16_AI_Chat_Embedded_Widgets_Spec.md` | AI Chat Embedded Widgets | **DONE** | **100%** | QuarantineChecklist, WaterChangeCalculator, ParameterTroubleshooting widgets in chat |
 | `17_AI_Proactive_Intelligence_Spec.md` | AI Proactive Intelligence | **DONE** | **100%** | Action execution API, trend detection Edge Function, alert badge, "any alerts?" query, alerts page |
 | `18_Pricing_Strategy_Spec.md` | Pricing Strategy & Tier Restructuring | **DONE** | **100%** | Schema migration (6 columns), 7-day trial, TIER_LIMITS (0/10/100/500), resolveUserTier(), trend analysis gating, price display ($4.99/$9.99/$19.99) |
 | `00_Data_Model_Schema.md` | Database Schema | DONE | 98% | All P0 tables created. 6 migrations applied to remote |
@@ -71,6 +71,8 @@ AquaBotAI has been built from spec through 7 sprint cycles. This document maps e
 | `parameter_thresholds` | Sprint 7 | Active |
 | `compatibility_checks` | Sprint 7 | Active |
 | `proactive_alerts` | Sprint 11 | Active, RLS enabled |
+| `quarantine_tracking` | Sprint 19 | Active, RLS enabled |
+| `photo_diagnoses` | Sprint 20 | Active, RLS enabled |
 
 ### RPC Functions (Remote)
 | Function | Status |
@@ -82,6 +84,8 @@ AquaBotAI has been built from spec through 7 sprint cycles. This document maps e
 | `update_ai_token_usage()` | Active (Sprint 7) |
 | `get_parameter_thresholds()` | Active (Sprint 7) |
 | `cleanup_expired_compatibility_checks()` | Active (Sprint 7) |
+| `check_and_increment_photo_diagnosis_usage()` | Active (Sprint 20) |
+| `get_photo_diagnosis_usage_info()` | Active (Sprint 20) |
 
 ---
 
@@ -186,7 +190,7 @@ AquaBotAI has been built from spec through 7 sprint cycles. This document maps e
 9. **Push notifications** — Wire up SW push handler to maintenance reminders
 
 ### P2 — Nice to Have
-10. **Photo Diagnosis** — Claude Vision integration
+10. ~~**Photo Diagnosis** — Claude Vision integration~~ ✅ Done in Sprint 20
 11. **Admin Portal** — User/content management
 12. **Email notifications** — Resend integration (3 TODOs in webhook handlers)
 13. **Change Password** — Settings page placeholder
@@ -210,6 +214,12 @@ AquaBotAI has been built from spec through 7 sprint cycles. This document maps e
 | 11 | Feb 9 | 96% → 98% | AI Action Execution API, proactive_alerts table, ActionConfirmation/ProactiveAlertBadge/ProactiveAlertCard components |
 | 12 | Feb 9 | 98% → 100% | Trend Analysis Edge Function, alert badge in chat header, "any alerts?" query, alerts list page |
 | 14 | Feb 9 | Spec 18 | Pricing Strategy backend: schema migration (6 cols), tier limits (0/10/100/500), resolveUserTier(), trend gating, $4.99/$9.99/$19.99 |
+| 15 | Feb 9 | Billing | Stripe webhook verification, billing flow complete |
+| 16 | Feb 9 | Tools | Free Tools for all tiers |
+| 17 | Feb 9 | Auth | OAuth/magic link users complete onboarding fix |
+| 18 | Feb 9 | PWA | Push notifications infrastructure, VAPID keys |
+| 19 | Feb 9 | Widgets | AI Chat Embedded Widgets (Quarantine, WaterChange, ParameterTroubleshooting) |
+| 20 | Feb 10 | P1 | **Photo Diagnosis** — Claude Vision species ID + disease diagnosis, PhotoDiagnosisCard, tier gating |
 
 ---
 
