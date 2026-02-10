@@ -13,10 +13,11 @@ interface SuggestedPrompt {
 
 interface EmptyStateProps {
   onSuggestedPrompt: (prompt: string) => void;
+  hasTank?: boolean;
   className?: string;
 }
 
-const suggestedPrompts: SuggestedPrompt[] = [
+const tankPrompts: SuggestedPrompt[] = [
   {
     id: "1",
     icon: "🐠",
@@ -37,7 +38,30 @@ const suggestedPrompts: SuggestedPrompt[] = [
   },
 ];
 
-export function EmptyState({ onSuggestedPrompt, className }: EmptyStateProps) {
+const generalPrompts: SuggestedPrompt[] = [
+  {
+    id: "g1",
+    icon: "🐠",
+    title: "Beginner Setup",
+    prompt: "I'm new to fishkeeping. What do I need to start a freshwater tank?",
+  },
+  {
+    id: "g2",
+    icon: "🧪",
+    title: "Nitrogen Cycle",
+    prompt: "Can you explain the nitrogen cycle for beginners?",
+  },
+  {
+    id: "g3",
+    icon: "🐡",
+    title: "Species Advice",
+    prompt: "What are good beginner-friendly freshwater fish?",
+  },
+];
+
+export function EmptyState({ onSuggestedPrompt, hasTank = true, className }: EmptyStateProps) {
+  const suggestedPrompts = hasTank ? tankPrompts : generalPrompts;
+
   return (
     <div className={cn("h-full flex flex-col items-center justify-center p-6", className)}>
       <motion.div
@@ -52,7 +76,10 @@ export function EmptyState({ onSuggestedPrompt, className }: EmptyStateProps) {
           Hi! I&apos;m AquaBot
         </h2>
         <p className="text-gray-600">
-          Ask me anything about your tank, water quality, or livestock
+          {hasTank
+            ? "Ask me anything about your tank, water quality, or livestock"
+            : "Ask me anything about aquarium care, fishkeeping, or getting started"
+          }
         </p>
       </motion.div>
 

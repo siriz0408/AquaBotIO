@@ -16,6 +16,7 @@ import {
   UpcomingMaintenance,
   LivestockSummary,
   FreeToolsPromo,
+  MyTanks,
 } from "@/components/dashboard";
 
 interface Tank {
@@ -150,7 +151,14 @@ export default function DashboardPage() {
       )}
 
       {/* Main Content */}
-      <div className="flex-1 py-6 space-y-6">
+      <div className="flex-1 container max-w-6xl py-6 space-y-6">
+        {/* My Tanks Section */}
+        <MyTanks
+          tanks={tanks}
+          selectedTankId={selectedTankId}
+          onSelectTank={setSelectedTankId}
+        />
+
         {/* Parameter Cards - Horizontal Scroll */}
         <ParameterCards />
 

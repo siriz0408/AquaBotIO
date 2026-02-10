@@ -51,13 +51,10 @@ export function ChatContainer({
 
   // Load chat history
   const loadHistory = useCallback(async () => {
-    if (!tankId) {
-      setIsInitialLoading(false);
-      return;
-    }
-
     try {
-      const response = await fetch(`/api/ai/chat?tank_id=${tankId}&limit=50`);
+      const params = new URLSearchParams({ limit: "50" });
+      if (tankId) params.set("tank_id", tankId);
+      const response = await fetch(`/api/ai/chat?${params.toString()}`);
       const data = await response.json();
 
       if (data.success) {
@@ -81,10 +78,6 @@ export function ChatContainer({
 
   // Send a message with streaming
   const handleSend = async (content: string) => {
-    if (!tankId) {
-      toast.error("Please select a tank first");
-      return;
-    }
 
     // Add optimistic user message
     const userMessage: Message = {
@@ -112,7 +105,7 @@ export function ChatContainer({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          tank_id: tankId,
+          ...(tankId ? { tank_id: tankId } : {}),
           message: content,
         }),
       });
@@ -337,32 +330,12 @@ export function ChatContainer({
     setMessages((prev) => [...prev, cancelMessage]);
   }, []);
 
-  // No tank selected
-  if (!tankId) {
-    return (
-      <div className="flex flex-col h-full">
-        <ChatTopBar tankName="Select Tank" />
-        <div className="flex-1 flex flex-col items-center justify-center p-8 bg-brand-bg">
-          <div className="text-center max-w-md">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-brand-teal/20 to-brand-navy/20 flex items-center justify-center">
-              <span className="text-3xl">🐟</span>
-            </div>
-            <h3 className="text-lg font-semibold mb-2 text-brand-navy">Select a Tank</h3>
-            <p className="text-gray-600 text-sm">
-              Choose a tank to start chatting with AquaBot about your aquarium.
-            </p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
       <ChatTopBar
         tankId={tankId}
-        tankName={activeTank?.name || "Tank"}
+        tankName={tankId ? (activeTank?.name || "Tank") : "General Chat"}
         tankType={activeTank?.type}
         tankVolume={activeTank?.volume_gallons}
       />
@@ -382,7 +355,7 @@ export function ChatContainer({
         </div>
       ) : messages.length === 0 ? (
         <div className="flex-1 overflow-y-auto bg-brand-bg">
-          <EmptyState onSuggestedPrompt={handleSuggestedPrompt} />
+          <EmptyState onSuggestedPrompt={handleSuggestedPrompt} hasTank={!!tankId} />
         </div>
       ) : (
         <div className="flex-1 overflow-y-auto bg-brand-bg">
@@ -417,7 +390,7 @@ export function ChatContainer({
       <ChatInput
         onSend={handleSend}
         isLoading={isLoading || isStreaming}
-        disabled={!tankId}
+        disabled={false}
         showQuickActions={messages.length === 0}
       />
     </div>

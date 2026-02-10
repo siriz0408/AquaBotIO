@@ -354,7 +354,7 @@ export function generateSystemPrompt(context: TankContext | null): string {
     parts.push(formatContextForPrompt(context));
   } else {
     parts.push("\n# Tank Context\n");
-    parts.push("No tank selected or tank data unavailable. Ask the user to select a tank.");
+    parts.push("No tank is currently selected. The user may be asking general aquarium questions, seeking beginner advice, or exploring the app before adding a tank. Answer their questions helpfully using your general aquarium expertise. If their question would benefit from specific tank data (e.g., compatibility checks, parameter analysis), gently mention they can select or create a tank for more personalized advice. Do NOT refuse to answer or repeatedly ask them to add a tank — be helpful first.");
   }
 
   // Add action instructions

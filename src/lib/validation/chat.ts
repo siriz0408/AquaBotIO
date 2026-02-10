@@ -15,8 +15,9 @@ export const messageSchema = z.object({
 export type Message = z.infer<typeof messageSchema>;
 
 // Chat request schema - what the client sends
+// tank_id is optional — users can ask general aquarium questions without selecting a tank
 export const chatRequestSchema = z.object({
-  tank_id: z.string().uuid("Invalid tank ID"),
+  tank_id: z.string().uuid("Invalid tank ID").optional().nullable(),
   message: z.string().min(1, "Message cannot be empty").max(5000, "Message too long (max 5000 characters)"),
 });
 

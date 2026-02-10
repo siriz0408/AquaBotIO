@@ -120,7 +120,7 @@ export default function TankAlertsPage() {
     <div className="min-h-screen bg-brand-bg">
       {/* Header */}
       <header className="bg-white shadow-sm border-b sticky top-0 z-10">
-        <div className="px-4 py-3 flex items-center justify-between">
+        <div className="container max-w-4xl py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Button variant="ghost" size="icon" asChild>
               <Link href={`/tanks/${tankId}`}>
@@ -148,7 +148,7 @@ export default function TankAlertsPage() {
 
         {/* Severity Summary */}
         {activeCount > 0 && (
-          <div className="px-4 pb-3 flex gap-2">
+          <div className="container max-w-4xl pb-3 flex gap-2">
             {severityCounts.alert > 0 && (
               <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-[#FF6B6B]/10 text-[#FF6B6B]">
                 {severityCounts.alert} Critical
@@ -168,7 +168,7 @@ export default function TankAlertsPage() {
         )}
 
         {/* Filter Tabs */}
-        <div className="px-4 pb-2 flex gap-2">
+        <div className="container max-w-4xl pb-2 flex gap-2">
           <Button
             variant={filter === "active" ? "secondary" : "ghost"}
             size="sm"
@@ -206,7 +206,7 @@ export default function TankAlertsPage() {
       </header>
 
       {/* Content */}
-      <main className="p-4 space-y-4 pb-24">
+      <main className="container max-w-4xl py-4 space-y-4 pb-24">
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-16">
             <Loader2 className="w-8 h-8 animate-spin text-brand-teal mb-2" />

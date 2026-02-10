@@ -53,17 +53,22 @@ export async function POST(request: NextRequest) {
 
     const { tank_id, message } = validation.data;
 
-    // Verify tank ownership
-    const { data: tank, error: tankError } = await supabase
-      .from("tanks")
-      .select("id, name")
-      .eq("id", tank_id)
-      .eq("user_id", user.id)
-      .is("deleted_at", null)
-      .single();
+    // Verify tank ownership (only if tank_id provided)
+    let resolvedTankId: string | null = null;
 
-    if (tankError || !tank) {
-      return errorResponse("NOT_FOUND", "Tank not found or you don't have access");
+    if (tank_id) {
+      const { data: tank, error: tankError } = await supabase
+        .from("tanks")
+        .select("id, name")
+        .eq("id", tank_id)
+        .eq("user_id", user.id)
+        .is("deleted_at", null)
+        .single();
+
+      if (tankError || !tank) {
+        return errorResponse("NOT_FOUND", "Tank not found or you don't have access");
+      }
+      resolvedTankId = tank.id;
     }
 
     // Check and increment AI usage (rate limiting)
@@ -95,17 +100,27 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Build tank context for system prompt
-    const context = await buildTankContext(supabase, tank_id, user.id);
+    // Build tank context for system prompt (null if no tank selected)
+    const context = resolvedTankId
+      ? await buildTankContext(supabase, resolvedTankId, user.id)
+      : null;
 
     // Get conversation history (last 50 messages)
-    const { data: messageHistory } = await supabase
+    // If no tank, get general chat history (tank_id is null)
+    let historyQuery = supabase
       .from("ai_messages")
       .select("role, content, created_at")
-      .eq("tank_id", tank_id)
       .eq("user_id", user.id)
       .order("created_at", { ascending: false })
       .limit(50);
+
+    if (resolvedTankId) {
+      historyQuery = historyQuery.eq("tank_id", resolvedTankId);
+    } else {
+      historyQuery = historyQuery.is("tank_id", null);
+    }
+
+    const { data: messageHistory } = await historyQuery;
 
     // Build messages array for API call (oldest first)
     const conversationHistory = (messageHistory || [])
@@ -127,7 +142,7 @@ export async function POST(request: NextRequest) {
 
     // Store user message in database (before AI call)
     const { error: userMsgError } = await supabase.from("ai_messages").insert({
-      tank_id,
+      tank_id: resolvedTankId,
       user_id: user.id,
       role: "user",
       content: message,
@@ -177,7 +192,7 @@ export async function POST(request: NextRequest) {
               const { data: assistantMsg } = await supabase
                 .from("ai_messages")
                 .insert({
-                  tank_id,
+                  tank_id: resolvedTankId,
                   user_id: user.id,
                   role: "assistant",
                   content: fullContent,
@@ -276,7 +291,7 @@ export async function POST(request: NextRequest) {
     const { data: assistantMsg, error: assistantMsgError } = await supabase
       .from("ai_messages")
       .insert({
-        tank_id,
+        tank_id: resolvedTankId,
         user_id: user.id,
         role: "assistant",
         content: assistantContent,
@@ -338,39 +353,44 @@ export async function GET(request: NextRequest) {
       return errorResponse("AUTH_REQUIRED", "You must be logged in");
     }
 
-    // Get tank_id from query params
+    // Get tank_id from query params (optional — null means general chat)
     const { searchParams } = new URL(request.url);
     const tankId = searchParams.get("tank_id");
 
-    if (!tankId) {
-      return errorResponse("INVALID_INPUT", "tank_id is required");
-    }
+    // Verify tank ownership if tank_id is provided
+    if (tankId) {
+      const { data: tank, error: tankError } = await supabase
+        .from("tanks")
+        .select("id")
+        .eq("id", tankId)
+        .eq("user_id", user.id)
+        .is("deleted_at", null)
+        .single();
 
-    // Verify tank ownership
-    const { data: tank, error: tankError } = await supabase
-      .from("tanks")
-      .select("id")
-      .eq("id", tankId)
-      .eq("user_id", user.id)
-      .is("deleted_at", null)
-      .single();
-
-    if (tankError || !tank) {
-      return errorResponse("NOT_FOUND", "Tank not found or you don't have access");
+      if (tankError || !tank) {
+        return errorResponse("NOT_FOUND", "Tank not found or you don't have access");
+      }
     }
 
     // Get pagination params
     const limit = Math.min(parseInt(searchParams.get("limit") || "50"), 100);
     const offset = parseInt(searchParams.get("offset") || "0");
 
-    // Fetch messages
-    const { data: messages, error: messagesError } = await supabase
+    // Fetch messages — if no tankId, get general (no-tank) messages
+    let msgQuery = supabase
       .from("ai_messages")
       .select("id, role, content, created_at, action_type, action_executed")
-      .eq("tank_id", tankId)
       .eq("user_id", user.id)
       .order("created_at", { ascending: false })
       .range(offset, offset + limit - 1);
+
+    if (tankId) {
+      msgQuery = msgQuery.eq("tank_id", tankId);
+    } else {
+      msgQuery = msgQuery.is("tank_id", null);
+    }
+
+    const { data: messages, error: messagesError } = await msgQuery;
 
     if (messagesError) {
       console.error("Error fetching messages:", messagesError);

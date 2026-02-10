@@ -121,6 +121,19 @@ const BLOCK_TYPES = [
 
 function parseContent(content: string): Segment[] {
   const segments: Segment[] = [];
+
+  // Strip incomplete structured code blocks at end of content (prevents code flash during streaming)
+  // This catches partial blocks like ```action-confirmation\n{"type":"sche... that haven't closed yet
+  const incompleteBlockPattern = /```(species-card|parameter-alert|photo-diagnosis|action-buttons|action-confirmation|proactive-alert|water-change-calculator|quarantine-checklist|parameter-troubleshooting)[\s\S]*$/;
+  const lastTripleBacktickIndex = content.lastIndexOf("```");
+  if (lastTripleBacktickIndex >= 0) {
+    const afterLast = content.slice(lastTripleBacktickIndex);
+    // If the last ``` is an opening block (has a type tag) with no matching close, strip it
+    if (incompleteBlockPattern.test(afterLast) && (afterLast.match(/```/g) || []).length === 1) {
+      content = content.slice(0, lastTripleBacktickIndex).trimEnd();
+    }
+  }
+
   // Match fenced code blocks with our custom language tags
   const pattern = /```(species-card|parameter-alert|photo-diagnosis|action-buttons|action-confirmation|proactive-alert|water-change-calculator|quarantine-checklist|parameter-troubleshooting)\n([\s\S]*?)```/g;
 

@@ -8,6 +8,14 @@ const config: Config = {
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
+  	container: {
+  		center: true,
+  		padding: {
+  			DEFAULT: '1rem',
+  			sm: '1.5rem',
+  			lg: '2rem',
+  		},
+  	},
   	extend: {
   		colors: {
   			// AquaBotAI Brand Colors — aligned with Wireframes (15_UI_UX_Design_System.md)

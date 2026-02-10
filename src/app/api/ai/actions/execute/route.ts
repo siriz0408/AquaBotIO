@@ -40,7 +40,11 @@ export async function POST(request: NextRequest) {
       return errorResponse("INVALID_INPUT", "Invalid JSON in request body");
     }
 
-    const validationResult = actionExecuteRequestSchema.safeParse(body);
+    // Normalize AI-generated payloads before validation
+    // The AI sometimes generates slightly off field values (e.g., "water change" instead of "water_change")
+    const normalized = normalizeActionPayload(body as Record<string, unknown>);
+
+    const validationResult = actionExecuteRequestSchema.safeParse(normalized);
 
     if (!validationResult.success) {
       const errors = validationResult.error.flatten().fieldErrors;
@@ -455,4 +459,90 @@ async function executeCompleteMaintenance(
     },
     201
   );
+}
+
+/**
+ * Normalize AI-generated action payloads to match our Zod schemas.
+ * The AI sometimes generates slightly off values that need correction.
+ */
+function normalizeActionPayload(body: Record<string, unknown>): Record<string, unknown> {
+  if (!body || typeof body !== "object") return body;
+
+  const result = { ...body };
+
+  // Normalize the payload sub-object
+  if (result.payload && typeof result.payload === "object") {
+    const payload = { ...result.payload } as Record<string, unknown>;
+
+    // Normalize task_type for schedule_maintenance
+    if (result.action === "schedule_maintenance" && payload.task_type) {
+      const taskTypeMap: Record<string, string> = {
+        "water change": "water_change",
+        "waterchange": "water_change",
+        "filter clean": "filter_cleaning",
+        "filter cleaning": "filter_cleaning",
+        "filterclean": "filter_cleaning",
+        "feed": "feeding",
+        "dose": "dosing",
+        "equipment maintenance": "equipment_maintenance",
+        "equipment": "equipment_maintenance",
+        "water test": "water_testing",
+        "water testing": "water_testing",
+        "test water": "water_testing",
+      };
+      const raw = String(payload.task_type).toLowerCase().trim();
+      payload.task_type = taskTypeMap[raw] || raw.replace(/\s+/g, "_");
+    }
+
+    // Normalize frequency
+    if (payload.frequency) {
+      const freqMap: Record<string, string> = {
+        "every day": "daily",
+        "everyday": "daily",
+        "every week": "weekly",
+        "everyweek": "weekly",
+        "every two weeks": "biweekly",
+        "bi-weekly": "biweekly",
+        "every month": "monthly",
+        "one time": "once",
+        "one-time": "once",
+      };
+      const rawFreq = String(payload.frequency).toLowerCase().trim();
+      payload.frequency = freqMap[rawFreq] || rawFreq;
+    }
+
+    // Normalize due_date — handle relative dates
+    if (payload.due_date) {
+      const rawDate = String(payload.due_date).toLowerCase().trim();
+      const now = new Date();
+
+      if (rawDate === "today") {
+        payload.due_date = now.toISOString().split("T")[0];
+      } else if (rawDate === "tomorrow") {
+        const tomorrow = new Date(now);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        payload.due_date = tomorrow.toISOString().split("T")[0];
+      } else if (rawDate.match(/^in\s+(\d+)\s+days?$/)) {
+        const days = parseInt(rawDate.match(/(\d+)/)![1]);
+        const future = new Date(now);
+        future.setDate(future.getDate() + days);
+        payload.due_date = future.toISOString().split("T")[0];
+      } else if (rawDate.match(/^next\s+(monday|tuesday|wednesday|thursday|friday|saturday|sunday)$/i)) {
+        const dayNames = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
+        const targetDay = dayNames.indexOf(rawDate.split(" ")[1].toLowerCase());
+        if (targetDay >= 0) {
+          const current = now.getDay();
+          const daysUntil = (targetDay - current + 7) % 7 || 7;
+          const future = new Date(now);
+          future.setDate(future.getDate() + daysUntil);
+          payload.due_date = future.toISOString().split("T")[0];
+        }
+      }
+      // Otherwise leave as-is and let Zod validate
+    }
+
+    result.payload = payload;
+  }
+
+  return result;
 }
