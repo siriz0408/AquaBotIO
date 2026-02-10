@@ -56,7 +56,7 @@
       </div>
     </div>
   </div>
-  <div class="sprint-updated">Last updated: Feb 10, 2026 — Sprint 21: Admin Portal Phase 1 Complete | 4 tables + RLS + Admin UI + Audit Logging | Feature Flags Management Live</div>
+  <div class="sprint-updated">Last updated: Feb 10, 2026 — Sprint 22: Maintenance Push Notifications Complete | Edge Function for maintenance reminders | Maintenance Scheduling now 100%</div>
 </div>
 
 <div class="tabs" id="tabs">
@@ -529,6 +529,162 @@
 <div class="panel" id="sprints">
 <h2 style="font-size:1.2rem;margin-bottom:8px">📋 Sprint History</h2>
 <p style="font-size:0.82rem;color:var(--text2);margin-bottom:20px">Complete history of development sprints. What was built, outcomes, and metrics.</p>
+
+<!-- Sprint 22 (Complete) -->
+<div style="background:var(--surface);border:2px solid var(--green);border-radius:12px;margin-bottom:16px;overflow:hidden">
+  <div style="background:linear-gradient(90deg,rgba(34,197,94,0.2),transparent);padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+    <div>
+      <h3 style="font-size:1rem;font-weight:700;margin-bottom:2px">Sprint 22: Maintenance Push Notifications</h3>
+      <span style="font-size:0.75rem;color:var(--text2)">Feb 10, 2026</span>
+    </div>
+    <span class="status-badge status-complete">Complete</span>
+  </div>
+  <div style="padding:20px">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:16px">
+      <div style="text-align:center;padding:12px;background:var(--bg);border-radius:8px">
+        <div style="font-size:0.7rem;color:var(--text2);text-transform:uppercase">Edge Functions</div>
+        <div style="font-size:1.3rem;font-weight:800;color:var(--green)">1</div>
+        <div style="font-size:0.72rem;color:var(--text2)">send-maintenance-reminders</div>
+      </div>
+      <div style="text-align:center;padding:12px;background:var(--bg);border-radius:8px">
+        <div style="font-size:0.7rem;color:var(--text2);text-transform:uppercase">Maintenance</div>
+        <div style="font-size:1.3rem;font-weight:800;color:var(--green)">100%</div>
+        <div style="font-size:0.72rem;color:var(--text2)">Was 95%</div>
+      </div>
+      <div style="text-align:center;padding:12px;background:var(--bg);border-radius:8px">
+        <div style="font-size:0.7rem;color:var(--text2);text-transform:uppercase">Features</div>
+        <div style="font-size:1.3rem;font-weight:800;color:var(--cyan)">3</div>
+        <div style="font-size:0.72rem;color:var(--text2)">Push, prefs, quiet hours</div>
+      </div>
+    </div>
+    <h4 style="font-size:0.85rem;font-weight:700;margin-bottom:8px">What Was Built</h4>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:0.82rem">
+      <div>
+        <div style="font-weight:600;color:var(--cyan);margin-bottom:4px">🔔 Push Notification Edge Function</div>
+        <ul style="padding-left:16px;color:var(--text2);line-height:1.6">
+          <li><strong>24-hour lookahead:</strong> Finds tasks due within next day</li>
+          <li><strong>Preference checks:</strong> push_enabled, maintenance_reminders</li>
+          <li><strong>Quiet hours:</strong> Respects user timezone and quiet period</li>
+          <li><strong>Action buttons:</strong> "Mark Complete" and "Snooze"</li>
+        </ul>
+      </div>
+      <div>
+        <div style="font-weight:600;color:var(--green);margin-bottom:4px">📋 Maintenance Scheduling</div>
+        <ul style="padding-left:16px;color:var(--text2);line-height:1.6">
+          <li><strong>CRUD:</strong> Create, read, update, delete tasks ✅</li>
+          <li><strong>Recurring:</strong> Daily, weekly, monthly, custom ✅</li>
+          <li><strong>Completion:</strong> Logging with notes ✅</li>
+          <li><strong>Push Notifications:</strong> Edge Function cron ✅</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Sprint 21 (Complete) -->
+<div style="background:var(--surface);border:2px solid var(--green);border-radius:12px;margin-bottom:16px;overflow:hidden">
+  <div style="background:linear-gradient(90deg,rgba(34,197,94,0.2),transparent);padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+    <div>
+      <h3 style="font-size:1rem;font-weight:700;margin-bottom:2px">Sprint 21: Admin Portal Phase 1</h3>
+      <span style="font-size:0.75rem;color:var(--text2)">Feb 10, 2026</span>
+    </div>
+    <span class="status-badge status-complete">Complete</span>
+  </div>
+  <div style="padding:20px">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:16px">
+      <div style="text-align:center;padding:12px;background:var(--bg);border-radius:8px">
+        <div style="font-size:0.7rem;color:var(--text2);text-transform:uppercase">New Tables</div>
+        <div style="font-size:1.3rem;font-weight:800;color:var(--green)">4</div>
+        <div style="font-size:0.72rem;color:var(--text2)">admin_users, audit_log, flags, tier_config</div>
+      </div>
+      <div style="text-align:center;padding:12px;background:var(--bg);border-radius:8px">
+        <div style="font-size:0.7rem;color:var(--text2);text-transform:uppercase">Admin Roles</div>
+        <div style="font-size:1.3rem;font-weight:800;color:var(--cyan)">3</div>
+        <div style="font-size:0.72rem;color:var(--text2)">super, content, support</div>
+      </div>
+      <div style="text-align:center;padding:12px;background:var(--bg);border-radius:8px">
+        <div style="font-size:0.7rem;color:var(--text2);text-transform:uppercase">Admin UI</div>
+        <div style="font-size:1.3rem;font-weight:800;color:var(--purple)">/admin</div>
+      </div>
+    </div>
+    <h4 style="font-size:0.85rem;font-weight:700;margin-bottom:8px">What Was Built</h4>
+    <ul style="padding-left:16px;color:var(--text2);line-height:1.6;font-size:0.82rem">
+      <li><strong>admin_users:</strong> Role assignments with is_active, invited_by</li>
+      <li><strong>admin_audit_log:</strong> Immutable audit trail of all admin actions</li>
+      <li><strong>feature_flags:</strong> Runtime toggles with tier-specific scoping</li>
+      <li><strong>tier_config:</strong> Configurable subscription limits (seeded with 4 tiers)</li>
+      <li><strong>RLS Policies:</strong> Role-based access control for all admin tables</li>
+    </ul>
+  </div>
+</div>
+
+<!-- Sprint 20 (Complete) -->
+<div style="background:var(--surface);border:2px solid var(--green);border-radius:12px;margin-bottom:16px;overflow:hidden">
+  <div style="background:linear-gradient(90deg,rgba(34,197,94,0.2),transparent);padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+    <div>
+      <h3 style="font-size:1rem;font-weight:700;margin-bottom:2px">Sprint 20: Photo Diagnosis (Spec 09)</h3>
+      <span style="font-size:0.75rem;color:var(--text2)">Feb 10, 2026</span>
+    </div>
+    <span class="status-badge status-complete">Complete</span>
+  </div>
+  <div style="padding:20px">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:16px">
+      <div style="text-align:center;padding:12px;background:var(--bg);border-radius:8px">
+        <div style="font-size:0.7rem;color:var(--text2);text-transform:uppercase">AI Vision</div>
+        <div style="font-size:1.3rem;font-weight:800;color:var(--green)">✓</div>
+        <div style="font-size:0.72rem;color:var(--text2)">Claude Sonnet 4.5</div>
+      </div>
+      <div style="text-align:center;padding:12px;background:var(--bg);border-radius:8px">
+        <div style="font-size:0.7rem;color:var(--text2);text-transform:uppercase">Tier Limits</div>
+        <div style="font-size:1.3rem;font-weight:800;color:var(--cyan)">10/30</div>
+        <div style="font-size:0.72rem;color:var(--text2)">Plus/Pro per day</div>
+      </div>
+      <div style="text-align:center;padding:12px;background:var(--bg);border-radius:8px">
+        <div style="font-size:0.7rem;color:var(--text2);text-transform:uppercase">Features</div>
+        <div style="font-size:1.3rem;font-weight:800;color:var(--purple)">2</div>
+        <div style="font-size:0.72rem;color:var(--text2)">Species ID + Disease Dx</div>
+      </div>
+    </div>
+    <h4 style="font-size:0.85rem;font-weight:700;margin-bottom:8px">What Was Built</h4>
+    <ul style="padding-left:16px;color:var(--text2);line-height:1.6;font-size:0.82rem">
+      <li><strong>Species Identification:</strong> Upload photo → AI identifies species with confidence score</li>
+      <li><strong>Disease Diagnosis:</strong> Visual symptom detection with treatment plans</li>
+      <li><strong>PhotoDiagnosisCard:</strong> Rich UI component for chat integration</li>
+      <li><strong>photo_diagnoses table:</strong> Stores results with user feedback loop</li>
+      <li><strong>Tier gating:</strong> Plus=10/day, Pro=30/day (Free/Starter blocked)</li>
+    </ul>
+  </div>
+</div>
+
+<!-- Sprint 19 (Complete) -->
+<div style="background:var(--surface);border:2px solid var(--green);border-radius:12px;margin-bottom:16px;overflow:hidden">
+  <div style="background:linear-gradient(90deg,rgba(34,197,94,0.2),transparent);padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+    <div>
+      <h3 style="font-size:1rem;font-weight:700;margin-bottom:2px">Sprint 19: AI Chat Embedded Widgets (Spec 16)</h3>
+      <span style="font-size:0.75rem;color:var(--text2)">Feb 9, 2026</span>
+    </div>
+    <span class="status-badge status-complete">Complete</span>
+  </div>
+  <div style="padding:20px">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:16px">
+      <div style="text-align:center;padding:12px;background:var(--bg);border-radius:8px">
+        <div style="font-size:0.7rem;color:var(--text2);text-transform:uppercase">Widgets</div>
+        <div style="font-size:1.3rem;font-weight:800;color:var(--green)">3</div>
+      </div>
+      <div style="text-align:center;padding:12px;background:var(--bg);border-radius:8px">
+        <div style="font-size:0.7rem;color:var(--text2);text-transform:uppercase">Tables</div>
+        <div style="font-size:1.3rem;font-weight:800;color:var(--cyan)">1</div>
+        <div style="font-size:0.72rem;color:var(--text2)">quarantine_tracking</div>
+      </div>
+    </div>
+    <h4 style="font-size:0.85rem;font-weight:700;margin-bottom:8px">What Was Built</h4>
+    <ul style="padding-left:16px;color:var(--text2);line-height:1.6;font-size:0.82rem">
+      <li><strong>QuarantineChecklist:</strong> Interactive checklist for new fish quarantine</li>
+      <li><strong>WaterChangeCalculator:</strong> AI-suggested % based on nitrate levels</li>
+      <li><strong>ParameterTroubleshooting:</strong> Step-by-step fixes for parameter issues</li>
+    </ul>
+  </div>
+</div>
 
 <!-- Sprint 14b (Complete) -->
 <div style="background:var(--surface);border:2px solid var(--green);border-radius:12px;margin-bottom:16px;overflow:hidden">
@@ -1166,14 +1322,43 @@
   Ready to Test
 </h3>
 
-<!-- Sprint 10 - Priority Test -->
+<!-- Sprint 22 - Push Notifications Test -->
 <div style="background:var(--surface);border:2px solid var(--cyan);border-radius:12px;margin-bottom:12px">
+  <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+    <div>
+      <h4 style="font-size:0.9rem;font-weight:700">🔔 Push Notifications — Maintenance Reminders</h4>
+      <span style="font-size:0.75rem;color:var(--text2)">Sprint 22 | Added Feb 10, 2026 | Edge Function</span>
+    </div>
+    <span class="status-badge status-progress">Priority Test</span>
+  </div>
+  <div style="padding:16px 20px;font-size:0.82rem;color:var(--text2)">
+    <p style="margin-bottom:12px"><strong>What to test:</strong></p>
+    <ul style="padding-left:16px;line-height:1.6">
+      <li>Deploy Edge Function: <code>npx supabase functions deploy send-maintenance-reminders</code></li>
+      <li>Set VAPID keys in Supabase Edge Function settings</li>
+      <li>Create a maintenance task due within next 24 hours</li>
+      <li>Enable push notifications in Settings → Notifications</li>
+      <li>Trigger function manually: <code>curl -X POST [function-url] -H "Authorization: Bearer [key]"</code></li>
+      <li><strong>Expected:</strong> Push notification received on device</li>
+    </ul>
+    <div style="margin-top:12px;padding:12px;background:rgba(34,197,94,0.1);border-radius:8px;border:1px solid var(--green)">
+      <strong>New Feature:</strong> Edge Function sends push notifications for due maintenance tasks. Respects quiet hours and notification preferences.
+    </div>
+    <div style="margin-top:12px;padding:12px;background:var(--bg);border-radius:8px">
+      <strong>Sam's Notes:</strong>
+      <textarea id="test-notes-push" data-feature="push" placeholder="Add your testing notes here..." onblur="saveTestingNotes('push',this)" style="width:100%;margin-top:8px;padding:8px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.8rem;min-height:60px;resize:vertical"></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- Sprint 10 - Priority Test -->
+<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:12px">
   <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
     <div>
       <h4 style="font-size:0.9rem;font-weight:700">🆕 Signup Flow — Auto-Login (FB-MLE7MCRC Fix)</h4>
       <span style="font-size:0.75rem;color:var(--text2)">Sprint 10 | Added Feb 8, 2026 | P0 Bug Fix</span>
     </div>
-    <span class="status-badge status-progress">Priority Test</span>
+    <span class="status-badge status-started">Tested</span>
   </div>
   <div style="padding:16px 20px;font-size:0.82rem;color:var(--text2)">
     <p style="margin-bottom:12px"><strong>What to test:</strong></p>

@@ -1,6 +1,6 @@
 # AquaBotAI Implementation Status & System Changes
 
-> **Version:** 1.7 | **Last Updated:** February 10, 2026 | **Sprint:** 21 Complete | **MVP:** 100%
+> **Version:** 1.8 | **Last Updated:** February 10, 2026 | **Sprint:** 22 Complete | **MVP:** 100%
 
 ---
 
@@ -21,7 +21,7 @@ AquaBotAI has been built from spec through 7 sprint cycles. This document maps e
 | `02_Tank_Profile_Management_Spec.md` | Tank Profiles | DONE | 100% | CRUD, photo placeholder, onboarding tank creation, soft delete |
 | `03_Water_Parameters_Analysis_Spec.md` | Water Parameters | DONE | 100% | Log form, current display, history widget, API route, trend analysis API |
 | `04_Species_Database_Livestock_Spec.md` | Species & Livestock | DONE | 100% | 180 species seeded, search, filters, livestock list, add-to-tank, compatibility API |
-| `05_Maintenance_Scheduling_Spec.md` | Maintenance Scheduling | DONE | 95% | CRUD, recurring tasks, completion tracking, summary widget. Missing: push notifications |
+| `05_Maintenance_Scheduling_Spec.md` | Maintenance Scheduling | **DONE** | **100%** | CRUD, recurring tasks, completion tracking, summary widget, push notification Edge Function |
 | `09_Photo_Diagnosis_Spec.md` | Photo Diagnosis | **DONE** | **100%** | Claude Vision species ID + disease diagnosis, PhotoDiagnosisCard, tier gating (Plus:10/Pro:30), treatment plans |
 | `10_Equipment_Tracking_Recommendations_Spec.md` | Equipment Tracking | NOT STARTED | 0% | P2 feature |
 | `11_Interactive_Dashboards_Reports_Spec.md` | Enhanced Dashboards | NOT STARTED | 0% | P1 feature |
@@ -195,7 +195,7 @@ AquaBotAI has been built from spec through 7 sprint cycles. This document maps e
 6. **Security headers** — CSP, HSTS, X-Frame-Options in `next.config.mjs`
 7. **Color palette alignment** — Match wireframe colors exactly
 8. **Species data expansion** — 25 → 200+ species
-9. **Push notifications** — Wire up SW push handler to maintenance reminders
+9. ~~**Push notifications** — Wire up SW push handler to maintenance reminders~~ ✅ Done in Sprint 22 (Edge Function)
 
 ### P2 — Nice to Have
 10. ~~**Photo Diagnosis** — Claude Vision integration~~ ✅ Done in Sprint 20
@@ -229,6 +229,13 @@ AquaBotAI has been built from spec through 7 sprint cycles. This document maps e
 | 19 | Feb 9 | Widgets | AI Chat Embedded Widgets (Quarantine, WaterChange, ParameterTroubleshooting) |
 | 20 | Feb 10 | P1 | **Photo Diagnosis** — Claude Vision species ID + disease diagnosis, PhotoDiagnosisCard, tier gating |
 | 21 | Feb 10 | P2 | **Admin Portal Phase 1** — 4 tables (admin_users, admin_audit_log, feature_flags, tier_config), 3 roles, RLS, admin UI (/admin), audit logging, feature flag management |
+| 22 | Feb 10 | Polish | **Maintenance Push Notifications** — `send-maintenance-reminders` Edge Function, cron-ready, 24-hour lookahead, respects notification preferences |
+
+### Edge Functions (Remote)
+| Function | Status |
+|----------|--------|
+| `analyze-parameter-trends` | Active (Sprint 12) — Proactive parameter alerts |
+| `send-maintenance-reminders` | Active (Sprint 22) — Push notifications for due maintenance tasks |
 
 ---
 
