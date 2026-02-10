@@ -56,7 +56,7 @@
       </div>
     </div>
   </div>
-  <div class="sprint-updated">Last updated: Feb 10, 2026 — Sprint 20: Photo Diagnosis Complete | P1 Features In Progress | AI Vision Species ID + Disease Diagnosis Live</div>
+  <div class="sprint-updated">Last updated: Feb 10, 2026 — Sprint 21: Admin Portal Phase 1 Complete | 4 tables + RLS + Admin UI + Audit Logging | Feature Flags Management Live</div>
 </div>
 
 <div class="tabs" id="tabs">
@@ -301,23 +301,25 @@
 
   <div class="feature-card" onclick="toggleCard(this)">
     <div class="feature-top">
-      <div class="feature-icon" style="background:rgba(239,68,68,0.15);color:var(--red)">🛡️</div>
+      <div class="feature-icon" style="background:rgba(34,197,94,0.15);color:var(--green)">🛡️</div>
       <div class="feature-info">
-        <h3>Admin Portal (Phase 1 — SQL/Studio)</h3>
-        <p>Basic admin via Supabase Studio + SQL scripts. User search, subscription management, account actions, audit logging. No custom UI yet.</p>
-        <div class="feature-meta"><span class="tag tag-p0">P0</span><span class="tag tag-weeks">1 week</span><span class="tag tag-dep">Needs: Auth, Billing</span><span class="status-badge status-not-started">Not Started</span></div>
-        <div class="feature-progress-row"><div class="progress-bar"><div class="progress-bar-fill" style="width:5%;background:var(--text2)"></div></div><span class="progress-pct" style="color:var(--text2)">5%</span></div>
+        <h3>Admin Portal (Phase 1 — Full MVP)</h3>
+        <p>Complete admin portal with custom UI at /admin. 4 database tables, 3 admin roles, RLS policies, audit logging, feature flags management, user management, dark theme admin dashboard.</p>
+        <div class="feature-meta"><span class="tag tag-p0">P0</span><span class="tag tag-weeks">1 week</span><span class="tag tag-dep">Auth, Billing</span><span class="status-badge status-complete">Complete</span></div>
+        <div class="feature-progress-row"><div class="progress-bar"><div class="progress-bar-fill" style="width:100%;background:var(--green)"></div></div><span class="progress-pct" style="color:var(--green)">100%</span></div>
       </div>
     </div>
     <div class="feature-details">
-      <h4>Spec: 13_Admin_Portal (Phase 1 only)</h4>
+      <h4>Spec: 13_Admin_Portal (Phase 1 MVP — Completed Sprint 21)</h4>
       <ul>
-        <li>Role-based access: Super Admin, Content Admin, Support Admin</li>
-        <li>SQL scripts for user lookup, subscription changes, account actions</li>
-        <li>Audit log table (immutable) for all admin actions</li>
-        <li>Feature flags table for runtime toggles</li>
-        <li>Tier config table for subscription limits</li>
-        <li>No custom UI — Supabase Studio is sufficient for solo dev at launch</li>
+        <li>✅ 4 tables: admin_users, admin_audit_log, feature_flags, tier_config</li>
+        <li>✅ 3 roles: super_admin, content_admin, support_admin</li>
+        <li>✅ 12 RLS policies for secure admin access</li>
+        <li>✅ Admin UI at /admin with dark theme (slate-950)</li>
+        <li>✅ Dashboard, Users, Feature Flags, Audit Log pages</li>
+        <li>✅ Audit logging helper with fluent API (AuditLogBuilder)</li>
+        <li>✅ 5 API routes with admin middleware protection</li>
+        <li>✅ 4 helper functions: is_admin(), get_admin_role(), is_feature_enabled(), get_tier_limits_v2()</li>
       </ul>
     </div>
   </div>
@@ -1480,8 +1482,8 @@
 <div class="progress-feature-row">
   <div class="pf-icon">🛡️</div>
   <div class="pf-name">Admin Portal v1</div>
-  <div class="pf-bar"><div class="progress-bar" style="margin:0"><div class="progress-bar-fill" style="width:5%;background:var(--text2)"></div></div></div>
-  <div class="pf-pct" style="color:var(--text2)">5%</div>
+  <div class="pf-bar"><div class="progress-bar" style="margin:0"><div class="progress-bar-fill" style="width:100%;background:var(--green)"></div></div></div>
+  <div class="pf-pct" style="color:var(--green)">100%</div>
 </div>
 
 <div style="margin:16px 0 8px;font-size:0.72rem;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;padding:0 14px">Phase 3 — Growth (Post-MVP)</div>
@@ -1760,7 +1762,7 @@
 <tr><td><strong>AI Chat Widgets (Additional)</strong></td><td>600</td><td>2</td><td>70%</td><td>2</td><td class="rice-score rice-med">420</td><td><span class="tag tag-p2">P2</span></td><td><div class="rice-bar"><div class="rice-bar-fill" style="width:28%;background:var(--yellow)"></div></div></td></tr>
 <tr><td><strong>Equipment Tracking</strong></td><td>350</td><td>1</td><td>80%</td><td>3</td><td class="rice-score rice-low">93</td><td><span class="tag tag-p1">P1</span></td><td><div class="rice-bar"><div class="rice-bar-fill" style="width:6%;background:var(--orange)"></div></div></td></tr>
 <tr><td><strong>Dashboards & Reports</strong></td><td>300</td><td>1</td><td>80%</td><td>2</td><td class="rice-score rice-low">120</td><td><span class="tag tag-p1">P1</span></td><td><div class="rice-bar"><div class="rice-bar-fill" style="width:8%;background:var(--orange)"></div></div></td></tr>
-<tr><td><strong>Admin Portal v1</strong></td><td>5</td><td>3</td><td>100%</td><td>1</td><td class="rice-score rice-low">15</td><td><span class="tag tag-p0">P0</span></td><td><div class="rice-bar"><div class="rice-bar-fill" style="width:1%;background:var(--red)"></div></div></td></tr>
+<tr><td><strong>Admin Portal v1 ✅</strong></td><td>5</td><td>3</td><td>100%</td><td>1</td><td class="rice-score rice-high">15</td><td><span class="status-badge status-complete">Complete</span></td><td><div class="rice-bar"><div class="rice-bar-fill" style="width:100%;background:var(--green)"></div></div></td></tr>
 <tr><td><strong>Admin Portal v2</strong></td><td>5</td><td>2</td><td>50%</td><td>3</td><td class="rice-score rice-low">2</td><td><span class="tag tag-p1">P1</span></td><td><div class="rice-bar"><div class="rice-bar-fill" style="width:1%;background:var(--red)"></div></div></td></tr>
 </tbody>
 </table>

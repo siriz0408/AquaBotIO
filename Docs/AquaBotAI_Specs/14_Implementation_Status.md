@@ -1,6 +1,6 @@
 # AquaBotAI Implementation Status & System Changes
 
-> **Version:** 1.6 | **Last Updated:** February 10, 2026 | **Sprint:** 20 Complete | **MVP:** 100%
+> **Version:** 1.7 | **Last Updated:** February 10, 2026 | **Sprint:** 21 Complete | **MVP:** 100%
 
 ---
 
@@ -26,7 +26,7 @@ AquaBotAI has been built from spec through 7 sprint cycles. This document maps e
 | `10_Equipment_Tracking_Recommendations_Spec.md` | Equipment Tracking | NOT STARTED | 0% | P2 feature |
 | `11_Interactive_Dashboards_Reports_Spec.md` | Enhanced Dashboards | NOT STARTED | 0% | P1 feature |
 | `12_API_Integration_Spec.md` | API Integration | PARTIAL | 60% | Core REST APIs built. Missing: Edge Functions, OpenAPI spec, public API |
-| `13_Admin_Portal_Management_Spec.md` | Admin Portal | NOT STARTED | 0% | P2 feature |
+| `13_Admin_Portal_Management_Spec.md` | Admin Portal | **DONE** | **100%** | Phase 1 MVP: 4 tables (admin_users, admin_audit_log, feature_flags, tier_config), 3 roles, RLS, admin UI at /admin |
 | `16_AI_Chat_Embedded_Widgets_Spec.md` | AI Chat Embedded Widgets | **DONE** | **100%** | QuarantineChecklist, WaterChangeCalculator, ParameterTroubleshooting widgets in chat |
 | `17_AI_Proactive_Intelligence_Spec.md` | AI Proactive Intelligence | **DONE** | **100%** | Action execution API, trend detection Edge Function, alert badge, "any alerts?" query, alerts page |
 | `18_Pricing_Strategy_Spec.md` | Pricing Strategy & Tier Restructuring | **DONE** | **100%** | Schema migration (6 columns), 7-day trial, TIER_LIMITS (0/10/100/500), resolveUserTier(), trend analysis gating, price display ($4.99/$9.99/$19.99) |
@@ -73,6 +73,10 @@ AquaBotAI has been built from spec through 7 sprint cycles. This document maps e
 | `proactive_alerts` | Sprint 11 | Active, RLS enabled |
 | `quarantine_tracking` | Sprint 19 | Active, RLS enabled |
 | `photo_diagnoses` | Sprint 20 | Active, RLS enabled |
+| `admin_users` | Sprint 21 | Active, RLS enabled |
+| `admin_audit_log` | Sprint 21 | Active, RLS enabled (immutable) |
+| `feature_flags` | Sprint 21 | Active, RLS enabled |
+| `tier_config` | Sprint 21 | Active, seeded with 4 tiers |
 
 ### RPC Functions (Remote)
 | Function | Status |
@@ -86,6 +90,10 @@ AquaBotAI has been built from spec through 7 sprint cycles. This document maps e
 | `cleanup_expired_compatibility_checks()` | Active (Sprint 7) |
 | `check_and_increment_photo_diagnosis_usage()` | Active (Sprint 20) |
 | `get_photo_diagnosis_usage_info()` | Active (Sprint 20) |
+| `is_admin()` | Active (Sprint 21) |
+| `get_admin_role()` | Active (Sprint 21) |
+| `is_feature_enabled()` | Active (Sprint 21) |
+| `get_tier_limits_v2()` | Active (Sprint 21) |
 
 ---
 
@@ -191,7 +199,7 @@ AquaBotAI has been built from spec through 7 sprint cycles. This document maps e
 
 ### P2 — Nice to Have
 10. ~~**Photo Diagnosis** — Claude Vision integration~~ ✅ Done in Sprint 20
-11. **Admin Portal** — User/content management
+11. ~~**Admin Portal** — User/content management~~ ✅ Done in Sprint 21
 12. **Email notifications** — Resend integration (3 TODOs in webhook handlers)
 13. **Change Password** — Settings page placeholder
 14. **Subscription management** — Stripe Customer Portal link
@@ -220,6 +228,7 @@ AquaBotAI has been built from spec through 7 sprint cycles. This document maps e
 | 18 | Feb 9 | PWA | Push notifications infrastructure, VAPID keys |
 | 19 | Feb 9 | Widgets | AI Chat Embedded Widgets (Quarantine, WaterChange, ParameterTroubleshooting) |
 | 20 | Feb 10 | P1 | **Photo Diagnosis** — Claude Vision species ID + disease diagnosis, PhotoDiagnosisCard, tier gating |
+| 21 | Feb 10 | P2 | **Admin Portal Phase 1** — 4 tables (admin_users, admin_audit_log, feature_flags, tier_config), 3 roles, RLS, admin UI (/admin), audit logging, feature flag management |
 
 ---
 
