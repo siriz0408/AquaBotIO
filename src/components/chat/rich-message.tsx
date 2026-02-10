@@ -5,6 +5,10 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { SpeciesCard } from "./messages/species-card";
 import { ParameterAlertCard } from "./messages/parameter-alert-card";
+import {
+  PhotoDiagnosisCard,
+  type PhotoDiagnosisData,
+} from "./messages/photo-diagnosis-card";
 import { ActionButtons } from "./action-buttons";
 import { ActionConfirmation, type ActionPayload } from "./action-confirmation";
 import { ProactiveAlertCard, type ProactiveAlert } from "./proactive-alert-card";
@@ -62,6 +66,10 @@ interface ParameterAlertSegment {
     recommendation: string;
   };
 }
+interface PhotoDiagnosisSegment {
+  type: "photo-diagnosis";
+  data: PhotoDiagnosisData;
+}
 interface ActionButtonsSegment {
   type: "action-buttons";
   data: { label: string; action: string }[];
@@ -91,6 +99,7 @@ type Segment =
   | TextSegment
   | SpeciesCardSegment
   | ParameterAlertSegment
+  | PhotoDiagnosisSegment
   | ActionButtonsSegment
   | ActionConfirmationSegment
   | ProactiveAlertSegment
@@ -101,6 +110,7 @@ type Segment =
 const BLOCK_TYPES = [
   "species-card",
   "parameter-alert",
+  "photo-diagnosis",
   "action-buttons",
   "action-confirmation",
   "proactive-alert",
@@ -112,7 +122,7 @@ const BLOCK_TYPES = [
 function parseContent(content: string): Segment[] {
   const segments: Segment[] = [];
   // Match fenced code blocks with our custom language tags
-  const pattern = /```(species-card|parameter-alert|action-buttons|action-confirmation|proactive-alert|water-change-calculator|quarantine-checklist|parameter-troubleshooting)\n([\s\S]*?)```/g;
+  const pattern = /```(species-card|parameter-alert|photo-diagnosis|action-buttons|action-confirmation|proactive-alert|water-change-calculator|quarantine-checklist|parameter-troubleshooting)\n([\s\S]*?)```/g;
 
   let lastIndex = 0;
   let match = pattern.exec(content);
@@ -136,6 +146,8 @@ function parseContent(content: string): Segment[] {
         segments.push({ type: "species-card", data: parsed });
       } else if (blockType === "parameter-alert") {
         segments.push({ type: "parameter-alert", data: parsed });
+      } else if (blockType === "photo-diagnosis") {
+        segments.push({ type: "photo-diagnosis", data: parsed });
       } else if (blockType === "action-buttons") {
         segments.push({ type: "action-buttons", data: parsed });
       } else if (blockType === "action-confirmation") {
@@ -264,6 +276,16 @@ export function RichMessage({
             return (
               <div key={index} className="-mx-4">
                 <ParameterAlertCard
+                  data={segment.data}
+                  timestamp={new Date()}
+                />
+              </div>
+            );
+
+          case "photo-diagnosis":
+            return (
+              <div key={index} className="-mx-4">
+                <PhotoDiagnosisCard
                   data={segment.data}
                   timestamp={new Date()}
                 />

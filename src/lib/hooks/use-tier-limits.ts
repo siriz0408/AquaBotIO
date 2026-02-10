@@ -190,9 +190,58 @@ export function useTierLimits() {
     [supabase]
   );
 
+  /**
+   * Check if user can use photo diagnosis today
+   * Per Spec 09 R-101.7: Free/Starter: 0, Plus: 10/day, Pro: 30/day
+   */
+  const canUsePhotoDiagnosis = useCallback(
+    async (userId: string): Promise<TierCheckResult> => {
+      // Use centralized tier resolution
+      const tier = await resolveUserTier(supabase, userId);
+
+      // Get today's diagnosis count
+      const today = new Date().toISOString().split("T")[0];
+      const { data: usage } = await supabase
+        .from("ai_usage")
+        .select("message_count")
+        .eq("user_id", userId)
+        .eq("date", today)
+        .eq("feature", "diagnosis")
+        .single();
+
+      const currentCount = usage?.message_count || 0;
+      const limit = TIER_LIMITS[tier].photo_diagnosis_daily;
+      const allowed = limit > 0 && currentCount < limit;
+
+      // Generate appropriate message
+      let message: string | undefined;
+      if (!allowed) {
+        if (limit === 0) {
+          // Feature not available on this tier
+          message =
+            "Photo diagnosis requires Plus or Pro plan. Upgrade to unlock AI-powered species identification and disease diagnosis.";
+        } else if (tier === "pro") {
+          message = `You've reached your daily limit of ${limit} photo diagnoses. Your limit resets at midnight UTC.`;
+        } else {
+          message = `You've used all ${limit} photo diagnoses for today. Upgrade to Pro for 30 diagnoses per day!`;
+        }
+      }
+
+      return {
+        allowed,
+        currentCount,
+        limit,
+        tier,
+        message,
+      };
+    },
+    [supabase]
+  );
+
   return {
     canCreateTank,
     canSendAIMessage,
+    canUsePhotoDiagnosis,
     resolveUserTier: (userId: string) => resolveUserTier(supabase, userId),
     TIER_LIMITS,
   };

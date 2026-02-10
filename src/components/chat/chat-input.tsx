@@ -1,9 +1,11 @@
 "use client";
 
-import { useState, useRef, useEffect, KeyboardEvent, useId } from "react";
-import { Send, Camera, Loader2 } from "lucide-react";
+import { useState, useRef, useEffect, KeyboardEvent, useId, useCallback } from "react";
+import { Send, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useHapticFeedback } from "@/hooks/use-haptic-feedback";
+import { PhotoUploadButton } from "./photo-upload-button";
+import { PhotoPreview } from "./photo-preview";
 
 interface QuickAction {
   id: string;
@@ -19,6 +21,7 @@ const quickActions: QuickAction[] = [
 
 interface ChatInputProps {
   onSend: (message: string) => void;
+  onPhotoSend?: (file: File, message?: string) => void;
   onQuickAction?: (action: string) => void;
   isLoading?: boolean;
   disabled?: boolean;
@@ -28,6 +31,7 @@ interface ChatInputProps {
 
 export function ChatInput({
   onSend,
+  onPhotoSend,
   onQuickAction,
   isLoading,
   disabled,
@@ -36,6 +40,11 @@ export function ChatInput({
 }: ChatInputProps) {
   const [message, setMessage] = useState("");
   const [showQuickActions, setShowQuickActions] = useState(initialShowQuickActions);
+  const [selectedPhoto, setSelectedPhoto] = useState<File | null>(null);
+  const [photoPreviewUrl, setPhotoPreviewUrl] = useState<string | null>(null);
+  const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { trigger: triggerHaptic } = useHapticFeedback();
   const inputId = useId();
@@ -63,7 +72,84 @@ export function ChatInput({
     return () => window.removeEventListener("suggestion-click", handleSuggestion);
   }, []);
 
-  const handleSubmit = () => {
+  // Clean up preview URL on unmount or when photo changes
+  useEffect(() => {
+    return () => {
+      if (photoPreviewUrl) {
+        URL.revokeObjectURL(photoPreviewUrl);
+      }
+    };
+  }, [photoPreviewUrl]);
+
+  // Handle photo selection from PhotoUploadButton
+  const handlePhotoSelect = useCallback((file: File) => {
+    // Create preview URL
+    const previewUrl = URL.createObjectURL(file);
+
+    // Clean up previous preview if exists
+    if (photoPreviewUrl) {
+      URL.revokeObjectURL(photoPreviewUrl);
+    }
+
+    setSelectedPhoto(file);
+    setPhotoPreviewUrl(previewUrl);
+    setShowQuickActions(false);
+
+    // Focus textarea for optional message
+    textareaRef.current?.focus();
+  }, [photoPreviewUrl]);
+
+  // Remove selected photo
+  const handlePhotoRemove = useCallback(() => {
+    if (photoPreviewUrl) {
+      URL.revokeObjectURL(photoPreviewUrl);
+    }
+    setSelectedPhoto(null);
+    setPhotoPreviewUrl(null);
+    setUploadProgress(0);
+  }, [photoPreviewUrl]);
+
+  const handleSubmit = async () => {
+    // Handle photo submission
+    if (selectedPhoto && onPhotoSend) {
+      const trimmedMessage = message.trim();
+      setIsUploadingPhoto(true);
+
+      try {
+        triggerHaptic("tap");
+
+        // Simulate upload progress (actual upload would be in onPhotoSend)
+        // The progress simulation provides visual feedback while the parent handles the upload
+        const progressInterval = setInterval(() => {
+          setUploadProgress((prev) => {
+            if (prev >= 90) {
+              clearInterval(progressInterval);
+              return 90;
+            }
+            return prev + 10;
+          });
+        }, 100);
+
+        await onPhotoSend(selectedPhoto, trimmedMessage || undefined);
+
+        clearInterval(progressInterval);
+        setUploadProgress(100);
+
+        // Clean up after successful send
+        setTimeout(() => {
+          handlePhotoRemove();
+          setMessage("");
+          setIsUploadingPhoto(false);
+        }, 300);
+      } catch {
+        triggerHaptic("error");
+        setIsUploadingPhoto(false);
+        setUploadProgress(0);
+      }
+      return;
+    }
+
+    // Handle text-only submission
     const trimmedMessage = message.trim();
     if (!trimmedMessage || isLoading || disabled) return;
 
@@ -96,12 +182,27 @@ export function ChatInput({
     setShowQuickActions(false);
   };
 
-  const isSubmitDisabled = !message.trim() || isLoading || disabled;
+  // Submit is enabled if there's a message OR a photo
+  const hasContent = message.trim() || selectedPhoto;
+  const isSubmitDisabled = !hasContent || isLoading || disabled || isUploadingPhoto;
 
   return (
     <div className="bg-white border-t border-gray-200 shadow-lg">
+      {/* Photo Preview */}
+      {selectedPhoto && photoPreviewUrl && (
+        <div className="px-4 pt-3">
+          <PhotoPreview
+            file={selectedPhoto}
+            previewUrl={photoPreviewUrl}
+            onRemove={handlePhotoRemove}
+            isUploading={isUploadingPhoto}
+            uploadProgress={uploadProgress}
+          />
+        </div>
+      )}
+
       {/* Quick Actions */}
-      {showQuickActions && (
+      {showQuickActions && !selectedPhoto && (
         <div className="px-4 pt-3 pb-2" role="group" aria-label="Quick actions">
           <div className="flex gap-2 overflow-x-auto scrollbar-hide">
             {quickActions.map((action) => (
@@ -128,21 +229,12 @@ export function ChatInput({
 
       {/* Input Area */}
       <div className="px-4 py-3 flex items-end gap-2">
-        {/* Photo Upload Button - min 44px touch target */}
-        <button
-          type="button"
-          disabled={isLoading || disabled}
-          aria-disabled={isLoading || disabled}
-          aria-label="Upload photo for diagnosis"
-          className={cn(
-            "p-3 min-h-[44px] min-w-[44px] flex items-center justify-center",
-            "hover:bg-gray-100 rounded-xl transition-colors flex-shrink-0 mb-1",
-            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal focus-visible:ring-offset-2",
-            "disabled:opacity-50 disabled:cursor-not-allowed"
-          )}
-        >
-          <Camera className="w-5 h-5 text-gray-600" aria-hidden="true" />
-        </button>
+        {/* Photo Upload Button */}
+        <PhotoUploadButton
+          onPhotoSelect={handlePhotoSelect}
+          disabled={isLoading || disabled || isUploadingPhoto}
+          className="mb-1"
+        />
 
         {/* Text Input */}
         <div className="flex-1 relative">
@@ -155,9 +247,13 @@ export function ChatInput({
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder={placeholder}
-            disabled={isLoading || disabled}
-            aria-disabled={isLoading || disabled}
+            placeholder={
+              selectedPhoto
+                ? "Add a message (optional)..."
+                : placeholder
+            }
+            disabled={isLoading || disabled || isUploadingPhoto}
+            aria-disabled={isLoading || disabled || isUploadingPhoto}
             aria-describedby={hintId}
             rows={1}
             className={cn(
@@ -179,7 +275,15 @@ export function ChatInput({
           onClick={handleSubmit}
           disabled={isSubmitDisabled}
           aria-disabled={isSubmitDisabled}
-          aria-label={isLoading ? "Sending message" : "Send message"}
+          aria-label={
+            isUploadingPhoto
+              ? "Uploading photo"
+              : isLoading
+              ? "Sending message"
+              : selectedPhoto
+              ? "Send photo for analysis"
+              : "Send message"
+          }
           className={cn(
             "p-3 min-h-[44px] min-w-[44px] rounded-xl flex-shrink-0 transition-all mb-1",
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal focus-visible:ring-offset-2",
@@ -188,10 +292,12 @@ export function ChatInput({
               : "bg-gray-200 text-gray-400 cursor-not-allowed"
           )}
         >
-          {isLoading ? (
+          {isLoading || isUploadingPhoto ? (
             <>
               <Loader2 className="w-5 h-5 animate-spin" aria-hidden="true" />
-              <span className="sr-only">Sending</span>
+              <span className="sr-only">
+                {isUploadingPhoto ? "Uploading" : "Sending"}
+              </span>
             </>
           ) : (
             <>
