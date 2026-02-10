@@ -56,7 +56,7 @@
       </div>
     </div>
   </div>
-  <div class="sprint-updated">Last updated: Feb 10, 2026 — Sprint 22: Maintenance Push Notifications Complete | Edge Function for maintenance reminders | Maintenance Scheduling now 100%</div>
+  <div class="sprint-updated">Last updated: Feb 10, 2026 — Sprint 24: UX Polish + Chat Improvements | Page centering, dashboard My Tanks, chat without tank, streaming fix, action normalization</div>
 </div>
 
 <div class="tabs" id="tabs">
@@ -529,6 +529,64 @@
 <div class="panel" id="sprints">
 <h2 style="font-size:1.2rem;margin-bottom:8px">📋 Sprint History</h2>
 <p style="font-size:0.82rem;color:var(--text2);margin-bottom:20px">Complete history of development sprints. What was built, outcomes, and metrics.</p>
+
+<!-- Sprint 24 (Complete) -->
+<div style="background:var(--surface);border:2px solid var(--green);border-radius:12px;margin-bottom:16px;overflow:hidden">
+  <div style="background:linear-gradient(90deg,rgba(34,197,94,0.2),transparent);padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+    <div>
+      <h3 style="font-size:1rem;font-weight:700;margin-bottom:2px">Sprint 24: UX Polish + Chat Improvements</h3>
+      <span style="font-size:0.75rem;color:var(--text2)">Feb 10, 2026</span>
+    </div>
+    <span class="status-badge status-complete">Complete</span>
+  </div>
+  <div style="padding:20px">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:16px">
+      <div style="text-align:center;padding:12px;background:var(--bg);border-radius:8px">
+        <div style="font-size:0.7rem;color:var(--text2);text-transform:uppercase">Files Changed</div>
+        <div style="font-size:1.3rem;font-weight:800;color:var(--green)">12</div>
+        <div style="font-size:0.72rem;color:var(--text2)">+373 / -80 lines</div>
+      </div>
+      <div style="text-align:center;padding:12px;background:var(--bg);border-radius:8px">
+        <div style="font-size:0.7rem;color:var(--text2);text-transform:uppercase">Bugs Fixed</div>
+        <div style="font-size:1.3rem;font-weight:800;color:var(--green)">4</div>
+        <div style="font-size:0.72rem;color:var(--text2)">From user feedback</div>
+      </div>
+      <div style="text-align:center;padding:12px;background:var(--bg);border-radius:8px">
+        <div style="font-size:0.7rem;color:var(--text2);text-transform:uppercase">Feedback Addressed</div>
+        <div style="font-size:1.3rem;font-weight:800;color:var(--green)">4</div>
+        <div style="font-size:0.72rem;color:var(--text2)">+6 acknowledged P1</div>
+      </div>
+    </div>
+    <h4 style="font-size:0.8rem;font-weight:700;color:var(--text);margin-bottom:8px">What Was Built</h4>
+    <div style="font-size:0.82rem;color:var(--text2);line-height:1.8">
+      <span style="display:block">✅ <strong>Page Centering</strong> — Tailwind container auto-center config, dashboard + alerts pages wrapped (FB-MLH52B09)</span>
+      <span style="display:block">✅ <strong>Dashboard "My Tanks"</strong> — Tank card grid with photo, type, volume, active indicator, View Details (FB-MLH54FLG)</span>
+      <span style="display:block">✅ <strong>Chat Without Tank</strong> — Optional tank_id in API + UI, general prompts for users without tanks (FB-MLH4UAHT)</span>
+      <span style="display:block">✅ <strong>Streaming Code Flash Fix</strong> — Strip incomplete structured blocks during streaming (FB-MLH5UL4S)</span>
+      <span style="display:block">✅ <strong>Action Payload Normalization</strong> — Handle AI values: "water change" → "water_change", "tomorrow" → date (FB-MLH5UL4S)</span>
+    </div>
+  </div>
+</div>
+
+<!-- Sprint 23 (Complete) -->
+<div style="background:var(--surface);border:2px solid var(--green);border-radius:12px;margin-bottom:16px;overflow:hidden">
+  <div style="background:linear-gradient(90deg,rgba(34,197,94,0.2),transparent);padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+    <div>
+      <h3 style="font-size:1rem;font-weight:700;margin-bottom:2px">Sprint 23: Critical Bug Fixes</h3>
+      <span style="font-size:0.75rem;color:var(--text2)">Feb 10, 2026</span>
+    </div>
+    <span class="status-badge status-complete">Complete</span>
+  </div>
+  <div style="padding:20px">
+    <h4 style="font-size:0.8rem;font-weight:700;color:var(--text);margin-bottom:8px">What Was Fixed</h4>
+    <div style="font-size:0.82rem;color:var(--text2);line-height:1.8">
+      <span style="display:block">✅ Notification settings not saving extended preferences</span>
+      <span style="display:block">✅ Admin hook querying wrong table (admin_profiles → admin_users)</span>
+      <span style="display:block">✅ Tank context not refreshed after onboarding creation</span>
+      <span style="display:block">✅ Tank photos bucket migration confirmed</span>
+    </div>
+  </div>
+</div>
 
 <!-- Sprint 22 (Complete) -->
 <div style="background:var(--surface);border:2px solid var(--green);border-radius:12px;margin-bottom:16px;overflow:hidden">
@@ -1321,6 +1379,32 @@
   <span style="width:10px;height:10px;background:var(--yellow);border-radius:50%"></span>
   Ready to Test
 </h3>
+
+<!-- Sprint 24 - UX Polish + Chat Tests -->
+<div style="background:var(--surface);border:2px solid var(--cyan);border-radius:12px;margin-bottom:12px">
+  <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+    <div>
+      <h4 style="font-size:0.9rem;font-weight:700">🎨 Sprint 24: UX Polish + Chat Improvements</h4>
+      <span style="font-size:0.75rem;color:var(--text2)">Sprint 24 | Added Feb 10, 2026 | UX + Chat</span>
+    </div>
+    <span class="status-badge status-progress">Priority Test</span>
+  </div>
+  <div style="padding:16px 20px;font-size:0.82rem;color:var(--text2)">
+    <p style="margin-bottom:12px"><strong>What to test:</strong></p>
+    <ul style="padding-left:16px;line-height:1.8">
+      <li><strong>Page Centering:</strong> Open dashboard, settings, species, tanks on a wide screen — content should be centered with max-width</li>
+      <li><strong>Dashboard "My Tanks":</strong> Check dashboard for tank card grid. Click a card to switch active tank. Click "View Details" to navigate to tank page. Click "Add Tank" card to create new tank.</li>
+      <li><strong>Chat Without Tank:</strong> Go to /chat without any tank (or with 0 tanks). You should see general prompts ("I'm new to fishkeeping..."). Send a message — it should work without a tank selected.</li>
+      <li><strong>Chat With Tank:</strong> Select a tank, go to chat. Verify tank-specific prompts appear and AI has tank context.</li>
+      <li><strong>Streaming Code Flash:</strong> Ask AI a question that generates action-confirmation blocks (e.g., "Schedule a water change for tomorrow"). The JSON should NOT flash as raw code during streaming.</li>
+      <li><strong>Schedule Task:</strong> When AI suggests scheduling a task, click "Confirm". It should complete successfully (no error popup).</li>
+    </ul>
+    <div style="margin-top:12px;padding:12px;background:var(--bg);border-radius:8px">
+      <strong>Sam's Notes:</strong>
+      <textarea id="test-notes-s24" data-feature="s24" placeholder="Add your Sprint 24 testing notes here..." onblur="saveTestingNotes('s24',this)" style="width:100%;margin-top:8px;padding:8px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.8rem;min-height:60px;resize:vertical"></textarea>
+    </div>
+  </div>
+</div>
 
 <!-- Sprint 22 - Push Notifications Test -->
 <div style="background:var(--surface);border:2px solid var(--cyan);border-radius:12px;margin-bottom:12px">

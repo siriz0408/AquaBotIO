@@ -1,6 +1,6 @@
 # Active Work Board
 
-> Last updated: 2026-02-09 | Updated by: PM Orchestrator | Sprint 19 COMPLETE ✅
+> Last updated: 2026-02-10 | Updated by: PM Orchestrator | Sprint 24 COMPLETE ✅
 
 ## MILESTONE: MVP Launch-Ready ✅ → Phase 2 Complete ✅ → Pricing Strategy ✅ → Free Tools ✅ → Push Notifications ✅ → AI Widgets ✅
 
@@ -99,6 +99,19 @@
 | **Sprint 16** | **FREE TOOLS** | **Static calculators for Free tier: Water Change, Stocking, Parameter Reference at /tools** |
 | **Sprint 15** | **VERIFICATION** | **Billing E2E tests updated ($4.99/$9.99/$19.99), webhook code verified, action items for Sam (webhook + env vars)** |
 | **Sprint 19** | **COMPLETE** | **AI Chat Embedded Widgets: Water Change Calculator, Quarantine Checklist, Parameter Troubleshooting** |
+| **Sprint 20-22** | **COMPLETE** | **Admin Portal, Push Notifications polish, Pricing fixes** |
+| **Sprint 23** | **COMPLETE** | **P0 Bug Fixes: notification settings, admin hook, onboarding tank context, storage bucket** |
+| **Sprint 24** | **COMPLETE** | **UX Polish: page centering, dashboard My Tanks, chat without tank, code flash fix, action normalization** |
+
+## Sprint 24 Deliverables (UX Polish + Chat Improvements)
+
+| What | Details |
+|------|---------|
+| Page Centering | Tailwind `container` now auto-centered globally with responsive padding; dashboard + alerts pages wrapped |
+| Dashboard My Tanks | New `MyTanks` component — grid of tank cards with photo, type, volume, active indicator, View Details link |
+| Chat Without Tank | `tank_id` now optional in chat API, validation, and UI; general chat prompts for users without tanks |
+| Streaming Code Flash Fix | `parseContent()` now strips incomplete structured code blocks during streaming |
+| Action Payload Normalization | `normalizeActionPayload()` handles AI-generated values: task_type, frequency, relative dates |
 
 ## Sprint 19 Deliverables (AI Chat Embedded Widgets)
 
