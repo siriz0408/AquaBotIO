@@ -77,17 +77,26 @@ export default function NotificationSettingsPage() {
         }
 
         if (data) {
+          // Convert reminder_time + reminder_days_before to reminder_timing
+          let reminder_timing: "day_before" | "morning_of" | "1_hour_before" = "morning_of";
+          if (data.reminder_days_before === 1) {
+            reminder_timing = "day_before";
+          } else if (data.reminder_days_before === 0 && data.reminder_time === "08:00:00") {
+            reminder_timing = "1_hour_before";
+          } else {
+            reminder_timing = "morning_of";
+          }
+
           setPreferences({
             push_enabled: data.push_enabled ?? false,
             email_enabled: data.email_enabled ?? true,
-            reminder_timing: data.reminder_timing ?? "morning_of",
+            reminder_timing: reminder_timing,
             quiet_hours_enabled: data.quiet_hours_enabled ?? false,
             quiet_hours_start: data.quiet_hours_start ?? "22:00:00",
             quiet_hours_end: data.quiet_hours_end ?? "08:00:00",
-            // For now, these are all enabled if email/push is enabled
-            maintenance_reminders: true,
-            parameter_alerts: true,
-            ai_insights: true,
+            maintenance_reminders: data.maintenance_reminders ?? true,
+            parameter_alerts: data.parameter_alerts ?? true,
+            ai_insights: data.ai_insights ?? true,
           });
         }
       } catch (err) {
@@ -133,6 +142,21 @@ export default function NotificationSettingsPage() {
 
     setIsSaving(true);
     try {
+      // Convert reminder_timing to reminder_time and reminder_days_before
+      let reminder_time = "09:00:00";
+      let reminder_days_before = 1;
+      
+      if (preferences.reminder_timing === "day_before") {
+        reminder_days_before = 1;
+        reminder_time = "09:00:00";
+      } else if (preferences.reminder_timing === "morning_of") {
+        reminder_days_before = 0;
+        reminder_time = "09:00:00";
+      } else if (preferences.reminder_timing === "1_hour_before") {
+        reminder_days_before = 0;
+        reminder_time = "08:00:00"; // Approximate - actual time calculated by cron
+      }
+
       const { error } = await supabase
         .from("notification_preferences")
         .upsert(
@@ -140,7 +164,11 @@ export default function NotificationSettingsPage() {
             user_id: user.id,
             push_enabled: isSubscribed,
             email_enabled: preferences.email_enabled,
-            reminder_timing: preferences.reminder_timing,
+            maintenance_reminders: preferences.maintenance_reminders,
+            parameter_alerts: preferences.parameter_alerts,
+            ai_insights: preferences.ai_insights,
+            reminder_time: reminder_time,
+            reminder_days_before: reminder_days_before,
             quiet_hours_enabled: preferences.quiet_hours_enabled,
             quiet_hours_start: preferences.quiet_hours_start,
             quiet_hours_end: preferences.quiet_hours_end,

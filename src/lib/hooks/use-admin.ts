@@ -39,11 +39,12 @@ export function useAdminCheck() {
           return;
         }
 
-        // Check admin_profiles table
+        // Check admin_users table
         const { data: adminProfile, error: profileError } = await supabase
-          .from("admin_profiles")
-          .select("role")
+          .from("admin_users")
+          .select("role, is_active")
           .eq("user_id", user.id)
+          .eq("is_active", true)
           .single();
 
         if (profileError || !adminProfile) {

@@ -10,6 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
 import { useUser } from "@/lib/hooks/use-user";
+import { useTank } from "@/context/tank-context";
 
 const TANK_TYPES = [
   { value: "freshwater", label: "Freshwater", icon: Droplets, description: "Community tanks, planted tanks, tropical fish" },
@@ -27,6 +28,7 @@ interface OnboardingWizardProps {
 export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
   const router = useRouter();
   const { profile, refreshProfile } = useUser();
+  const { refreshTanks, setActiveTank } = useTank();
   const supabase = createClient();
 
   const [step, setStep] = useState(1);
@@ -83,17 +85,33 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
     // Save step 3 data (create tank)
     if (step === 3 && profile) {
       setIsLoading(true);
-      const { error } = await supabase.from("tanks").insert({
-        user_id: profile.id,
-        name: tankName.trim(),
-        type: tankType,
-        volume_gallons: parseFloat(tankVolume),
-      });
+      const { data: newTank, error } = await supabase
+        .from("tanks")
+        .insert({
+          user_id: profile.id,
+          name: tankName.trim(),
+          type: tankType,
+          volume_gallons: parseFloat(tankVolume),
+        })
+        .select()
+        .single();
 
       if (error) {
         toast.error("Failed to create tank");
         setIsLoading(false);
         return;
+      }
+
+      // Refresh tank context and set the new tank as active
+      await refreshTanks();
+      if (newTank) {
+        setActiveTank({
+          id: newTank.id,
+          name: newTank.name,
+          type: newTank.type,
+          volume_gallons: newTank.volume_gallons,
+          photo_url: newTank.photo_url,
+        });
       }
       setIsLoading(false);
     }
