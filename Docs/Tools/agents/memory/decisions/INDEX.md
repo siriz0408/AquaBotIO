@@ -1,11 +1,13 @@
 # Decisions Index
 
-> Entries: 9 | Last updated: 2026-02-08
+> Entries: 11 | Last updated: 2026-02-10
 
 Naming: `D{NNN}-{kebab-title}.md`
 
 | ID | Date | Domain | Title | Review By |
 |----|------|--------|-------|-----------|
+| D023-1 | 2026-02-10 | ui/db | Convert reminder_timing enum to database format (reminder_time + reminder_days_before) | — |
+| D023-2 | 2026-02-10 | db | Use migration to add Sam as admin (not manual SQL) | — |
 | D001 | 2026-02-08 | ui | Custom button tabs over shadcn/ui Tabs | — |
 | D002 | 2026-02-08 | api | Next.js API route over Edge Function for compatibility | — |
 | D003 | 2026-02-08 | billing | Free tier rule-based compatibility (AI for paid) | — |

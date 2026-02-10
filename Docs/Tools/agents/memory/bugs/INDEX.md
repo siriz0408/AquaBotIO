@@ -1,11 +1,15 @@
 # Bugs Index
 
-> Active: 0 | Resolved: 9 | Last updated: 2026-02-08
+> Active: 1 | Resolved: 12 | Last updated: 2026-02-10
 
 Naming: `B{NNN}-{kebab-title}.md`
 
 | ID | Severity | Status | Domain | Title | Assigned To |
 |----|----------|--------|--------|-------|-------------|
+| B023-4 | P0 | PENDING VERIFICATION | storage | Tank photos bucket missing in remote Supabase | Backend |
+| B023-1 | P0 | RESOLVED | ui/api | Notification settings not saving extended preferences | Frontend |
+| B023-2 | P0 | RESOLVED | db/api | Admin hook uses wrong table name (admin_profiles vs admin_users) | Backend |
+| B023-3 | P0 | RESOLVED | ui | Tank context not refreshed after onboarding creation | Frontend |
 | B014 | P1 | RESOLVED | config | Security headers blocking static assets (nosniff on _next/static) | PM |
 | B005 | P0 | RESOLVED | auth | Supabase auth Web Lock deadlock (noOpLock workaround) | Backend |
 | B006 | P1 | RESOLVED | auth | Middleware blocks /api/auth/* routes | Backend |

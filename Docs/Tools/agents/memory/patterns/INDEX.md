@@ -1,11 +1,13 @@
 # Patterns Index
 
-> Entries: 8 | Last updated: 2026-02-08
+> Entries: 10 | Last updated: 2026-02-10
 
 Naming: `P{NNN}-{kebab-title}.md`
 
 | ID | Domain | Title | Usage |
 |----|--------|-------|-------|
+| P023-1 | ui | Refresh context after creating resources | Any component creating tanks, livestock, parameters, tasks |
+| P023-2 | db/api | Verify table names match between hooks and layouts | Admin/auth hooks, any hook checking database tables |
 | P001 | ui/api | Zod form validation pattern | All forms — `src/lib/validation/` |
 | P002 | db | Supabase foreign key join response handling | All API routes with joins |
 | P003 | billing | Tier checking pattern (trial = Pro) | All tier-gated features |
