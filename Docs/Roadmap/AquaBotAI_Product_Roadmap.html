@@ -56,7 +56,7 @@
       </div>
     </div>
   </div>
-  <div class="sprint-updated">Last updated: Feb 11, 2026 — Sprint 25: Performance + Landing Page + Tank UX | Lazy loading, parallel queries, caching, new landing page, tank photo upload</div>
+  <div class="sprint-updated">Last updated: Feb 11, 2026 — Sprint 26: P0 Bug Fixes | Fixed onboarding buttons (Skip/Complete), added logout button to Settings</div>
 </div>
 
 <div class="tabs" id="tabs">
@@ -529,6 +529,82 @@
 <div class="panel" id="sprints">
 <h2 style="font-size:1.2rem;margin-bottom:8px">📋 Sprint History</h2>
 <p style="font-size:0.82rem;color:var(--text2);margin-bottom:20px">Complete history of development sprints. What was built, outcomes, and metrics.</p>
+
+<!-- Sprint 26 (Complete) -->
+<div style="background:var(--surface);border:2px solid var(--green);border-radius:12px;margin-bottom:16px;overflow:hidden">
+  <div style="background:linear-gradient(90deg,rgba(34,197,94,0.2),transparent);padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+    <div>
+      <h3 style="font-size:1rem;font-weight:700;margin-bottom:2px">Sprint 26: P0 Bug Fixes</h3>
+      <span style="font-size:0.75rem;color:var(--text2)">Feb 11, 2026</span>
+    </div>
+    <span class="status-badge status-complete">Complete</span>
+  </div>
+  <div style="padding:20px">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:16px">
+      <div style="text-align:center;padding:12px;background:var(--bg);border-radius:8px">
+        <div style="font-size:0.7rem;color:var(--text2);text-transform:uppercase">Files Changed</div>
+        <div style="font-size:1.3rem;font-weight:800;color:var(--green)">2</div>
+        <div style="font-size:0.72rem;color:var(--text2)">+75 / -27 lines</div>
+      </div>
+      <div style="text-align:center;padding:12px;background:var(--bg);border-radius:8px">
+        <div style="font-size:0.7rem;color:var(--text2);text-transform:uppercase">Bugs Fixed</div>
+        <div style="font-size:1.3rem;font-weight:800;color:var(--green)">3</div>
+        <div style="font-size:0.72rem;color:var(--text2)">P0 from Sam's feedback</div>
+      </div>
+      <div style="text-align:center;padding:12px;background:var(--bg);border-radius:8px">
+        <div style="font-size:0.7rem;color:var(--text2);text-transform:uppercase">E2E Tests</div>
+        <div style="font-size:1.3rem;font-weight:800;color:var(--green)">39</div>
+        <div style="font-size:0.72rem;color:var(--text2)">All passing</div>
+      </div>
+    </div>
+    <h4 style="font-size:0.8rem;font-weight:700;color:var(--text);margin-bottom:8px">What Was Fixed</h4>
+    <div style="font-size:0.82rem;color:var(--text2);line-height:1.8">
+      <span style="display:block">✅ <strong>Skip for now button</strong> — Fixed silent failure when profile is null; now always redirects (FB-MLHVJ7TB)</span>
+      <span style="display:block">✅ <strong>Go to Dashboard button</strong> — Same fix; handleComplete() now wrapped in try/catch (FB-MLHVI5VP)</span>
+      <span style="display:block">✅ <strong>No way to logout</strong> — Added Sign Out button to Settings > Security (FB-MLHVIIUH)</span>
+    </div>
+    <h4 style="font-size:0.8rem;font-weight:700;color:var(--text);margin-bottom:8px;margin-top:12px">Pattern Discovered</h4>
+    <div style="font-size:0.82rem;color:var(--text2);line-height:1.8">
+      <span style="display:block">📐 <strong>Resilient Button Handler</strong> — Always complete user action (redirect/toast) even if DB call fails</span>
+    </div>
+  </div>
+</div>
+
+<!-- Sprint 25 (Complete) -->
+<div style="background:var(--surface);border:2px solid var(--green);border-radius:12px;margin-bottom:16px;overflow:hidden">
+  <div style="background:linear-gradient(90deg,rgba(34,197,94,0.2),transparent);padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+    <div>
+      <h3 style="font-size:1rem;font-weight:700;margin-bottom:2px">Sprint 25: Performance + Landing Page + Tank UX</h3>
+      <span style="font-size:0.75rem;color:var(--text2)">Feb 11, 2026</span>
+    </div>
+    <span class="status-badge status-complete">Complete</span>
+  </div>
+  <div style="padding:20px">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:16px">
+      <div style="text-align:center;padding:12px;background:var(--bg);border-radius:8px">
+        <div style="font-size:0.7rem;color:var(--text2);text-transform:uppercase">Files Created</div>
+        <div style="font-size:1.3rem;font-weight:800;color:var(--green)">5</div>
+        <div style="font-size:0.72rem;color:var(--text2)">Skeletons, API routes</div>
+      </div>
+      <div style="text-align:center;padding:12px;background:var(--bg);border-radius:8px">
+        <div style="font-size:0.7rem;color:var(--text2);text-transform:uppercase">Files Modified</div>
+        <div style="font-size:1.3rem;font-weight:800;color:var(--cyan)">11</div>
+        <div style="font-size:0.72rem;color:var(--text2)">Performance + UX</div>
+      </div>
+      <div style="text-align:center;padding:12px;background:var(--bg);border-radius:8px">
+        <div style="font-size:0.7rem;color:var(--text2);text-transform:uppercase">Feedback</div>
+        <div style="font-size:1.3rem;font-weight:800;color:var(--green)">3</div>
+        <div style="font-size:0.72rem;color:var(--text2)">Addressed</div>
+      </div>
+    </div>
+    <h4 style="font-size:0.8rem;font-weight:700;color:var(--text);margin-bottom:8px">What Was Built</h4>
+    <div style="font-size:0.82rem;color:var(--text2);line-height:1.8">
+      <span style="display:block">✅ <strong>Landing Page Redesign</strong> — Hero, 6 features, 4-tier pricing, CTA, footer (FB-MLH50G4L)</span>
+      <span style="display:block">✅ <strong>Performance</strong> — Skeleton loading, lazy-loaded charts, parallel queries, caching (FB-MLH54PQ4)</span>
+      <span style="display:block">✅ <strong>Tank Edit Form</strong> — Photo upload, setup date picker, substrate dropdown (FB-MLH5FZFB)</span>
+    </div>
+  </div>
+</div>
 
 <!-- Sprint 24 (Complete) -->
 <div style="background:var(--surface);border:2px solid var(--green);border-radius:12px;margin-bottom:16px;overflow:hidden">
@@ -1379,6 +1455,29 @@
   <span style="width:10px;height:10px;background:var(--yellow);border-radius:50%"></span>
   Ready to Test
 </h3>
+
+<!-- Sprint 26 - P0 Bug Fixes -->
+<div style="background:var(--surface);border:2px solid var(--green);border-radius:12px;margin-bottom:12px">
+  <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+    <div>
+      <h4 style="font-size:0.9rem;font-weight:700">🐛 Sprint 26: P0 Bug Fixes</h4>
+      <span style="font-size:0.75rem;color:var(--text2)">Sprint 26 | Added Feb 11, 2026 | Critical Bugs</span>
+    </div>
+    <span class="status-badge status-progress">Priority Test</span>
+  </div>
+  <div style="padding:16px 20px;font-size:0.82rem;color:var(--text2)">
+    <p style="margin-bottom:12px"><strong>What to test:</strong></p>
+    <ul style="padding-left:16px;line-height:1.8">
+      <li><strong>Onboarding Flow:</strong> Fresh signup → complete onboarding → "Go to Dashboard" should work</li>
+      <li><strong>Onboarding Skip:</strong> Fresh signup → click "Skip for now" → should redirect to dashboard</li>
+      <li><strong>Logout:</strong> Dashboard → Settings → Security → "Sign Out" → should redirect to login with toast</li>
+    </ul>
+    <div style="margin-top:12px;padding:12px;background:var(--bg);border-radius:8px">
+      <strong>Sam's Notes:</strong>
+      <textarea id="test-notes-s26" data-feature="s26" placeholder="Add your Sprint 26 testing notes here..." onblur="saveTestingNotes('s26',this)" style="width:100%;margin-top:8px;padding:8px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.8rem;min-height:60px;resize:vertical"></textarea>
+    </div>
+  </div>
+</div>
 
 <!-- Sprint 24 - UX Polish + Chat Tests -->
 <div style="background:var(--surface);border:2px solid var(--cyan);border-radius:12px;margin-bottom:12px">
