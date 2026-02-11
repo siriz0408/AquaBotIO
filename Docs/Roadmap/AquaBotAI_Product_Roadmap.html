@@ -56,7 +56,7 @@
       </div>
     </div>
   </div>
-  <div class="sprint-updated">Last updated: Feb 11, 2026 — Sprint 27: Species Cards Revamp | Added coral type support, expanded card info (temp/pH ranges), seeded 15 coral species</div>
+  <div class="sprint-updated">Last updated: Feb 11, 2026 — Sprint 28: Species Images | 97.9% image coverage from GBIF, external image support, species detail modal with real photos</div>
 </div>
 
 <div class="tabs" id="tabs">
@@ -529,6 +529,50 @@
 <div class="panel" id="sprints">
 <h2 style="font-size:1.2rem;margin-bottom:8px">📋 Sprint History</h2>
 <p style="font-size:0.82rem;color:var(--text2);margin-bottom:20px">Complete history of development sprints. What was built, outcomes, and metrics.</p>
+
+<!-- Sprint 28 (Complete) -->
+<div style="background:var(--surface);border:2px solid var(--green);border-radius:12px;margin-bottom:16px;overflow:hidden">
+  <div style="background:linear-gradient(90deg,rgba(34,197,94,0.2),transparent);padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+    <div>
+      <h3 style="font-size:1rem;font-weight:700;margin-bottom:2px">Sprint 28: Species Database Images</h3>
+      <span style="font-size:0.75rem;color:var(--text2)">Feb 11, 2026</span>
+    </div>
+    <span class="status-badge status-complete">Complete</span>
+  </div>
+  <div style="padding:20px">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:16px">
+      <div style="text-align:center;padding:12px;background:var(--bg);border-radius:8px">
+        <div style="font-size:0.7rem;color:var(--text2);text-transform:uppercase">Image Coverage</div>
+        <div style="font-size:1.3rem;font-weight:800;color:var(--green)">97.9%</div>
+        <div style="font-size:0.72rem;color:var(--text2)">191/195 species</div>
+      </div>
+      <div style="text-align:center;padding:12px;background:var(--bg);border-radius:8px">
+        <div style="font-size:0.7rem;color:var(--text2);text-transform:uppercase">Components Updated</div>
+        <div style="font-size:1.3rem;font-weight:800;color:var(--cyan)">4</div>
+        <div style="font-size:0.72rem;color:var(--text2)">Cards, modal, config</div>
+      </div>
+      <div style="text-align:center;padding:12px;background:var(--bg);border-radius:8px">
+        <div style="font-size:0.7rem;color:var(--text2);text-transform:uppercase">Scripts Created</div>
+        <div style="font-size:1.3rem;font-weight:800;color:var(--purple)">2</div>
+        <div style="font-size:0.72rem;color:var(--text2)">GBIF image fetchers</div>
+      </div>
+    </div>
+    <h4 style="font-size:0.8rem;font-weight:700;color:var(--text);margin-bottom:8px">What Was Built</h4>
+    <div style="font-size:0.82rem;color:var(--text2);line-height:1.8">
+      <span style="display:block">✅ <strong>External Image Support</strong> — Added unoptimized prop for GBIF/iNaturalist URLs</span>
+      <span style="display:block">✅ <strong>Domain Configuration</strong> — next.config.mjs remote patterns for image hosts</span>
+      <span style="display:block">✅ <strong>GBIF Image Fetcher</strong> — Scripts to fetch species photos by scientific name</span>
+      <span style="display:block">✅ <strong>97.9% Coverage</strong> — 191 of 195 species now have real photographs</span>
+      <span style="display:block">✅ <strong>Zero Errors</strong> — Console errors reduced from 18 to 0</span>
+    </div>
+    <h4 style="font-size:0.8rem;font-weight:700;color:var(--text);margin-bottom:8px;margin-top:12px">Image Sources</h4>
+    <div style="font-size:0.82rem;color:var(--text2);line-height:1.8">
+      <span style="display:block">📷 iNaturalist (CC-BY) — Primary source via GBIF API</span>
+      <span style="display:block">📷 Natural History Museum UK — Secondary source</span>
+      <span style="display:block">📷 Wikimedia Commons — Fallback source</span>
+    </div>
+  </div>
+</div>
 
 <!-- Sprint 27 (Complete) -->
 <div style="background:var(--surface);border:2px solid var(--green);border-radius:12px;margin-bottom:16px;overflow:hidden">
@@ -1498,6 +1542,35 @@
   Ready to Test
 </h3>
 
+<!-- Sprint 28 - Species Images -->
+<div style="background:var(--surface);border:2px solid var(--green);border-radius:12px;margin-bottom:12px">
+  <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+    <div>
+      <h4 style="font-size:0.9rem;font-weight:700">📷 Sprint 28: Species Database Images</h4>
+      <span style="font-size:0.75rem;color:var(--text2)">Sprint 28 | Added Feb 11, 2026 | Species</span>
+    </div>
+    <span class="status-badge status-progress">Priority Test</span>
+  </div>
+  <div style="padding:16px 20px;font-size:0.82rem;color:var(--text2)">
+    <p style="margin-bottom:12px"><strong>What to test:</strong></p>
+    <ul style="padding-left:16px;line-height:1.8">
+      <li><strong>Species Page:</strong> Visit /species → cards should show real photos (fish, corals, plants)</li>
+      <li><strong>No Console Errors:</strong> Open browser DevTools → Console should have 0 "Invalid src prop" errors</li>
+      <li><strong>Species Detail:</strong> Click any species card → modal should show large image</li>
+      <li><strong>Filter + Images:</strong> Filter by type (coral, freshwater, etc.) → each filtered species should have an image</li>
+      <li><strong>Scroll Performance:</strong> Scroll through species list → images should lazy load smoothly</li>
+    </ul>
+    <div style="margin-top:12px;padding:12px;background:rgba(34,197,94,0.1);border-radius:8px;border:1px solid rgba(34,197,94,0.3)">
+      <strong style="color:var(--green)">✅ 97.9% Image Coverage</strong>
+      <p style="margin-top:4px">191 of 195 species have real photos from GBIF/iNaturalist</p>
+    </div>
+    <div style="margin-top:12px;padding:12px;background:var(--bg);border-radius:8px">
+      <strong>Sam's Notes:</strong>
+      <textarea id="test-notes-s28" data-feature="s28" placeholder="Add your Sprint 28 testing notes here..." onblur="saveTestingNotes('s28',this)" style="width:100%;margin-top:8px;padding:8px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.8rem;min-height:60px;resize:vertical"></textarea>
+    </div>
+  </div>
+</div>
+
 <!-- Sprint 27 - Species Cards + Coral -->
 <div style="background:var(--surface);border:2px solid var(--green);border-radius:12px;margin-bottom:12px">
   <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
@@ -1505,7 +1578,7 @@
       <h4 style="font-size:0.9rem;font-weight:700">🪸 Sprint 27: Species Cards + Coral Support</h4>
       <span style="font-size:0.75rem;color:var(--text2)">Sprint 27 | Added Feb 11, 2026 | Species</span>
     </div>
-    <span class="status-badge status-progress">Priority Test</span>
+    <span class="status-badge status-complete">Tested</span>
   </div>
   <div style="padding:16px 20px;font-size:0.82rem;color:var(--text2)">
     <p style="margin-bottom:12px"><strong>What to test:</strong></p>
