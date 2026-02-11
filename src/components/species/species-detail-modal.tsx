@@ -41,6 +41,7 @@ const TYPE_EMOJIS = {
   saltwater: "🐠",
   invertebrate: "🦐",
   plant: "🌿",
+  coral: "🪸",
 };
 
 export function SpeciesDetailModal({
@@ -292,7 +293,8 @@ export function SpeciesDetailModal({
                           tank.type === species.type ||
                           (species.type === "plant" && tank.type === "freshwater") ||
                           (species.type === "invertebrate" &&
-                            (tank.type === "freshwater" || tank.type === "saltwater"))
+                            (tank.type === "freshwater" || tank.type === "saltwater" || tank.type === "reef")) ||
+                          (species.type === "coral" && (tank.type === "reef" || tank.type === "saltwater"))
                       )
                       .map((tank) => (
                         <Button
@@ -313,7 +315,8 @@ export function SpeciesDetailModal({
                         tank.type === species.type ||
                         (species.type === "plant" && tank.type === "freshwater") ||
                         (species.type === "invertebrate" &&
-                          (tank.type === "freshwater" || tank.type === "saltwater"))
+                          (tank.type === "freshwater" || tank.type === "saltwater" || tank.type === "reef")) ||
+                        (species.type === "coral" && (tank.type === "reef" || tank.type === "saltwater"))
                     ).length === 0 && (
                       <p className="text-sm text-muted-foreground text-center py-4">
                         No compatible tanks found. Create a {species.type} tank first.

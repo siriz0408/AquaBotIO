@@ -86,7 +86,7 @@ export interface Species {
   id: string;
   common_name: string;
   scientific_name: string;
-  type: "freshwater" | "saltwater" | "invertebrate" | "plant";
+  type: "freshwater" | "saltwater" | "invertebrate" | "plant" | "coral";
   care_level: CareLevel;
   temperament: Temperament;
   min_tank_size_gallons: number;

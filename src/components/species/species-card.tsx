@@ -29,6 +29,7 @@ const TYPE_EMOJIS = {
   saltwater: "🐠",
   invertebrate: "🦐",
   plant: "🌿",
+  coral: "🪸",
 };
 
 function SpeciesCardComponent({ species, onClick, className }: SpeciesCardProps) {
@@ -96,6 +97,18 @@ function SpeciesCardComponent({ species, onClick, className }: SpeciesCardProps)
               {species.min_tank_size_gallons} gal
             </span>
             <span>Min Tank</span>
+          </div>
+          <div>
+            <span className="block text-foreground font-medium">
+              {species.temp_min_f}–{species.temp_max_f}°F
+            </span>
+            <span>Temp Range</span>
+          </div>
+          <div>
+            <span className="block text-foreground font-medium">
+              {species.ph_min}–{species.ph_max}
+            </span>
+            <span>pH Range</span>
           </div>
         </div>
       </CardContent>

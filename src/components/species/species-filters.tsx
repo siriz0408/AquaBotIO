@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-export type SpeciesType = "all" | "freshwater" | "saltwater" | "invertebrate" | "plant";
+export type SpeciesType = "all" | "freshwater" | "saltwater" | "invertebrate" | "plant" | "coral";
 export type CareLevel = "all" | "beginner" | "intermediate" | "expert";
 export type Temperament = "all" | "peaceful" | "semi_aggressive" | "aggressive";
 
@@ -23,6 +23,7 @@ const TYPE_OPTIONS: { value: SpeciesType; label: string; emoji: string }[] = [
   { value: "saltwater", label: "Saltwater", emoji: "🐠" },
   { value: "invertebrate", label: "Invertebrate", emoji: "🦐" },
   { value: "plant", label: "Plant", emoji: "🌿" },
+  { value: "coral", label: "Coral", emoji: "🪸" },
 ];
 
 const CARE_LEVEL_OPTIONS: { value: CareLevel; label: string; color: string }[] = [
