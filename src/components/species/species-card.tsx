@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -30,7 +31,7 @@ const TYPE_EMOJIS = {
   plant: "🌿",
 };
 
-export function SpeciesCard({ species, onClick, className }: SpeciesCardProps) {
+function SpeciesCardComponent({ species, onClick, className }: SpeciesCardProps) {
   return (
     <Card
       className={cn(
@@ -101,3 +102,6 @@ export function SpeciesCard({ species, onClick, className }: SpeciesCardProps) {
     </Card>
   );
 }
+
+// Memoize the component to prevent unnecessary re-renders in list
+export const SpeciesCard = memo(SpeciesCardComponent);

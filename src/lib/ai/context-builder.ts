@@ -49,6 +49,9 @@ export interface TankContext {
 
 /**
  * Fetch full tank context for AI system prompt
+ *
+ * PERFORMANCE: All queries run in parallel using Promise.all to reduce latency.
+ * Only specific columns are selected to minimize data transfer.
  */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export async function buildTankContext(
@@ -56,70 +59,79 @@ export async function buildTankContext(
   tankId: string,
   userId: string
 ): Promise<TankContext | null> {
-  // Fetch tank details
-  const { data: tank, error: tankError } = await (supabase
-    .from("tanks")
-    .select("*")
-    .eq("id", tankId)
-    .eq("user_id", userId)
-    .is("deleted_at", null)
-    .single() as unknown as Promise<{ data: any; error: any }>);
+  // Run all queries in parallel for better performance
+  const [tankResult, userResult, parametersResult, livestockResult, maintenanceResult] = await Promise.all([
+    // Fetch tank details - only needed columns
+    supabase
+      .from("tanks")
+      .select("id, name, type, volume_gallons, length_inches, width_inches, height_inches, substrate, setup_date, notes")
+      .eq("id", tankId)
+      .eq("user_id", userId)
+      .is("deleted_at", null)
+      .single() as unknown as Promise<{ data: any; error: any }>,
+
+    // Fetch user profile for skill level and preferences
+    supabase
+      .from("users")
+      .select("skill_level, unit_preference_volume, unit_preference_temp")
+      .eq("id", userId)
+      .single() as unknown as Promise<{ data: any; error: any }>,
+
+    // Fetch last 5 water parameter readings - only needed columns
+    supabase
+      .from("water_parameters")
+      .select("measured_at, ph, ammonia_ppm, nitrite_ppm, nitrate_ppm, temperature_f, salinity")
+      .eq("tank_id", tankId)
+      .order("measured_at", { ascending: false })
+      .limit(5) as unknown as Promise<{ data: any[]; error: any }>,
+
+    // Fetch active livestock with species info
+    supabase
+      .from("livestock")
+      .select(`
+        id,
+        custom_name,
+        nickname,
+        quantity,
+        date_added,
+        species:species_id (
+          common_name,
+          scientific_name
+        )
+      `)
+      .eq("tank_id", tankId)
+      .eq("is_active", true)
+      .is("deleted_at", null) as unknown as Promise<{ data: any[]; error: any }>,
+
+    // Fetch active maintenance tasks with last completion
+    supabase
+      .from("maintenance_tasks")
+      .select(`
+        id,
+        type,
+        title,
+        next_due_date,
+        maintenance_logs (
+          completed_at
+        )
+      `)
+      .eq("tank_id", tankId)
+      .eq("is_active", true)
+      .is("deleted_at", null)
+      .order("next_due_date", { ascending: true })
+      .limit(10) as unknown as Promise<{ data: any[]; error: any }>
+  ]);
+
+  const { data: tank, error: tankError } = tankResult;
+  const { data: user } = userResult;
+  const { data: parameters } = parametersResult;
+  const { data: livestock } = livestockResult;
+  const { data: maintenanceTasks } = maintenanceResult;
 
   if (tankError || !tank) {
     console.error("Error fetching tank:", tankError);
     return null;
   }
-
-  // Fetch user profile for skill level and preferences
-  const { data: user } = await (supabase
-    .from("users")
-    .select("skill_level, unit_preference_volume, unit_preference_temp")
-    .eq("id", userId)
-    .single() as unknown as Promise<{ data: any; error: any }>);
-
-  // Fetch last 5 water parameter readings
-  const { data: parameters } = await (supabase
-    .from("water_parameters")
-    .select("*")
-    .eq("tank_id", tankId)
-    .order("measured_at", { ascending: false })
-    .limit(5) as unknown as Promise<{ data: any[]; error: any }>);
-
-  // Fetch active livestock with species info
-  const { data: livestock } = await (supabase
-    .from("livestock")
-    .select(`
-      id,
-      custom_name,
-      nickname,
-      quantity,
-      date_added,
-      species:species_id (
-        common_name,
-        scientific_name
-      )
-    `)
-    .eq("tank_id", tankId)
-    .eq("is_active", true)
-    .is("deleted_at", null) as unknown as Promise<{ data: any[]; error: any }>);
-
-  // Fetch active maintenance tasks with last completion
-  const { data: maintenanceTasks } = await (supabase
-    .from("maintenance_tasks")
-    .select(`
-      id,
-      type,
-      title,
-      next_due_date,
-      maintenance_logs (
-        completed_at
-      )
-    `)
-    .eq("tank_id", tankId)
-    .eq("is_active", true)
-    .is("deleted_at", null)
-    .order("next_due_date", { ascending: true })
-    .limit(10) as unknown as Promise<{ data: any[]; error: any }>);
 
   // Format dimensions if available
   const dimensions =

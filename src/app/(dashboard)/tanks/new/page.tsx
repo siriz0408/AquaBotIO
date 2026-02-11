@@ -19,6 +19,17 @@ const TANK_TYPE_OPTIONS = TANK_TYPES.map((type) => ({
   label: type.charAt(0).toUpperCase() + type.slice(1),
 }));
 
+const SUBSTRATE_OPTIONS = [
+  { value: "", label: "Select substrate..." },
+  { value: "sand", label: "Sand" },
+  { value: "gravel", label: "Gravel" },
+  { value: "bare_bottom", label: "Bare Bottom" },
+  { value: "planted_substrate", label: "Planted Substrate (Aquasoil)" },
+  { value: "crushed_coral", label: "Crushed Coral" },
+  { value: "mixed", label: "Mixed" },
+  { value: "other", label: "Other" },
+];
+
 export default function NewTankPage() {
   const router = useRouter();
   const supabase = createClient();
@@ -35,6 +46,7 @@ export default function NewTankPage() {
   const [width, setWidth] = useState("");
   const [height, setHeight] = useState("");
   const [substrate, setSubstrate] = useState("");
+  const [customSubstrate, setCustomSubstrate] = useState("");
   const [notes, setNotes] = useState("");
 
   // Check tier limits on page load
@@ -64,6 +76,11 @@ export default function NewTankPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Determine final substrate value
+    const finalSubstrate = substrate === "other"
+      ? customSubstrate
+      : SUBSTRATE_OPTIONS.find(opt => opt.value === substrate)?.label || substrate;
+
     // Parse form data and validate with Zod
     const formData = parseFormToTankData({
       name,
@@ -72,7 +89,7 @@ export default function NewTankPage() {
       length,
       width,
       height,
-      substrate,
+      substrate: finalSubstrate,
       notes,
     });
 
@@ -280,12 +297,31 @@ export default function NewTankPage() {
                 {/* Substrate */}
                 <div className="space-y-2">
                   <Label htmlFor="substrate">Substrate</Label>
-                  <Input
+                  <select
                     id="substrate"
-                    placeholder="e.g., Gravel, Sand, Aquasoil"
                     value={substrate}
-                    onChange={(e) => setSubstrate(e.target.value)}
-                  />
+                    onChange={(e) => {
+                      setSubstrate(e.target.value);
+                      if (e.target.value !== "other") {
+                        setCustomSubstrate("");
+                      }
+                    }}
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  >
+                    {SUBSTRATE_OPTIONS.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                  {substrate === "other" && (
+                    <Input
+                      placeholder="Describe your substrate..."
+                      value={customSubstrate}
+                      onChange={(e) => setCustomSubstrate(e.target.value)}
+                      className="mt-2"
+                    />
+                  )}
                 </div>
 
                 {/* Notes */}

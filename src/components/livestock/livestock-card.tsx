@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import Image from "next/image";
 import { Trash2, MoreVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -26,7 +27,7 @@ const TYPE_EMOJIS = {
   plant: "🌿",
 };
 
-export function LivestockCard({
+function LivestockCardComponent({
   livestock,
   onRemove,
   className,
@@ -97,3 +98,6 @@ export function LivestockCard({
     </div>
   );
 }
+
+// Memoize to prevent unnecessary re-renders in list
+export const LivestockCard = memo(LivestockCardComponent);

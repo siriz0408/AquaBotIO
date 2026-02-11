@@ -54,6 +54,20 @@ export const tankSchema = z.object({
     .trim()
     .nullable()
     .optional(),
+  setup_date: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "Setup date must be in YYYY-MM-DD format")
+    .nullable()
+    .optional(),
+  photo_url: z
+    .string()
+    .url("Photo URL must be a valid URL")
+    .nullable()
+    .optional(),
+  photo_path: z
+    .string()
+    .nullable()
+    .optional(),
 });
 
 export type TankFormData = z.infer<typeof tankSchema>;
@@ -68,6 +82,9 @@ export function parseFormToTankData(formData: {
   height?: string;
   substrate?: string;
   notes?: string;
+  setup_date?: string;
+  photo_url?: string;
+  photo_path?: string;
 }): TankFormData {
   return {
     name: formData.name,
@@ -78,6 +95,9 @@ export function parseFormToTankData(formData: {
     height_inches: formData.height ? parseFloat(formData.height) : null,
     substrate: formData.substrate || null,
     notes: formData.notes || null,
+    setup_date: formData.setup_date || null,
+    photo_url: formData.photo_url || null,
+    photo_path: formData.photo_path || null,
   };
 }
 

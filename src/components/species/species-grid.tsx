@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { SpeciesCard } from "./species-card";
 import { SpeciesDetailModal } from "./species-detail-modal";
+import { SpeciesGridSkeleton } from "@/components/ui/skeleton";
 import type { Species } from "@/types/database";
 
 interface SpeciesGridProps {
@@ -23,26 +24,7 @@ export function SpeciesGrid({
   const [selectedSpecies, setSelectedSpecies] = useState<Species | null>(null);
 
   if (isLoading) {
-    return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-        {[...Array(8)].map((_, i) => (
-          <div
-            key={i}
-            className="rounded-lg border bg-muted/30 animate-pulse"
-          >
-            <div className="aspect-video bg-muted" />
-            <div className="p-4 space-y-3">
-              <div className="h-4 bg-muted rounded w-3/4" />
-              <div className="h-3 bg-muted rounded w-1/2" />
-              <div className="flex gap-2">
-                <div className="h-5 bg-muted rounded w-16" />
-                <div className="h-5 bg-muted rounded w-20" />
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    );
+    return <SpeciesGridSkeleton />;
   }
 
   if (species.length === 0) {

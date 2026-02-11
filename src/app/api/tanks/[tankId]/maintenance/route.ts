@@ -54,10 +54,10 @@ export async function GET(request: NextRequest, context: RouteContext) {
     const { searchParams } = new URL(request.url);
     const includeInactive = searchParams.get("include_inactive") === "true";
 
-    // Build query for tasks
+    // Build query for tasks - select only needed columns for better performance
     let tasksQuery = supabase
       .from("maintenance_tasks")
-      .select("*")
+      .select("id, tank_id, type, title, description, frequency, custom_interval_days, next_due_date, reminder_before_hours, is_active, created_at, updated_at")
       .eq("tank_id", tankId)
       .is("deleted_at", null)
       .order("next_due_date", { ascending: true });
@@ -76,11 +76,12 @@ export async function GET(request: NextRequest, context: RouteContext) {
       );
     }
 
-    // Get log counts for each task
+    // Get log counts for each task using aggregation
     const taskIds = (tasks || []).map((task: { id: string }) => task.id);
     const logCounts: Record<string, number> = {};
 
     if (taskIds.length > 0) {
+      // Only fetch task_id for counting - minimal data transfer
       const { data: logs, error: logsError } = await supabase
         .from("maintenance_logs")
         .select("task_id")

@@ -52,10 +52,10 @@ export async function GET(
     const endDate = searchParams.get("end_date");
     const limitParam = searchParams.get("limit");
 
-    // Build query
+    // Build query - select specific columns for better performance
     let query = supabase
       .from("water_parameters")
-      .select("*")
+      .select("id, tank_id, measured_at, ph, ammonia_ppm, nitrite_ppm, nitrate_ppm, temperature_f, gh_dgh, kh_dgh, salinity, calcium_ppm, alkalinity_dkh, magnesium_ppm, phosphate_ppm, notes, created_at")
       .eq("tank_id", tankId)
       .order("measured_at", { ascending: false });
 

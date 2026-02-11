@@ -3,19 +3,32 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useParams } from "next/navigation";
-import { Fish, ArrowLeft, Loader2 } from "lucide-react";
+import { Fish, ArrowLeft, Loader2, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { PhotoUpload } from "@/components/tanks/photo-upload";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
 import { TANK_TYPES, parseFormToTankData, validateTank } from "@/lib/validation/tank";
+import { format } from "date-fns";
 
 const TANK_TYPE_OPTIONS = TANK_TYPES.map((type) => ({
   value: type,
   label: type.charAt(0).toUpperCase() + type.slice(1),
 }));
+
+const SUBSTRATE_OPTIONS = [
+  { value: "", label: "Select substrate..." },
+  { value: "sand", label: "Sand" },
+  { value: "gravel", label: "Gravel" },
+  { value: "bare_bottom", label: "Bare Bottom" },
+  { value: "planted_substrate", label: "Planted Substrate (Aquasoil)" },
+  { value: "crushed_coral", label: "Crushed Coral" },
+  { value: "mixed", label: "Mixed" },
+  { value: "other", label: "Other" },
+];
 
 interface Tank {
   id: string;
@@ -28,6 +41,9 @@ interface Tank {
   substrate: string | null;
   notes: string | null;
   user_id: string;
+  photo_url: string | null;
+  photo_path: string | null;
+  setup_date: string | null;
 }
 
 export default function EditTankPage() {
@@ -37,6 +53,7 @@ export default function EditTankPage() {
   const supabase = createClient();
 
   const [tank, setTank] = useState<Tank | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -48,7 +65,11 @@ export default function EditTankPage() {
   const [width, setWidth] = useState("");
   const [height, setHeight] = useState("");
   const [substrate, setSubstrate] = useState("");
+  const [customSubstrate, setCustomSubstrate] = useState("");
   const [notes, setNotes] = useState("");
+  const [setupDate, setSetupDate] = useState("");
+  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
+  const [photoPath, setPhotoPath] = useState<string | null>(null);
 
   useEffect(() => {
     async function loadTank() {
@@ -59,6 +80,8 @@ export default function EditTankPage() {
           router.push("/login");
           return;
         }
+
+        setUserId(user.id);
 
         const { data: tankData, error } = await supabase
           .from("tanks")
@@ -80,8 +103,26 @@ export default function EditTankPage() {
         setLength(tankData.length_inches?.toString() || "");
         setWidth(tankData.width_inches?.toString() || "");
         setHeight(tankData.height_inches?.toString() || "");
-        setSubstrate(tankData.substrate || "");
+        setPhotoUrl(tankData.photo_url);
+        setPhotoPath(tankData.photo_path);
+
+        // Handle substrate - check if it's a predefined option or custom
+        const existingSubstrate = tankData.substrate || "";
+        const isPredefined = SUBSTRATE_OPTIONS.some(opt => opt.value === existingSubstrate.toLowerCase().replace(/\s+/g, '_'));
+        if (isPredefined) {
+          setSubstrate(existingSubstrate.toLowerCase().replace(/\s+/g, '_'));
+          setCustomSubstrate("");
+        } else if (existingSubstrate) {
+          setSubstrate("other");
+          setCustomSubstrate(existingSubstrate);
+        }
+
         setNotes(tankData.notes || "");
+
+        // Handle setup date
+        if (tankData.setup_date) {
+          setSetupDate(format(new Date(tankData.setup_date), "yyyy-MM-dd"));
+        }
       } catch (error) {
         console.error("Error loading tank:", error);
         toast.error("Failed to load tank");
@@ -94,8 +135,18 @@ export default function EditTankPage() {
     loadTank();
   }, [supabase, tankId, router]);
 
+  const handlePhotoChange = (url: string | null, path: string | null) => {
+    setPhotoUrl(url);
+    setPhotoPath(path);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Determine final substrate value
+    const finalSubstrate = substrate === "other"
+      ? customSubstrate
+      : SUBSTRATE_OPTIONS.find(opt => opt.value === substrate)?.label || substrate;
 
     // Parse form data and validate with Zod
     const formData = parseFormToTankData({
@@ -105,7 +156,7 @@ export default function EditTankPage() {
       length,
       width,
       height,
-      substrate,
+      substrate: finalSubstrate,
       notes,
     });
 
@@ -119,12 +170,19 @@ export default function EditTankPage() {
     setIsSaving(true);
 
     try {
+      const updateData: Record<string, unknown> = {
+        ...validation.data,
+        updated_at: new Date().toISOString(),
+      };
+
+      // Add setup date if provided
+      if (setupDate) {
+        updateData.setup_date = new Date(setupDate).toISOString();
+      }
+
       const { error } = await supabase
         .from("tanks")
-        .update({
-          ...validation.data,
-          updated_at: new Date().toISOString(),
-        })
+        .update(updateData)
         .eq("id", tankId);
 
       if (error) {
@@ -155,7 +213,7 @@ export default function EditTankPage() {
     );
   }
 
-  if (!tank) {
+  if (!tank || !userId) {
     return null;
   }
 
@@ -188,6 +246,21 @@ export default function EditTankPage() {
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Tank Photo */}
+                <div className="space-y-2">
+                  <Label>Tank Photo</Label>
+                  <PhotoUpload
+                    tankId={tankId}
+                    userId={userId}
+                    currentPhotoUrl={photoUrl}
+                    currentPhotoPath={photoPath}
+                    onPhotoChange={handlePhotoChange}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Upload a photo of your tank. Max 5MB, JPEG/PNG/WebP.
+                  </p>
+                </div>
+
                 {/* Tank Name */}
                 <div className="space-y-2">
                   <Label htmlFor="name">Tank Name *</Label>
@@ -215,6 +288,25 @@ export default function EditTankPage() {
                       </option>
                     ))}
                   </select>
+                </div>
+
+                {/* Setup Date */}
+                <div className="space-y-2">
+                  <Label htmlFor="setupDate">Setup Date</Label>
+                  <div className="relative">
+                    <Input
+                      id="setupDate"
+                      type="date"
+                      value={setupDate}
+                      onChange={(e) => setSetupDate(e.target.value)}
+                      max={format(new Date(), "yyyy-MM-dd")}
+                      className="pl-10"
+                    />
+                    <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    When was this tank set up? Helps track tank maturity.
+                  </p>
                 </div>
 
                 {/* Volume */}
@@ -275,12 +367,31 @@ export default function EditTankPage() {
                 {/* Substrate */}
                 <div className="space-y-2">
                   <Label htmlFor="substrate">Substrate</Label>
-                  <Input
+                  <select
                     id="substrate"
-                    placeholder="e.g., Gravel, Sand, Aquasoil"
                     value={substrate}
-                    onChange={(e) => setSubstrate(e.target.value)}
-                  />
+                    onChange={(e) => {
+                      setSubstrate(e.target.value);
+                      if (e.target.value !== "other") {
+                        setCustomSubstrate("");
+                      }
+                    }}
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  >
+                    {SUBSTRATE_OPTIONS.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                  {substrate === "other" && (
+                    <Input
+                      placeholder="Describe your substrate..."
+                      value={customSubstrate}
+                      onChange={(e) => setCustomSubstrate(e.target.value)}
+                      className="mt-2"
+                    />
+                  )}
                 </div>
 
                 {/* Notes */}
@@ -288,15 +399,16 @@ export default function EditTankPage() {
                   <Label htmlFor="notes">Notes</Label>
                   <textarea
                     id="notes"
-                    placeholder="Any additional notes about your tank..."
+                    placeholder="Any additional notes about your tank setup, equipment, or special considerations..."
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
-                    className="flex min-h-[100px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    rows={4}
+                    className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-none"
                   />
                 </div>
 
                 {/* Submit */}
-                <div className="flex gap-4">
+                <div className="flex gap-4 pt-2">
                   <Button
                     type="button"
                     variant="outline"

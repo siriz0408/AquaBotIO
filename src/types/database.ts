@@ -53,6 +53,7 @@ export interface Tank {
   height_inches: number | null;
   substrate: string | null;
   photo_url: string | null;
+  photo_path: string | null;
   notes: string | null;
   setup_date: string | null;
   is_active: boolean;

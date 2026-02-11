@@ -1,7 +1,7 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ParameterChart } from "./parameter-chart";
+import { LazyParameterChart } from "./lazy-parameter-chart";
 import { TrendIndicator, calculateTrend } from "./trend-indicator";
 import { cn } from "@/lib/utils";
 
@@ -147,7 +147,7 @@ export function ParameterCard({
         </div>
       </CardHeader>
       <CardContent className="pt-0">
-        <ParameterChart
+        <LazyParameterChart
           data={data}
           parameterName={name}
           unit={unit}
