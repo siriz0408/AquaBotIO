@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Fish, ArrowLeft, Loader2, User, Bell, CreditCard, Shield, Check, AlertTriangle } from "lucide-react";
+import { Fish, ArrowLeft, Loader2, User, Bell, CreditCard, Shield, Check, AlertTriangle, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -26,6 +26,7 @@ export default function SettingsPage() {
 
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleteConfirmText, setDeleteConfirmText] = useState("");
+  const [isSigningOut, setIsSigningOut] = useState(false);
 
   useEffect(() => {
     if (profile) {
@@ -80,6 +81,21 @@ export default function SettingsPage() {
     // For now, just show a message - actual deletion requires backend implementation
     toast.error("Account deletion requires contacting support");
     setShowDeleteConfirm(false);
+  };
+
+  const handleSignOut = async () => {
+    setIsSigningOut(true);
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      toast.success("Signed out successfully");
+      router.push("/login");
+    } catch (error) {
+      console.error("Error signing out:", error);
+      toast.error("Failed to sign out. Please try again.");
+    } finally {
+      setIsSigningOut(false);
+    }
   };
 
   const formatTrialEnd = () => {
@@ -330,6 +346,20 @@ export default function SettingsPage() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={handleSignOut}
+                disabled={isSigningOut}
+              >
+                {isSigningOut ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <LogOut className="mr-2 h-4 w-4" />
+                )}
+                Sign Out
+              </Button>
+
               <Button variant="outline" className="w-full" disabled>
                 Change Password (Coming Soon)
               </Button>

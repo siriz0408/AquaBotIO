@@ -127,39 +127,57 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
   };
 
   const handleComplete = async () => {
-    if (!profile) return;
-
     setIsLoading(true);
-    await supabase
-      .from("users")
-      .update({
-        onboarding_completed: true,
-        onboarding_step: 5,
-      })
-      .eq("id", profile.id);
 
-    await refreshProfile();
-    setIsLoading(false);
-    onComplete();
-    router.push("/dashboard");
+    try {
+      if (profile) {
+        await supabase
+          .from("users")
+          .update({
+            onboarding_completed: true,
+            onboarding_step: 5,
+          })
+          .eq("id", profile.id);
+        await refreshProfile();
+      }
+
+      onComplete();
+      router.push("/dashboard");
+    } catch (error) {
+      console.error("Error completing onboarding:", error);
+      toast.error("Something went wrong. Redirecting to dashboard...");
+      // Still redirect even on error - user should not be stuck
+      router.push("/dashboard");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleSkip = async () => {
-    if (!profile) return;
-
     setIsLoading(true);
-    await supabase
-      .from("users")
-      .update({
-        onboarding_completed: true,
-        onboarding_step: 0,
-      })
-      .eq("id", profile.id);
 
-    await refreshProfile();
-    setIsLoading(false);
-    onComplete();
-    router.push("/dashboard");
+    try {
+      if (profile) {
+        await supabase
+          .from("users")
+          .update({
+            onboarding_completed: true,
+            onboarding_step: 0,
+          })
+          .eq("id", profile.id);
+        await refreshProfile();
+      }
+
+      onComplete();
+      router.push("/dashboard");
+    } catch (error) {
+      console.error("Error skipping onboarding:", error);
+      toast.error("Something went wrong. Redirecting to dashboard...");
+      // Still redirect even on error - user should not be stuck
+      router.push("/dashboard");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
