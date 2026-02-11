@@ -56,6 +56,7 @@ export function SpeciesCard({ data, timestamp, onAddToTank, className }: Species
                 alt={data.name}
                 fill
                 className="object-cover"
+                unoptimized // Required for external GBIF/iNaturalist images
               />
             ) : (
               <div className="absolute inset-0 flex items-center justify-center text-6xl">

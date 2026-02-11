@@ -1,5 +1,35 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // External image domains for species photos from GBIF/iNaturalist
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "inaturalist-open-data.s3.amazonaws.com",
+        pathname: "/photos/**",
+      },
+      {
+        protocol: "https",
+        hostname: "static.inaturalist.org",
+        pathname: "/photos/**",
+      },
+      {
+        protocol: "https",
+        hostname: "upload.wikimedia.org",
+        pathname: "/wikipedia/**",
+      },
+      {
+        protocol: "https",
+        hostname: "*.gbif.org",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "api.gbif.org",
+        pathname: "/**",
+      },
+    ],
+  },
   // Security headers — applied to page routes only (not static assets)
   async headers() {
     return [

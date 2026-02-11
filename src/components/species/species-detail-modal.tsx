@@ -150,6 +150,7 @@ export function SpeciesDetailModal({
               className="object-cover"
               sizes="(max-width: 768px) 100vw, 500px"
               priority
+              unoptimized // Required for external GBIF/iNaturalist images
             />
           ) : (
             <span className="text-6xl">

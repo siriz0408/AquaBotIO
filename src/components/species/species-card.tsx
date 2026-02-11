@@ -50,6 +50,7 @@ function SpeciesCardComponent({ species, onClick, className }: SpeciesCardProps)
             fill
             className="object-cover"
             sizes="(max-width: 768px) 100vw, 300px"
+            unoptimized // Required for external GBIF/iNaturalist images
           />
         ) : (
           <span className="text-4xl">
