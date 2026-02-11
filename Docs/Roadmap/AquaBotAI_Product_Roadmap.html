@@ -56,7 +56,7 @@
       </div>
     </div>
   </div>
-  <div class="sprint-updated">Last updated: Feb 11, 2026 — Sprint 26: P0 Bug Fixes | Fixed onboarding buttons (Skip/Complete), added logout button to Settings</div>
+  <div class="sprint-updated">Last updated: Feb 11, 2026 — Sprint 27: Species Cards Revamp | Added coral type support, expanded card info (temp/pH ranges), seeded 15 coral species</div>
 </div>
 
 <div class="tabs" id="tabs">
@@ -529,6 +529,48 @@
 <div class="panel" id="sprints">
 <h2 style="font-size:1.2rem;margin-bottom:8px">📋 Sprint History</h2>
 <p style="font-size:0.82rem;color:var(--text2);margin-bottom:20px">Complete history of development sprints. What was built, outcomes, and metrics.</p>
+
+<!-- Sprint 27 (Complete) -->
+<div style="background:var(--surface);border:2px solid var(--green);border-radius:12px;margin-bottom:16px;overflow:hidden">
+  <div style="background:linear-gradient(90deg,rgba(34,197,94,0.2),transparent);padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+    <div>
+      <h3 style="font-size:1rem;font-weight:700;margin-bottom:2px">Sprint 27: Species Cards Revamp + Coral Support</h3>
+      <span style="font-size:0.75rem;color:var(--text2)">Feb 11, 2026</span>
+    </div>
+    <span class="status-badge status-complete">Complete</span>
+  </div>
+  <div style="padding:20px">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:16px">
+      <div style="text-align:center;padding:12px;background:var(--bg);border-radius:8px">
+        <div style="font-size:0.7rem;color:var(--text2);text-transform:uppercase">Files Modified</div>
+        <div style="font-size:1.3rem;font-weight:800;color:var(--cyan)">4</div>
+        <div style="font-size:0.72rem;color:var(--text2)">Cards, modal, filters, types</div>
+      </div>
+      <div style="text-align:center;padding:12px;background:var(--bg);border-radius:8px">
+        <div style="font-size:0.7rem;color:var(--text2);text-transform:uppercase">Migrations</div>
+        <div style="font-size:1.3rem;font-weight:800;color:var(--green)">2</div>
+        <div style="font-size:0.72rem;color:var(--text2)">Coral type + 15 species</div>
+      </div>
+      <div style="text-align:center;padding:12px;background:var(--bg);border-radius:8px">
+        <div style="font-size:0.7rem;color:var(--text2);text-transform:uppercase">Build</div>
+        <div style="font-size:1.3rem;font-weight:800;color:var(--green)">Pass</div>
+        <div style="font-size:0.72rem;color:var(--text2)">Lint, typecheck, build</div>
+      </div>
+    </div>
+    <h4 style="font-size:0.8rem;font-weight:700;color:var(--text);margin-bottom:8px">What Was Built</h4>
+    <div style="font-size:0.82rem;color:var(--text2);line-height:1.8">
+      <span style="display:block">✅ <strong>Species Cards</strong> — Now show 4 stats: max size, min tank, temp range, pH range</span>
+      <span style="display:block">✅ <strong>Coral Type</strong> — Added coral with emoji support throughout UI</span>
+      <span style="display:block">✅ <strong>Coral Filter</strong> — Filter button in species page filters</span>
+      <span style="display:block">✅ <strong>Tank Compatibility</strong> — Corals compatible with reef/saltwater tanks</span>
+      <span style="display:block">✅ <strong>Coral Species Data</strong> — 15 seeded corals (soft, LPS, SPS)</span>
+    </div>
+    <h4 style="font-size:0.8rem;font-weight:700;color:var(--text);margin-bottom:8px;margin-top:12px">Feedback Addressed</h4>
+    <div style="font-size:0.82rem;color:var(--text2);line-height:1.8">
+      <span style="display:block">📝 FB-MLH5K7N7 — Species cards need images and coral support</span>
+    </div>
+  </div>
+</div>
 
 <!-- Sprint 26 (Complete) -->
 <div style="background:var(--surface);border:2px solid var(--green);border-radius:12px;margin-bottom:16px;overflow:hidden">
@@ -1456,6 +1498,31 @@
   Ready to Test
 </h3>
 
+<!-- Sprint 27 - Species Cards + Coral -->
+<div style="background:var(--surface);border:2px solid var(--green);border-radius:12px;margin-bottom:12px">
+  <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+    <div>
+      <h4 style="font-size:0.9rem;font-weight:700">🪸 Sprint 27: Species Cards + Coral Support</h4>
+      <span style="font-size:0.75rem;color:var(--text2)">Sprint 27 | Added Feb 11, 2026 | Species</span>
+    </div>
+    <span class="status-badge status-progress">Priority Test</span>
+  </div>
+  <div style="padding:16px 20px;font-size:0.82rem;color:var(--text2)">
+    <p style="margin-bottom:12px"><strong>What to test:</strong></p>
+    <ul style="padding-left:16px;line-height:1.8">
+      <li><strong>Species Page:</strong> Visit /species → coral filter button should appear (🪸)</li>
+      <li><strong>Species Cards:</strong> Should show 4 stats (max size, min tank, temp range, pH range)</li>
+      <li><strong>Apply Migrations:</strong> Run `npx supabase db push` to add coral type and species</li>
+      <li><strong>Coral Data:</strong> After migration, coral filter should show 15 corals</li>
+      <li><strong>Tank Compatibility:</strong> Adding coral to tank should work for reef/saltwater tanks</li>
+    </ul>
+    <div style="margin-top:12px;padding:12px;background:var(--bg);border-radius:8px">
+      <strong>Sam's Notes:</strong>
+      <textarea id="test-notes-s27" data-feature="s27" placeholder="Add your Sprint 27 testing notes here..." onblur="saveTestingNotes('s27',this)" style="width:100%;margin-top:8px;padding:8px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.8rem;min-height:60px;resize:vertical"></textarea>
+    </div>
+  </div>
+</div>
+
 <!-- Sprint 26 - P0 Bug Fixes -->
 <div style="background:var(--surface);border:2px solid var(--green);border-radius:12px;margin-bottom:12px">
   <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
@@ -1463,7 +1530,7 @@
       <h4 style="font-size:0.9rem;font-weight:700">🐛 Sprint 26: P0 Bug Fixes</h4>
       <span style="font-size:0.75rem;color:var(--text2)">Sprint 26 | Added Feb 11, 2026 | Critical Bugs</span>
     </div>
-    <span class="status-badge status-progress">Priority Test</span>
+    <span class="status-badge status-complete">Tested</span>
   </div>
   <div style="padding:16px 20px;font-size:0.82rem;color:var(--text2)">
     <p style="margin-bottom:12px"><strong>What to test:</strong></p>
