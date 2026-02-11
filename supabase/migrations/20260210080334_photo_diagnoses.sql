@@ -62,16 +62,20 @@ CREATE TABLE IF NOT EXISTS public.photo_diagnoses (
 -- Add comment for documentation
 COMMENT ON TABLE public.photo_diagnoses IS 'AI photo diagnosis results for species identification and disease detection';
 
--- Create indexes for common queries
-CREATE INDEX idx_photo_diagnoses_user ON public.photo_diagnoses(user_id);
-CREATE INDEX idx_photo_diagnoses_tank ON public.photo_diagnoses(tank_id);
-CREATE INDEX idx_photo_diagnoses_user_tank_created ON public.photo_diagnoses(user_id, tank_id, created_at DESC);
-CREATE INDEX idx_photo_diagnoses_created ON public.photo_diagnoses(created_at DESC);
+-- Create indexes for common queries (if not exists)
+CREATE INDEX IF NOT EXISTS idx_photo_diagnoses_user ON public.photo_diagnoses(user_id);
+CREATE INDEX IF NOT EXISTS idx_photo_diagnoses_tank ON public.photo_diagnoses(tank_id);
+CREATE INDEX IF NOT EXISTS idx_photo_diagnoses_user_tank_created ON public.photo_diagnoses(user_id, tank_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_photo_diagnoses_created ON public.photo_diagnoses(created_at DESC);
 
 -- Enable Row Level Security
 ALTER TABLE public.photo_diagnoses ENABLE ROW LEVEL SECURITY;
 
--- RLS Policies
+-- RLS Policies (drop if exist to allow re-running)
+DROP POLICY IF EXISTS "photo_diagnoses_select_own" ON public.photo_diagnoses;
+DROP POLICY IF EXISTS "photo_diagnoses_insert_own" ON public.photo_diagnoses;
+DROP POLICY IF EXISTS "photo_diagnoses_update_own" ON public.photo_diagnoses;
+DROP POLICY IF EXISTS "photo_diagnoses_delete_own" ON public.photo_diagnoses;
 
 -- Users can view their own diagnoses
 CREATE POLICY "photo_diagnoses_select_own"
@@ -112,7 +116,10 @@ ON CONFLICT (id) DO UPDATE SET
   file_size_limit = 10485760,
   allowed_mime_types = ARRAY['image/jpeg', 'image/png'];
 
--- RLS Policies for photo-diagnosis bucket
+-- RLS Policies for photo-diagnosis bucket (drop if exist)
+DROP POLICY IF EXISTS "Users can view own diagnosis photos" ON storage.objects;
+DROP POLICY IF EXISTS "Users can upload own diagnosis photos" ON storage.objects;
+DROP POLICY IF EXISTS "Users can delete own diagnosis photos" ON storage.objects;
 
 -- Allow users to view their own photos
 CREATE POLICY "Users can view own diagnosis photos"
@@ -212,9 +219,11 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
-COMMENT ON FUNCTION public.check_and_increment_photo_diagnosis_usage IS 'Check if user is under photo diagnosis limit and increment counter if so';
+COMMENT ON FUNCTION public.check_and_increment_photo_diagnosis_usage(UUID) IS 'Check if user is under photo diagnosis limit and increment counter if so';
 
 -- Function to get photo diagnosis usage info (remaining count, tier, etc.)
+DROP FUNCTION IF EXISTS public.get_photo_diagnosis_usage_info(UUID);
+
 CREATE OR REPLACE FUNCTION public.get_photo_diagnosis_usage_info(
   user_uuid UUID
 )
@@ -281,4 +290,4 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
-COMMENT ON FUNCTION public.get_photo_diagnosis_usage_info IS 'Get photo diagnosis usage info for a user including tier, limits, and remaining';
+COMMENT ON FUNCTION public.get_photo_diagnosis_usage_info(UUID) IS 'Get photo diagnosis usage info for a user including tier, limits, and remaining';

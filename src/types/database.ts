@@ -82,6 +82,21 @@ export interface WaterParameter {
   created_at: string;
 }
 
+// Species-related enums
+export type GroupBehavior = "solitary" | "pair" | "small_group" | "schooling" | "colony";
+export type BreedingDifficulty = "easy" | "moderate" | "difficult" | "very_difficult" | "impossible_in_captivity";
+export type DietType = "carnivore" | "herbivore" | "omnivore" | "planktivore" | "filter_feeder" | "detritivore" | "photosynthetic";
+export type DataSource = "manual" | "fishbase" | "gbif" | "ai_enriched";
+
+// Species image structure (stored in JSONB)
+export interface SpeciesImage {
+  url: string;
+  thumbnail?: string;
+  attribution?: string;
+  license?: string;
+  source?: string;
+}
+
 export interface Species {
   id: string;
   common_name: string;
@@ -101,6 +116,37 @@ export interface Species {
   description: string | null;
   created_at: string;
   updated_at: string;
+
+  // External API identifiers (Sprint 28)
+  fishbase_id: number | null;
+  gbif_key: number | null;
+  wikidata_id: string | null;
+  data_source: DataSource;
+
+  // Enhanced care information (Sprint 28)
+  lifespan_years: number | null;
+  origin_region: string | null;
+  habitat: string | null;
+  group_behavior: GroupBehavior | null;
+  min_school_size: number | null;
+  breeding_difficulty: BreedingDifficulty | null;
+  diet_type: DietType | null;
+  feeding_frequency: string | null;
+  common_diseases: string[];
+
+  // Additional water parameters (Sprint 28)
+  hardness_min_dgh: number | null;
+  hardness_max_dgh: number | null;
+  salinity_min: number | null;
+  salinity_max: number | null;
+
+  // Media (Sprint 28)
+  images: SpeciesImage[];
+
+  // Rich content (Sprint 28)
+  care_tips: string[];
+  fun_facts: string[];
+  aliases: string[];
 }
 
 export interface Livestock {
