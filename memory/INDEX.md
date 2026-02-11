@@ -1,6 +1,6 @@
 # AquaBotAI Memory System
 
-> **Last Updated:** February 11, 2026 | **Sprint:** 25
+> **Last Updated:** February 11, 2026 | **Sprint:** 26
 
 This is the team's collective memory. Every bug, decision, pattern, and mistake is documented here so we never repeat errors and always apply lessons learned.
 
@@ -13,11 +13,12 @@ This is the team's collective memory. Every bug, decision, pattern, and mistake 
 | [patterns/](./patterns/) | 5 | Reusable solutions and approaches |
 | [mistakes/](./mistakes/) | 0 | Wrong turns and how we recovered |
 | [feedback/](./feedback/) | 0 | Sam's feedback and PM responses |
-| [sprints/](./sprints/) | 2 | Sprint summaries |
+| [sprints/](./sprints/) | 3 | Sprint summaries |
 
 ## Quick Reference
 
 ### Most Important Patterns
+- **P026-1:** Resilient Button Handler Pattern — always complete user action even if DB call fails
 - **P025-1:** Parallel Query Pattern — use Promise.all() for independent database queries
 - **P025-2:** Skeleton Loading Pattern — pre-built skeletons for async component loading
 - **P022-1:** Edge Function Service Role Pattern — use service role key for cross-user access
@@ -36,4 +37,4 @@ None currently tracked.
 
 ---
 
-*Memory system initialized Sprint 22. Updated Sprint 25.*
+*Memory system initialized Sprint 22. Updated Sprint 26.*
