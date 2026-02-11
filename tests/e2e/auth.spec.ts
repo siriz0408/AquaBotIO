@@ -146,7 +146,8 @@ test.describe('Authentication Flows', () => {
     test('should navigate to signup from landing page', async ({ page }) => {
       await page.goto('/');
 
-      await page.getByRole('link', { name: 'Get Started' }).click();
+      // Scope to header since there are multiple "Get Started" links on the page
+      await page.locator('header').getByRole('link', { name: 'Get Started' }).click();
       await expect(page).toHaveURL('/signup');
     });
 
@@ -161,14 +162,15 @@ test.describe('Authentication Flows', () => {
       await page.goto('/');
 
       // Verify pricing information is visible (use exact: true for tier names)
+      // Updated prices as of Sprint 25: $0, $4.99, $9.99, $19.99
       await expect(page.getByText('Free', { exact: true })).toBeVisible();
       await expect(page.getByText('$0')).toBeVisible();
       await expect(page.getByText('Starter', { exact: true })).toBeVisible();
-      await expect(page.getByText('$3.99/mo')).toBeVisible();
+      await expect(page.getByText('$4.99')).toBeVisible();
       await expect(page.getByText('Plus', { exact: true })).toBeVisible();
-      await expect(page.getByText('$7.99/mo')).toBeVisible();
+      await expect(page.getByText('$9.99')).toBeVisible();
       await expect(page.getByText('Pro', { exact: true })).toBeVisible();
-      await expect(page.getByText('$14.99/mo')).toBeVisible();
+      await expect(page.getByText('$19.99')).toBeVisible();
     });
   });
 });
