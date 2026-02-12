@@ -1,6 +1,6 @@
 # AquaBotAI Memory System
 
-> **Last Updated:** February 12, 2026 | **Sprint:** 29
+> **Last Updated:** February 12, 2026 | **Sprint:** 30
 
 This is the team's collective memory. Every bug, decision, pattern, and mistake is documented here so we never repeat errors and always apply lessons learned.
 
@@ -10,14 +10,15 @@ This is the team's collective memory. Every bug, decision, pattern, and mistake 
 |----------|-------|-------------|
 | [bugs/](./bugs/) | 0 | Bug reports with severity, status, and fixes |
 | [decisions/](./decisions/) | 5 | Architecture and implementation decisions |
-| [patterns/](./patterns/) | 7 | Reusable solutions and approaches |
+| [patterns/](./patterns/) | 8 | Reusable solutions and approaches |
 | [mistakes/](./mistakes/) | 0 | Wrong turns and how we recovered |
 | [feedback/](./feedback/) | 0 | Sam's feedback and PM responses |
-| [sprints/](./sprints/) | 6 | Sprint summaries |
+| [sprints/](./sprints/) | 7 | Sprint summaries |
 
 ## Quick Reference
 
 ### Most Important Patterns
+- **P030-1:** Minimal PATCH Update Pattern — only send changed fields in edit requests
 - **P029-1:** In-Modal Multi-Step Flow Pattern — use typed step state for modal flows that replace redirects
 - **P029-2:** Self-Healing Storage Initialization — auto-create buckets on first upload failure
 - **P026-1:** Resilient Button Handler Pattern — always complete user action even if DB call fails
@@ -41,4 +42,4 @@ None currently tracked.
 
 ---
 
-*Memory system initialized Sprint 22. Updated Sprint 29.*
+*Memory system initialized Sprint 22. Updated Sprint 30.*
