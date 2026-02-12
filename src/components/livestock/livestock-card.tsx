@@ -2,12 +2,13 @@
 
 import { memo } from "react";
 import Image from "next/image";
-import { Trash2, MoreVertical } from "lucide-react";
+import { Trash2, MoreVertical, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
@@ -17,6 +18,7 @@ import { format } from "date-fns";
 interface LivestockCardProps {
   livestock: Livestock & { species?: Species };
   onRemove: (id: string) => void;
+  onEdit?: (id: string) => void;
   className?: string;
 }
 
@@ -30,6 +32,7 @@ const TYPE_EMOJIS = {
 function LivestockCardComponent({
   livestock,
   onRemove,
+  onEdit,
   className,
 }: LivestockCardProps) {
   const speciesName =
@@ -86,6 +89,15 @@ function LivestockCardComponent({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
+          {onEdit && (
+            <>
+              <DropdownMenuItem onClick={() => onEdit(livestock.id)}>
+                <Pencil className="h-4 w-4 mr-2" />
+                Edit
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+            </>
+          )}
           <DropdownMenuItem
             onClick={() => onRemove(livestock.id)}
             className="text-destructive focus:text-destructive"

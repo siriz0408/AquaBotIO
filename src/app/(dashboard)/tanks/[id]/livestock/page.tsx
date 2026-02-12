@@ -109,6 +109,41 @@ export default function LivestockPage() {
     [tankId, loadLivestock]
   );
 
+  // Edit livestock handler
+  const handleEditLivestock = useCallback(
+    async (
+      livestockId: string,
+      updates: { quantity?: number; nickname?: string; notes?: string }
+    ): Promise<boolean> => {
+      try {
+        const response = await fetch(`/api/tanks/${tankId}/livestock`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            livestock_id: livestockId,
+            ...updates,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          toast.success("Livestock updated");
+          await loadLivestock();
+          return true;
+        } else {
+          toast.error(data.error?.message || "Failed to update livestock");
+          return false;
+        }
+      } catch (error) {
+        console.error("Error updating livestock:", error);
+        toast.error("Failed to update livestock");
+        return false;
+      }
+    },
+    [tankId, loadLivestock]
+  );
+
   useEffect(() => {
     async function loadTankData() {
       try {
@@ -210,6 +245,7 @@ export default function LivestockPage() {
               isLoading={isLivestockLoading}
               onAdd={handleAddLivestock}
               onRemove={handleRemoveLivestock}
+              onEdit={handleEditLivestock}
             />
           </CardContent>
         </Card>

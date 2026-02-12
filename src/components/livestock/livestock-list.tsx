@@ -5,6 +5,7 @@ import { Plus, Fish, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LivestockCard } from "./livestock-card";
 import { AddLivestockModal } from "./add-livestock-modal";
+import { EditLivestockModal } from "./edit-livestock-modal";
 import type { Livestock, Species } from "@/types/database";
 
 interface LivestockListProps {
@@ -14,6 +15,7 @@ interface LivestockListProps {
   isLoading?: boolean;
   onAdd: (speciesId: string, quantity: number, nickname?: string) => Promise<{ success: boolean; warning?: string }>;
   onRemove: (id: string) => void;
+  onEdit?: (id: string, updates: { quantity?: number; nickname?: string; notes?: string }) => Promise<boolean>;
 }
 
 export function LivestockList({
@@ -23,10 +25,29 @@ export function LivestockList({
   isLoading = false,
   onAdd,
   onRemove,
+  onEdit,
 }: LivestockListProps) {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [editingLivestock, setEditingLivestock] = useState<(Livestock & { species?: Species }) | null>(null);
 
   const totalCount = livestock.reduce((sum, item) => sum + item.quantity, 0);
+
+  const handleEditLivestock = (id: string) => {
+    const item = livestock.find((l) => l.id === id);
+    if (item) {
+      setEditingLivestock(item);
+    }
+  };
+
+  const handleSaveLivestock = async (
+    id: string,
+    updates: { quantity?: number; nickname?: string; notes?: string }
+  ): Promise<boolean> => {
+    if (onEdit) {
+      return onEdit(id, updates);
+    }
+    return false;
+  };
 
   if (isLoading) {
     return (
@@ -76,6 +97,7 @@ export function LivestockList({
               key={item.id}
               livestock={item}
               onRemove={onRemove}
+              onEdit={onEdit ? handleEditLivestock : undefined}
             />
           ))}
         </div>
@@ -88,6 +110,14 @@ export function LivestockList({
         tankId={tankId}
         tankType={tankType}
         onAdd={onAdd}
+      />
+
+      {/* Edit Modal */}
+      <EditLivestockModal
+        isOpen={editingLivestock !== null}
+        onClose={() => setEditingLivestock(null)}
+        livestock={editingLivestock}
+        onSave={handleSaveLivestock}
       />
     </div>
   );
