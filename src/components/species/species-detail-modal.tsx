@@ -2,8 +2,11 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
-import { X, Thermometer, Droplets, Ruler, Fish, Plus, Loader2 } from "lucide-react";
+import { X, Thermometer, Droplets, Ruler, Fish, Plus, Minus, Loader2, AlertTriangle, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
@@ -15,6 +18,8 @@ interface Tank {
   name: string;
   type: string;
 }
+
+type AddFlowStep = "details" | "tank-picker" | "add-form";
 
 interface SpeciesDetailModalProps {
   species: Species;
@@ -55,7 +60,14 @@ export function SpeciesDetailModal({
   const supabase = createClient();
   const [tanks, setTanks] = useState<Tank[]>([]);
   const [isLoadingTanks, setIsLoadingTanks] = useState(false);
-  const [showTankPicker, setShowTankPicker] = useState(false);
+  const [addFlowStep, setAddFlowStep] = useState<AddFlowStep>("details");
+
+  // Add form state
+  const [selectedTank, setSelectedTank] = useState<Tank | null>(null);
+  const [quantity, setQuantity] = useState(1);
+  const [notes, setNotes] = useState("");
+  const [isAdding, setIsAdding] = useState(false);
+  const [compatibilityWarning, setCompatibilityWarning] = useState<string | null>(null);
 
   const loadTanks = useCallback(async () => {
     setIsLoadingTanks(true);
@@ -81,21 +93,25 @@ export function SpeciesDetailModal({
     }
   }, [supabase]);
 
+  // Reset state when modal opens/closes
   useEffect(() => {
-    if (isOpen && showAddButton) {
-      loadTanks();
+    if (isOpen) {
+      if (showAddButton) {
+        loadTanks();
+      }
+      // Reset add form state
+      setAddFlowStep("details");
+      setSelectedTank(null);
+      setQuantity(1);
+      setNotes("");
+      setCompatibilityWarning(null);
     }
   }, [isOpen, showAddButton, loadTanks]);
 
-  const handleAddToTank = (tankId: string) => {
-    if (onAddToTank) {
-      onAddToTank(species);
-    } else {
-      // Redirect to tank livestock page
-      router.push(`/tanks/${tankId}/livestock`);
-      toast.info(`Adding ${species.common_name} to tank`);
-      onClose();
-    }
+  const handleSelectTank = (tank: Tank) => {
+    setSelectedTank(tank);
+    setAddFlowStep("add-form");
+    setCompatibilityWarning(null);
   };
 
   const handleAddToTankClick = () => {
@@ -105,19 +121,86 @@ export function SpeciesDetailModal({
       return;
     }
 
-    // Show tank picker if multiple tanks, or redirect if single tank
+    // Show tank picker if multiple tanks
     if (tanks.length === 0) {
       toast.error("You need to create a tank first");
       router.push("/dashboard");
       return;
     }
 
-    if (tanks.length === 1) {
-      handleAddToTank(tanks[0].id);
+    // Filter compatible tanks
+    const compatibleTanks = tanks.filter(
+      (tank) =>
+        tank.type === species.type ||
+        (species.type === "plant" && tank.type === "freshwater") ||
+        (species.type === "invertebrate" &&
+          (tank.type === "freshwater" || tank.type === "saltwater" || tank.type === "reef")) ||
+        (species.type === "coral" && (tank.type === "reef" || tank.type === "saltwater"))
+    );
+
+    if (compatibleTanks.length === 0) {
+      toast.error(`No compatible tanks found. Create a ${species.type} tank first.`);
       return;
     }
 
-    setShowTankPicker(true);
+    if (compatibleTanks.length === 1) {
+      // Single compatible tank - go directly to add form
+      handleSelectTank(compatibleTanks[0]);
+      return;
+    }
+
+    // Multiple tanks - show picker
+    setAddFlowStep("tank-picker");
+  };
+
+  const handleSubmitAdd = async () => {
+    if (!selectedTank) return;
+
+    setIsAdding(true);
+    try {
+      const response = await fetch(`/api/tanks/${selectedTank.id}/livestock`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          species_id: species.id,
+          quantity,
+          notes: notes.trim() || undefined,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error?.message || "Failed to add species to tank");
+      }
+
+      if (result.data?.warning) {
+        // Show compatibility warning
+        setCompatibilityWarning(result.data.warning);
+      } else {
+        toast.success(`Added ${quantity} ${species.common_name} to ${selectedTank.name}`);
+        onClose();
+      }
+    } catch (error) {
+      console.error("Add to tank error:", error);
+      toast.error(error instanceof Error ? error.message : "Failed to add species to tank");
+    } finally {
+      setIsAdding(false);
+    }
+  };
+
+  const handleConfirmWithWarning = () => {
+    // User accepted the warning, species was already added
+    toast.success(`Added ${quantity} ${species.common_name} to ${selectedTank?.name}`);
+    onClose();
+  };
+
+  const handleBackToDetails = () => {
+    setAddFlowStep("details");
+    setSelectedTank(null);
+    setQuantity(1);
+    setNotes("");
+    setCompatibilityWarning(null);
   };
 
   if (!isOpen) return null;
@@ -263,78 +346,226 @@ export function SpeciesDetailModal({
             </div>
           )}
 
-          {/* Add to tank button */}
-          {showAddButton && (
-            <>
-              {!showTankPicker ? (
-                <Button
-                  onClick={handleAddToTankClick}
-                  className="w-full mt-4"
-                  disabled={isLoadingTanks}
-                >
-                  {isLoadingTanks ? (
-                    <>
-                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      Loading...
-                    </>
-                  ) : (
-                    <>
-                      <Plus className="h-4 w-4 mr-2" />
-                      Add to Tank
-                    </>
-                  )}
-                </Button>
+          {/* Add to tank section */}
+          {showAddButton && addFlowStep === "details" && (
+            <Button
+              onClick={handleAddToTankClick}
+              className="w-full mt-4"
+              disabled={isLoadingTanks}
+            >
+              {isLoadingTanks ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Loading...
+                </>
               ) : (
-                <div className="mt-4 space-y-2">
-                  <p className="text-sm font-medium">Select a tank:</p>
-                  <div className="space-y-2 max-h-48 overflow-y-auto">
-                    {tanks
-                      .filter(
-                        (tank) =>
-                          tank.type === species.type ||
-                          (species.type === "plant" && tank.type === "freshwater") ||
-                          (species.type === "invertebrate" &&
-                            (tank.type === "freshwater" || tank.type === "saltwater" || tank.type === "reef")) ||
-                          (species.type === "coral" && (tank.type === "reef" || tank.type === "saltwater"))
-                      )
-                      .map((tank) => (
-                        <Button
-                          key={tank.id}
-                          variant="outline"
-                          className="w-full justify-start"
-                          onClick={() => handleAddToTank(tank.id)}
-                        >
-                          <Fish className="h-4 w-4 mr-2" />
-                          {tank.name}
-                          <span className="ml-auto text-xs text-muted-foreground">
-                            {tank.type}
-                          </span>
-                        </Button>
-                      ))}
-                    {tanks.filter(
-                      (tank) =>
-                        tank.type === species.type ||
-                        (species.type === "plant" && tank.type === "freshwater") ||
-                        (species.type === "invertebrate" &&
-                          (tank.type === "freshwater" || tank.type === "saltwater" || tank.type === "reef")) ||
-                        (species.type === "coral" && (tank.type === "reef" || tank.type === "saltwater"))
-                    ).length === 0 && (
-                      <p className="text-sm text-muted-foreground text-center py-4">
-                        No compatible tanks found. Create a {species.type} tank first.
+                <>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add to Tank
+                </>
+              )}
+            </Button>
+          )}
+
+          {/* Tank picker step */}
+          {showAddButton && addFlowStep === "tank-picker" && (
+            <div className="mt-4 space-y-3">
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="p-1 h-auto"
+                  onClick={handleBackToDetails}
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                </Button>
+                <p className="text-sm font-medium">Select a tank:</p>
+              </div>
+              <div className="space-y-2 max-h-48 overflow-y-auto">
+                {tanks
+                  .filter(
+                    (tank) =>
+                      tank.type === species.type ||
+                      (species.type === "plant" && tank.type === "freshwater") ||
+                      (species.type === "invertebrate" &&
+                        (tank.type === "freshwater" || tank.type === "saltwater" || tank.type === "reef")) ||
+                      (species.type === "coral" && (tank.type === "reef" || tank.type === "saltwater"))
+                  )
+                  .map((tank) => (
+                    <Button
+                      key={tank.id}
+                      variant="outline"
+                      className="w-full justify-start"
+                      onClick={() => handleSelectTank(tank)}
+                    >
+                      <Fish className="h-4 w-4 mr-2" />
+                      {tank.name}
+                      <span className="ml-auto text-xs text-muted-foreground">
+                        {tank.type}
+                      </span>
+                    </Button>
+                  ))}
+              </div>
+            </div>
+          )}
+
+          {/* Add form step */}
+          {showAddButton && addFlowStep === "add-form" && selectedTank && (
+            <div className="mt-4 space-y-4">
+              {/* Back button and header */}
+              <div className="flex items-center gap-2 pb-2 border-b">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="p-1 h-auto"
+                  onClick={handleBackToDetails}
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                </Button>
+                <div className="flex-1">
+                  <p className="text-sm font-medium">
+                    Adding to {selectedTank.name}
+                  </p>
+                </div>
+              </div>
+
+              {/* Compatibility warning */}
+              {compatibilityWarning && (
+                <div className="p-4 rounded-lg bg-yellow-500/10 border border-yellow-500/20">
+                  <div className="flex gap-3">
+                    <AlertTriangle className="h-5 w-5 text-yellow-500 shrink-0" />
+                    <div>
+                      <h4 className="font-medium text-yellow-500 mb-1">
+                        Compatibility Warning
+                      </h4>
+                      <p className="text-sm text-muted-foreground mb-3">
+                        {compatibilityWarning}
                       </p>
-                    )}
+                      <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => setCompatibilityWarning(null)}
+                        >
+                          Go Back
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          onClick={handleConfirmWithWarning}
+                        >
+                          Add Anyway
+                        </Button>
+                      </div>
+                    </div>
                   </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="w-full"
-                    onClick={() => setShowTankPicker(false)}
-                  >
-                    Cancel
-                  </Button>
                 </div>
               )}
-            </>
+
+              {!compatibilityWarning && (
+                <>
+                  {/* Species summary */}
+                  <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
+                    <div className="w-12 h-12 rounded-lg bg-muted flex items-center justify-center text-2xl relative overflow-hidden">
+                      {species.photo_url ? (
+                        <Image
+                          src={species.photo_url}
+                          alt={species.common_name}
+                          fill
+                          className="object-cover"
+                          sizes="48px"
+                          unoptimized
+                        />
+                      ) : (
+                        <span>
+                          {TYPE_EMOJIS[species.type as keyof typeof TYPE_EMOJIS] || "🐟"}
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium truncate">{species.common_name}</p>
+                      <p className="text-sm text-muted-foreground italic truncate">
+                        {species.scientific_name}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Quantity selector */}
+                  <div>
+                    <Label className="text-sm">Quantity</Label>
+                    <div className="flex items-center gap-2 mt-1">
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                        disabled={quantity <= 1}
+                      >
+                        <Minus className="h-4 w-4" />
+                      </Button>
+                      <Input
+                        type="number"
+                        min={1}
+                        value={quantity}
+                        onChange={(e) =>
+                          setQuantity(Math.max(1, parseInt(e.target.value) || 1))
+                        }
+                        className="w-20 text-center"
+                      />
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() => setQuantity(quantity + 1)}
+                      >
+                        <Plus className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Notes textarea */}
+                  <div>
+                    <Label htmlFor="add-notes" className="text-sm">
+                      Notes (optional)
+                    </Label>
+                    <Textarea
+                      id="add-notes"
+                      value={notes}
+                      onChange={(e) => setNotes(e.target.value)}
+                      placeholder="e.g., has ich, very aggressive, rescue fish"
+                      className="mt-1 resize-none"
+                      rows={2}
+                    />
+                  </div>
+
+                  {/* Action buttons */}
+                  <div className="flex gap-2">
+                    <Button
+                      variant="ghost"
+                      className="flex-1"
+                      onClick={handleBackToDetails}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      className="flex-1"
+                      onClick={handleSubmitAdd}
+                      disabled={isAdding}
+                    >
+                      {isAdding ? (
+                        <>
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          Adding...
+                        </>
+                      ) : (
+                        <>
+                          <Plus className="h-4 w-4 mr-2" />
+                          Add to Tank
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </>
+              )}
+            </div>
           )}
         </div>
       </div>

@@ -12,6 +12,30 @@ export interface UploadResult {
 }
 
 /**
+ * Initialize storage buckets if they don't exist.
+ * Should be called when a "bucket not found" error is encountered.
+ */
+async function initializeStorageBuckets(): Promise<boolean> {
+  try {
+    const response = await fetch("/api/storage/init", {
+      method: "POST",
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      console.error("Failed to initialize storage buckets");
+      return false;
+    }
+
+    const data = await response.json();
+    return data.success === true;
+  } catch (error) {
+    console.error("Error initializing storage:", error);
+    return false;
+  }
+}
+
+/**
  * Validate file before upload
  */
 export function validateFile(file: File): { valid: boolean; error?: string } {
@@ -38,7 +62,8 @@ export function validateFile(file: File): { valid: boolean; error?: string } {
 export async function uploadTankPhoto(
   userId: string,
   tankId: string,
-  file: File
+  file: File,
+  retryAfterInit = true
 ): Promise<UploadResult> {
   const supabase = createClient();
 
@@ -63,6 +88,23 @@ export async function uploadTankPhoto(
 
   if (error) {
     console.error("Upload error:", error);
+
+    // Check if it's a bucket not found error and retry after initialization
+    const isBucketNotFound =
+      error.message?.toLowerCase().includes("bucket") &&
+      (error.message?.toLowerCase().includes("not found") ||
+        error.message?.toLowerCase().includes("does not exist"));
+
+    if (isBucketNotFound && retryAfterInit) {
+      console.log("Bucket not found, attempting to initialize storage...");
+      const initialized = await initializeStorageBuckets();
+
+      if (initialized) {
+        // Retry upload once after initialization
+        return uploadTankPhoto(userId, tankId, file, false);
+      }
+    }
+
     return { success: false, error: error.message };
   }
 
