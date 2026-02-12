@@ -1,6 +1,6 @@
 # AquaBotAI Memory System
 
-> **Last Updated:** February 12, 2026 | **Sprint:** 32
+> **Last Updated:** February 12, 2026 | **Sprint:** 33
 
 This is the team's collective memory. Every bug, decision, pattern, and mistake is documented here so we never repeat errors and always apply lessons learned.
 
@@ -10,14 +10,15 @@ This is the team's collective memory. Every bug, decision, pattern, and mistake 
 |----------|-------|-------------|
 | [bugs/](./bugs/) | 0 | Bug reports with severity, status, and fixes |
 | [decisions/](./decisions/) | 5 | Architecture and implementation decisions |
-| [patterns/](./patterns/) | 10 | Reusable solutions and approaches |
+| [patterns/](./patterns/) | 11 | Reusable solutions and approaches |
 | [mistakes/](./mistakes/) | 0 | Wrong turns and how we recovered |
 | [feedback/](./feedback/) | 0 | Sam's feedback and PM responses |
-| [sprints/](./sprints/) | 9 | Sprint summaries |
+| [sprints/](./sprints/) | 10 | Sprint summaries |
 
 ## Quick Reference
 
 ### Most Important Patterns
+- **P033-1:** Proactive AI Coaching Pattern — scheduled Edge Function with context-aware AI tips
 - **P032-1:** AI Context Injection Pattern — fetch user preferences and inject into system prompt
 - **P031-1:** Branching Wizard Pattern — typed step state with conditional navigation based on answers
 - **P030-1:** Minimal PATCH Update Pattern — only send changed fields in edit requests
@@ -44,4 +45,4 @@ None currently tracked.
 
 ---
 
-*Memory system initialized Sprint 22. Updated Sprint 32.*
+*Memory system initialized Sprint 22. Updated Sprint 33.*
