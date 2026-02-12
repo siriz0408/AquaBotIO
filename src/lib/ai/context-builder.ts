@@ -1,5 +1,6 @@
 import { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/types/database";
+import { getUserPreferencesForAI, type UserContextForAI } from "./user-context";
 
 /**
  * Tank context builder for AI system prompt
@@ -45,6 +46,7 @@ export interface TankContext {
     unit_preference_volume: string;
     unit_preference_temp: string;
   };
+  userPreferences: UserContextForAI | null;
 }
 
 /**
@@ -60,7 +62,7 @@ export async function buildTankContext(
   userId: string
 ): Promise<TankContext | null> {
   // Run all queries in parallel for better performance
-  const [tankResult, userResult, parametersResult, livestockResult, maintenanceResult] = await Promise.all([
+  const [tankResult, userResult, parametersResult, livestockResult, maintenanceResult, userPreferences] = await Promise.all([
     // Fetch tank details - only needed columns
     supabase
       .from("tanks")
@@ -119,7 +121,10 @@ export async function buildTankContext(
       .eq("is_active", true)
       .is("deleted_at", null)
       .order("next_due_date", { ascending: true })
-      .limit(10) as unknown as Promise<{ data: any[]; error: any }>
+      .limit(10) as unknown as Promise<{ data: any[]; error: any }>,
+
+    // Fetch user preferences for personalized AI context
+    getUserPreferencesForAI(supabase, userId)
   ]);
 
   const { data: tank, error: tankError } = tankResult;
@@ -178,6 +183,7 @@ export async function buildTankContext(
       unit_preference_volume: user?.unit_preference_volume || "gallons",
       unit_preference_temp: user?.unit_preference_temp || "fahrenheit",
     },
+    userPreferences,
   };
 }
 /* eslint-enable @typescript-eslint/no-explicit-any */

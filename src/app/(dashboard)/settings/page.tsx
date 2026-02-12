@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Fish, ArrowLeft, Loader2, User, Bell, CreditCard, Shield, Check, AlertTriangle, LogOut } from "lucide-react";
+import { Fish, ArrowLeft, Loader2, User, Bell, CreditCard, Shield, Check, AlertTriangle, LogOut, Sparkles, Bot } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,6 +11,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
 import { useUser } from "@/lib/hooks/use-user";
+import { AIOnboardingWizard } from "@/components/onboarding";
+import { useOnboardingStatus } from "@/hooks/use-onboarding-status";
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -27,6 +29,14 @@ export default function SettingsPage() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleteConfirmText, setDeleteConfirmText] = useState("");
   const [isSigningOut, setIsSigningOut] = useState(false);
+  const [showAIOnboardingWizard, setShowAIOnboardingWizard] = useState(false);
+
+  const {
+    hasCompletedAIOnboarding,
+    preferences,
+    isLoading: isPreferencesLoading,
+    refresh: refreshPreferences,
+  } = useOnboardingStatus();
 
   useEffect(() => {
     if (profile) {
@@ -119,6 +129,15 @@ export default function SettingsPage() {
 
   return (
     <div className="min-h-screen bg-brand-bg pb-20 md:pb-0">
+      {/* AI Onboarding Wizard Modal */}
+      <AIOnboardingWizard
+        open={showAIOnboardingWizard}
+        onOpenChange={setShowAIOnboardingWizard}
+        onComplete={() => {
+          refreshPreferences();
+        }}
+      />
+
       {/* Header */}
       <header className="border-b bg-white shadow-sm">
         <div className="container flex h-14 items-center gap-4">
@@ -331,6 +350,75 @@ export default function SettingsPage() {
                   Manage Notification Settings
                 </Link>
               </Button>
+            </CardContent>
+          </Card>
+
+          {/* AI Preferences */}
+          <Card className="shadow-sm border-gray-200">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Bot className="h-5 w-5" />
+                AI Preferences
+              </CardTitle>
+              <CardDescription>
+                Personalize your AI assistant experience
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {isPreferencesLoading ? (
+                <div className="flex items-center justify-center py-4">
+                  <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+                </div>
+              ) : hasCompletedAIOnboarding ? (
+                <>
+                  <div className="rounded-lg border p-4 space-y-2">
+                    <div className="flex items-center gap-2">
+                      <Check className="h-4 w-4 text-green-500" />
+                      <span className="text-sm font-medium">AI personalization complete</span>
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      Your AI assistant has been personalized based on your preferences.
+                    </p>
+                    {preferences?.experience_level && (
+                      <p className="text-xs text-muted-foreground">
+                        Experience: <span className="capitalize">{preferences.experience_level.replace("_", " ")}</span>
+                      </p>
+                    )}
+                    {preferences?.primary_goal && (
+                      <p className="text-xs text-muted-foreground">
+                        Goal: <span className="capitalize">{preferences.primary_goal.replace("_", " ")}</span>
+                      </p>
+                    )}
+                  </div>
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    onClick={() => setShowAIOnboardingWizard(true)}
+                  >
+                    <Sparkles className="mr-2 h-4 w-4" />
+                    Update AI Preferences
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <div className="rounded-lg border-dashed border-2 border-brand-cyan/50 p-4 bg-brand-cyan/5">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Sparkles className="h-4 w-4 text-brand-cyan" />
+                      <span className="text-sm font-medium">Personalize your AI</span>
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      Answer a few questions to help your AI assistant give you better, personalized advice.
+                    </p>
+                  </div>
+                  <Button
+                    className="w-full bg-brand-cyan hover:bg-brand-cyan/90"
+                    onClick={() => setShowAIOnboardingWizard(true)}
+                  >
+                    <Sparkles className="mr-2 h-4 w-4" />
+                    Get Started (2-3 min)
+                  </Button>
+                </>
+              )}
             </CardContent>
           </Card>
 

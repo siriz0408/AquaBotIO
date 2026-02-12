@@ -6,6 +6,7 @@ import { successResponse, errorResponse, validationErrorResponse } from "@/lib/a
 import { buildTankContext } from "@/lib/ai/context-builder";
 import { generateSystemPrompt } from "@/lib/ai/system-prompt";
 import { estimateTokens } from "@/lib/ai/token-counter";
+import { getUserPreferencesForAI } from "@/lib/ai/user-context";
 
 // Initialize Anthropic client
 const anthropic = new Anthropic({
@@ -101,9 +102,16 @@ export async function POST(request: NextRequest) {
     }
 
     // Build tank context for system prompt (null if no tank selected)
+    // Tank context includes user preferences if tank is selected
     const context = resolvedTankId
       ? await buildTankContext(supabase, resolvedTankId, user.id)
       : null;
+
+    // If no tank context, still fetch user preferences for personalization
+    // This allows the AI to personalize responses even in general chat
+    const userPreferences = context?.userPreferences ?? (
+      !resolvedTankId ? await getUserPreferencesForAI(supabase, user.id) : null
+    );
 
     // Get conversation history (last 50 messages)
     // If no tank, get general chat history (tank_id is null)
@@ -137,8 +145,9 @@ export async function POST(request: NextRequest) {
       { role: "user" as const, content: message },
     ];
 
-    // Generate system prompt with tank context
-    const systemPrompt = generateSystemPrompt(context);
+    // Generate system prompt with tank context and user preferences
+    // User preferences are passed separately for general chat (no tank selected)
+    const systemPrompt = generateSystemPrompt(context, userPreferences);
 
     // Store user message in database (before AI call)
     const { error: userMsgError } = await supabase.from("ai_messages").insert({

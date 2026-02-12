@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2 } from "lucide-react";
+import { Loader2, Sparkles } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
 
@@ -18,6 +18,10 @@ import {
   FreeToolsPromo,
   MyTanks,
 } from "@/components/dashboard";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { AIOnboardingWizard } from "@/components/onboarding";
+import { useOnboardingStatus } from "@/hooks/use-onboarding-status";
 
 interface Tank {
   id: string;
@@ -42,6 +46,13 @@ export default function DashboardPage() {
   const [tanks, setTanks] = useState<Tank[]>([]);
   const [selectedTankId, setSelectedTankId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [showOnboardingWizard, setShowOnboardingWizard] = useState(false);
+
+  const {
+    hasCompletedAIOnboarding,
+    isLoading: isOnboardingStatusLoading,
+    refresh: refreshOnboardingStatus,
+  } = useOnboardingStatus();
 
   const selectedTank = tanks.find((t) => t.id === selectedTankId) || tanks[0];
 
@@ -150,8 +161,44 @@ export default function DashboardPage() {
         />
       )}
 
+      {/* AI Onboarding Wizard Modal */}
+      <AIOnboardingWizard
+        open={showOnboardingWizard}
+        onOpenChange={setShowOnboardingWizard}
+        onComplete={() => {
+          refreshOnboardingStatus();
+        }}
+      />
+
       {/* Main Content */}
       <div className="flex-1 container max-w-6xl py-6 space-y-6">
+        {/* Complete Your Profile Card - shows when AI onboarding not completed */}
+        {!isOnboardingStatusLoading && !hasCompletedAIOnboarding && (
+          <Card className="border-dashed border-2 border-brand-cyan/50 bg-gradient-to-br from-brand-cyan/5 to-transparent">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Sparkles className="h-5 w-5 text-brand-cyan" />
+                Complete Your Profile
+              </CardTitle>
+              <CardDescription>
+                Help your AI coach understand you better
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground mb-4">
+                Answer a few questions so I can give you personalized advice for your aquarium journey.
+              </p>
+              <Button
+                onClick={() => setShowOnboardingWizard(true)}
+                className="bg-brand-cyan hover:bg-brand-cyan/90"
+              >
+                <Sparkles className="mr-2 h-4 w-4" />
+                Get Started (2-3 min)
+              </Button>
+            </CardContent>
+          </Card>
+        )}
+
         {/* My Tanks Section */}
         <MyTanks
           tanks={tanks}

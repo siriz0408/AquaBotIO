@@ -1,5 +1,6 @@
 import type { TankContext } from "./context-builder";
 import { formatContextForPrompt } from "./context-builder";
+import { formatUserPreferencesForPrompt, type UserContextForAI } from "./user-context";
 
 /**
  * System prompt generator for AI chat
@@ -422,13 +423,21 @@ Use this enhanced data to provide more detailed and helpful recommendations!`;
 /**
  * Generate the complete system prompt with tank context
  */
-export function generateSystemPrompt(context: TankContext | null): string {
+export function generateSystemPrompt(context: TankContext | null, userPreferences?: UserContextForAI | null): string {
   const parts: string[] = [BASE_PROMPT];
 
   // Add skill level adaptation
   if (context) {
     const skillLevel = context.user.skill_level || "beginner";
     parts.push(SKILL_LEVEL_PROMPTS[skillLevel] || SKILL_LEVEL_PROMPTS.beginner);
+  }
+
+  // Add user preferences/memory section (from onboarding questionnaire)
+  // This takes precedence from context.userPreferences if available, or from explicit param
+  const prefs = context?.userPreferences ?? userPreferences;
+  if (prefs) {
+    parts.push("\n");
+    parts.push(formatUserPreferencesForPrompt(prefs));
   }
 
   // Add tank context

@@ -305,6 +305,43 @@ export interface AuditLog {
   created_at: string;
 }
 
+// User Preferences types (Spec 19 - AI Onboarding)
+export type ExperienceLevel = "first_timer" | "returning" | "experienced" | "expert";
+export type CurrentSituation = "new_tank" | "existing_tank" | "exploring" | "multiple_tanks";
+export type Motivation = "relaxation" | "family_project" | "specific_species" | "nature_interest" | "other";
+export type ExplanationDepth = "brief" | "moderate" | "detailed";
+export type CommunicationStyle = "friendly" | "professional" | "casual";
+export type BudgetRange = "tight" | "moderate" | "flexible" | "unspecified";
+export type TimeAvailable = "minimal" | "moderate" | "plenty" | "unspecified";
+
+export interface UserPreference {
+  id: string;
+  user_id: string;
+  experience_level: ExperienceLevel | null;
+  years_in_hobby: number | null;
+  previous_tank_types: string[] | null;
+  current_situation: CurrentSituation | null;
+  primary_goal: string | null;
+  motivation: Motivation | null;
+  motivation_details: string | null;
+  explanation_depth: ExplanationDepth;
+  wants_scientific_names: boolean;
+  wants_reminders: boolean;
+  communication_style: CommunicationStyle;
+  current_challenges: string[] | null;
+  avoided_topics: string[] | null;
+  completed_topics: string[] | null;
+  preferred_tank_types: string[] | null;
+  budget_range: BudgetRange | null;
+  time_available: TimeAvailable | null;
+  ai_learned_facts: Json;
+  ai_interaction_summary: string | null;
+  last_interaction_topics: string[] | null;
+  onboarding_completed_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
 // Proactive alerts types (Spec 17)
 export type AlertSeverity = "info" | "warning" | "alert";
 export type AlertStatus = "active" | "dismissed" | "resolved";
@@ -399,6 +436,11 @@ export interface Database {
         Insert: Omit<ProactiveAlert, "id" | "created_at">;
         Update: Partial<Omit<ProactiveAlert, "id" | "created_at">>;
       };
+      user_preferences: {
+        Row: UserPreference;
+        Insert: Omit<UserPreference, "id" | "created_at" | "updated_at">;
+        Update: Partial<Omit<UserPreference, "id" | "user_id" | "created_at">>;
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;
@@ -411,6 +453,13 @@ export interface Database {
       task_frequency: TaskFrequency;
       temperament: Temperament;
       care_level: CareLevel;
+      experience_level: ExperienceLevel;
+      current_situation: CurrentSituation;
+      motivation: Motivation;
+      explanation_depth: ExplanationDepth;
+      communication_style: CommunicationStyle;
+      budget_range: BudgetRange;
+      time_available: TimeAvailable;
     };
   };
 }
