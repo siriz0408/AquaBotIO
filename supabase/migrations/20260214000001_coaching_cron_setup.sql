@@ -1,0 +1,108 @@
+-- ============================================================================
+-- AquaBotAI Daily Coaching Cron Job Setup
+-- Created: February 14, 2026
+-- Sprint 34: Daily AI Coaching - Cron Scheduling
+--
+-- This migration documents the cron job setup options for the daily coaching
+-- Edge Function. The actual scheduling depends on your Supabase plan and
+-- infrastructure choices.
+-- ============================================================================
+
+-- ============================================================================
+-- OPTION A: Supabase pg_cron (Pro/Enterprise plans)
+-- ============================================================================
+--
+-- If you have pg_cron extension enabled (requires Supabase Pro or higher),
+-- uncomment the following to schedule the daily coaching job:
+--
+-- NOTE: pg_cron must be enabled in your Supabase dashboard first:
+-- Dashboard > Database > Extensions > pg_cron
+--
+-- Also requires pg_net for HTTP calls:
+-- Dashboard > Database > Extensions > pg_net
+--
+-- Schedule daily coaching at 9 AM UTC:
+--
+-- SELECT cron.schedule(
+--   'daily-ai-coaching',
+--   '0 9 * * *',
+--   $$
+--   SELECT net.http_post(
+--     url := 'https://mtwyezkbmyrgxqmskblu.supabase.co/functions/v1/daily-ai-coaching',
+--     headers := jsonb_build_object(
+--       'Content-Type', 'application/json',
+--       'Authorization', 'Bearer ' || current_setting('app.settings.service_role_key', true)
+--     ),
+--     body := '{}'::jsonb
+--   )
+--   $$
+-- );
+--
+-- To check scheduled jobs:
+-- SELECT * FROM cron.job;
+--
+-- To unschedule:
+-- SELECT cron.unschedule('daily-ai-coaching');
+
+-- ============================================================================
+-- OPTION B: GitHub Actions (Recommended for Free/Pro Starter)
+-- ============================================================================
+--
+-- Create .github/workflows/daily-coaching.yml:
+--
+-- name: Daily AI Coaching
+-- on:
+--   schedule:
+--     # Run at 9 AM UTC daily
+--     - cron: '0 9 * * *'
+--   workflow_dispatch: # Allow manual trigger
+--
+-- jobs:
+--   coaching:
+--     runs-on: ubuntu-latest
+--     steps:
+--       - name: Trigger Daily Coaching
+--         run: |
+--           curl -X POST \
+--             -H "Content-Type: application/json" \
+--             -H "Authorization: Bearer ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" \
+--             https://mtwyezkbmyrgxqmskblu.supabase.co/functions/v1/daily-ai-coaching
+
+-- ============================================================================
+-- OPTION C: Vercel Cron (if deploying to Vercel)
+-- ============================================================================
+--
+-- In vercel.json, add:
+-- {
+--   "crons": [{
+--     "path": "/api/cron/daily-coaching",
+--     "schedule": "0 9 * * *"
+--   }]
+-- }
+--
+-- Create src/app/api/cron/daily-coaching/route.ts that calls the Edge Function
+
+-- ============================================================================
+-- OPTION D: Manual/On-Demand
+-- ============================================================================
+--
+-- The Edge Function can always be called manually via:
+--
+-- curl -X POST \
+--   -H "Content-Type: application/json" \
+--   -H "Authorization: Bearer $SUPABASE_SERVICE_ROLE_KEY" \
+--   https://mtwyezkbmyrgxqmskblu.supabase.co/functions/v1/daily-ai-coaching
+--
+-- With dry_run mode:
+-- curl -X POST \
+--   -H "Content-Type: application/json" \
+--   -H "Authorization: Bearer $SUPABASE_SERVICE_ROLE_KEY" \
+--   -d '{"dry_run": true}' \
+--   https://mtwyezkbmyrgxqmskblu.supabase.co/functions/v1/daily-ai-coaching
+
+-- ============================================================================
+-- This is a documentation-only migration. No actual DDL changes.
+-- ============================================================================
+
+-- Add a comment to coaching_history table about the cron job
+COMMENT ON TABLE public.coaching_history IS 'Stores AI-generated coaching messages. Populated by daily-ai-coaching Edge Function (scheduled or on-demand) and /api/ai/coaching API route.';

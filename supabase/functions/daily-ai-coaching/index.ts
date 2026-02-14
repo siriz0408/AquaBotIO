@@ -88,7 +88,31 @@ interface NotificationResult {
   coaching_message: string | null;
   subscriptions_tried: number;
   subscriptions_succeeded: number;
+  history_id?: string | null;
   error?: string;
+}
+
+// Coaching context for history storage
+interface CoachingContext {
+  user: {
+    experience_level: string | null;
+    primary_goal: string | null;
+    current_challenges: string[];
+  };
+  tank: {
+    name: string;
+    type: string;
+    volume_gallons: number;
+  };
+  parameters?: {
+    ph?: number;
+    ammonia?: number;
+    nitrite?: number;
+    nitrate?: number;
+    temperature?: number;
+  };
+  livestock_count?: number;
+  pending_tasks_count?: number;
 }
 
 interface RequestBody {
@@ -285,6 +309,42 @@ Generate ONE short tip (max 2 sentences) that's relevant to their situation. Foc
     return textContent.text.trim();
   } catch (error) {
     console.error("Error calling Claude API:", error);
+    return null;
+  }
+}
+
+/**
+ * Save coaching message to history table
+ */
+async function saveCoachingHistory(
+  supabase: ReturnType<typeof createClient>,
+  userId: string,
+  tankId: string,
+  message: string,
+  context: CoachingContext,
+  tokensUsed: number
+): Promise<string | null> {
+  try {
+    const { data, error } = await supabase
+      .from("coaching_history")
+      .insert({
+        user_id: userId,
+        tank_id: tankId,
+        message: message,
+        context: context,
+        tokens_used: tokensUsed,
+      })
+      .select("id")
+      .single();
+
+    if (error) {
+      console.error("Failed to save coaching history:", error);
+      return null;
+    }
+
+    return data?.id || null;
+  } catch (err) {
+    console.error("Error saving coaching history:", err);
     return null;
   }
 }
@@ -661,9 +721,51 @@ serve(async (req: Request) => {
       result.coaching_message = coachingMessage;
       console.log(`[${requestId}] Generated coaching message for user ${userId}: ${coachingMessage}`);
 
-      // Track AI usage (estimate ~50 input tokens, ~30 output tokens for Haiku)
+      // Build coaching context for history storage
+      const coachingContext: CoachingContext = {
+        user: {
+          experience_level: prefs.experience_level || null,
+          primary_goal: prefs.primary_goal || null,
+          current_challenges: prefs.current_challenges || [],
+        },
+        tank: {
+          name: tank.name,
+          type: tank.type,
+          volume_gallons: tank.volume_gallons,
+        },
+        parameters: recentParams
+          ? {
+              ph: recentParams.ph ?? undefined,
+              ammonia: recentParams.ammonia_ppm ?? undefined,
+              nitrite: recentParams.nitrite_ppm ?? undefined,
+              nitrate: recentParams.nitrate_ppm ?? undefined,
+              temperature: recentParams.temperature_f ?? undefined,
+            }
+          : undefined,
+        pending_tasks_count: pendingTaskCount || 0,
+      };
+
+      // Estimate tokens: ~50 input, ~30 output for Haiku
+      const estimatedTokens = 80;
+
+      // Track AI usage and save to history (unless dry_run)
       if (!dryRun) {
         await trackAIUsage(supabase, userId, 50, 30);
+
+        // Save to coaching history
+        const historyId = await saveCoachingHistory(
+          supabase,
+          userId,
+          tank.id,
+          coachingMessage,
+          coachingContext,
+          estimatedTokens
+        );
+        result.history_id = historyId;
+
+        if (historyId) {
+          console.log(`[${requestId}] Saved coaching history entry ${historyId} for user ${userId}`);
+        }
       }
 
       // Create notification payload
@@ -748,6 +850,7 @@ serve(async (req: Request) => {
             user_id: r.user_id,
             success: r.success,
             message_preview: r.coaching_message?.substring(0, 50) + (r.coaching_message && r.coaching_message.length > 50 ? "..." : ""),
+            history_id: r.history_id,
             error: r.error,
           })),
         },

@@ -1,9 +1,29 @@
 import { NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import { successResponse, errorResponse } from "@/lib/api/response";
 import { sendPushNotification, createAIInsightPayload } from "@/lib/notifications/push";
 import { generateCoachingMessage, type CoachingContext } from "@/lib/ai/coaching";
 import { z } from "zod";
+
+/**
+ * Get a service role client for admin operations that bypass RLS
+ */
+function getServiceRoleClient() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!supabaseUrl || !serviceRoleKey) {
+    throw new Error("Missing Supabase service role configuration");
+  }
+
+  return createSupabaseClient(supabaseUrl, serviceRoleKey, {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false,
+    },
+  });
+}
 
 /**
  * POST /api/ai/coaching
@@ -197,6 +217,32 @@ export async function POST(request: NextRequest) {
       output_count: result.output_tokens,
     });
 
+    // Save to coaching history using service role (bypasses RLS for INSERT)
+    let historyId: string | null = null;
+    try {
+      const serviceClient = getServiceRoleClient();
+      const { data: historyEntry, error: historyError } = await serviceClient
+        .from("coaching_history")
+        .insert({
+          user_id: user.id,
+          tank_id: tank.id,
+          message: result.message,
+          context: context,
+          tokens_used: result.input_tokens + result.output_tokens,
+        })
+        .select("id")
+        .single();
+
+      if (historyError) {
+        // Log error but don't fail the request - history is non-critical
+        console.error("Failed to save coaching history:", historyError);
+      } else {
+        historyId = historyEntry?.id || null;
+      }
+    } catch (historyError) {
+      console.error("Error saving coaching history:", historyError);
+    }
+
     // Send push notification (unless dry_run)
     let notificationSent = false;
     if (!dry_run) {
@@ -210,6 +256,7 @@ export async function POST(request: NextRequest) {
       tank_name: tank.name,
       notification_sent: notificationSent,
       dry_run,
+      history_id: historyId,
       usage: {
         input_tokens: result.input_tokens,
         output_tokens: result.output_tokens,

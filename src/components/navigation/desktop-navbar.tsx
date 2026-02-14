@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Fish, Home, FlaskConical, Calendar, MessageSquare, Settings, Bell } from "lucide-react";
+import { Fish, Home, FlaskConical, Calendar, MessageSquare, Settings, Bell, Lightbulb } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTank } from "@/context/tank-context";
 
@@ -103,6 +103,13 @@ export function DesktopNavbar({ className, hasNotifications = false }: DesktopNa
 
         {/* Right Actions - min 44px touch targets */}
         <div className="flex items-center gap-1">
+          <Link
+            href="/coaching"
+            className="p-3 rounded-lg hover:bg-gray-100 transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
+            title="Coaching Tips"
+          >
+            <Lightbulb className="h-5 w-5 text-gray-600" />
+          </Link>
           <Link
             href="/notifications"
             className="relative p-3 rounded-lg hover:bg-gray-100 transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"

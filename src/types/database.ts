@@ -367,6 +367,40 @@ export interface ProactiveAlert {
   resolved_by_action_id: string | null;
 }
 
+// Coaching History types (Sprint 34 - Daily AI Coaching)
+export interface CoachingContext {
+  user: {
+    experience_level: string | null;
+    primary_goal: string | null;
+    current_challenges: string[];
+  };
+  tank: {
+    name: string;
+    type: string;
+    volume_gallons: number;
+    setup_date?: string;
+  };
+  parameters?: {
+    ph?: number;
+    ammonia?: number;
+    nitrite?: number;
+    nitrate?: number;
+    temperature?: number;
+  };
+  livestock_count: number;
+  pending_tasks_count: number;
+}
+
+export interface CoachingHistory {
+  id: string;
+  user_id: string;
+  tank_id: string | null;
+  message: string;
+  context: CoachingContext | null;
+  tokens_used: number;
+  created_at: string;
+}
+
 // Database schema type for Supabase client
 export interface Database {
   public: {
@@ -440,6 +474,11 @@ export interface Database {
         Row: UserPreference;
         Insert: Omit<UserPreference, "id" | "created_at" | "updated_at">;
         Update: Partial<Omit<UserPreference, "id" | "user_id" | "created_at">>;
+      };
+      coaching_history: {
+        Row: CoachingHistory;
+        Insert: Omit<CoachingHistory, "id" | "created_at">;
+        Update: never; // Coaching history is immutable (read-only for users)
       };
     };
     Views: Record<string, never>;

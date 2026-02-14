@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ChevronDown, Bell, Settings } from "lucide-react";
+import { ChevronDown, Bell, Settings, Lightbulb } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface TopBarProps {
@@ -37,6 +37,17 @@ export function TopBar({
 
         {/* Actions - min 44px touch targets */}
         <nav aria-label="Quick actions" className="flex items-center gap-1">
+          <Link
+            href="/coaching"
+            aria-label="Coaching Tips"
+            className={cn(
+              "p-3 hover:bg-gray-100 rounded-xl transition-colors",
+              "min-h-[44px] min-w-[44px] flex items-center justify-center",
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal focus-visible:ring-offset-2"
+            )}
+          >
+            <Lightbulb className="w-5 h-5 text-gray-700" aria-hidden="true" />
+          </Link>
           <Link
             href="/notifications"
             aria-label={hasNotifications ? "Notifications (new)" : "Notifications"}

@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Fish, ArrowLeft, Loader2, User, Bell, CreditCard, Shield, Check, AlertTriangle, LogOut, Sparkles, Bot } from "lucide-react";
+import { Fish, ArrowLeft, Loader2, User, Bell, CreditCard, Shield, Check, AlertTriangle, LogOut, Sparkles, Bot, Lightbulb } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -31,6 +32,13 @@ export default function SettingsPage() {
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [showAIOnboardingWizard, setShowAIOnboardingWizard] = useState(false);
 
+  // AI Preferences inline editing state
+  const [isEditingAI, setIsEditingAI] = useState(false);
+  const [isSavingAI, setIsSavingAI] = useState(false);
+  const [aiExperienceLevel, setAiExperienceLevel] = useState<string>("");
+  const [aiPrimaryGoal, setAiPrimaryGoal] = useState<string>("");
+  const [aiChallenges, setAiChallenges] = useState<string[]>([]);
+
   const {
     hasCompletedAIOnboarding,
     preferences,
@@ -52,6 +60,15 @@ export default function SettingsPage() {
       router.push("/login");
     }
   }, [userLoading, user, router]);
+
+  // Populate AI preferences when loaded
+  useEffect(() => {
+    if (preferences) {
+      setAiExperienceLevel(preferences.experience_level || "");
+      setAiPrimaryGoal(preferences.primary_goal || "");
+      setAiChallenges(preferences.current_challenges || []);
+    }
+  }, [preferences]);
 
   const handleSaveProfile = async () => {
     if (!profile) return;
@@ -106,6 +123,49 @@ export default function SettingsPage() {
     } finally {
       setIsSigningOut(false);
     }
+  };
+
+  const handleSaveAIPreferences = async () => {
+    setIsSavingAI(true);
+    try {
+      const response = await fetch("/api/user/preferences", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          experience_level: aiExperienceLevel || undefined,
+          primary_goal: aiPrimaryGoal || undefined,
+          current_challenges: aiChallenges.length > 0 ? aiChallenges : undefined,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!result.success) {
+        throw new Error(result.error?.message || "Failed to update preferences");
+      }
+
+      await refreshPreferences();
+      setIsEditingAI(false);
+      toast.success("AI preferences updated successfully");
+    } catch (error) {
+      console.error("Error updating AI preferences:", error);
+      toast.error("Failed to update AI preferences");
+    } finally {
+      setIsSavingAI(false);
+    }
+  };
+
+  const toggleChallenge = (challenge: string) => {
+    setAiChallenges((prev) => {
+      if (challenge === "none") {
+        return prev.includes("none") ? [] : ["none"];
+      }
+      const withoutNone = prev.filter((c) => c !== "none");
+      if (prev.includes(challenge)) {
+        return withoutNone.filter((c) => c !== challenge);
+      }
+      return [...withoutNone, challenge];
+    });
   };
 
   const formatTrialEnd = () => {
@@ -356,12 +416,38 @@ export default function SettingsPage() {
           {/* AI Preferences */}
           <Card className="shadow-sm border-gray-200">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Bot className="h-5 w-5" />
-                AI Preferences
-              </CardTitle>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Bot className="h-5 w-5" />
+                  <CardTitle>AI Personalization</CardTitle>
+                </div>
+                {hasCompletedAIOnboarding && !isEditingAI && (
+                  <Button variant="outline" size="sm" onClick={() => setIsEditingAI(true)}>
+                    Edit
+                  </Button>
+                )}
+                {isEditingAI && (
+                  <div className="flex gap-2">
+                    <Button variant="outline" size="sm" onClick={() => {
+                      setIsEditingAI(false);
+                      // Reset to saved values
+                      if (preferences) {
+                        setAiExperienceLevel(preferences.experience_level || "");
+                        setAiPrimaryGoal(preferences.primary_goal || "");
+                        setAiChallenges(preferences.current_challenges || []);
+                      }
+                    }}>
+                      Cancel
+                    </Button>
+                    <Button size="sm" onClick={handleSaveAIPreferences} disabled={isSavingAI}>
+                      {isSavingAI && <Loader2 className="mr-2 h-3 w-3 animate-spin" />}
+                      Save
+                    </Button>
+                  </div>
+                )}
+              </div>
               <CardDescription>
-                Personalize your AI assistant experience
+                Customize how your AI coach communicates with you
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -371,32 +457,111 @@ export default function SettingsPage() {
                 </div>
               ) : hasCompletedAIOnboarding ? (
                 <>
-                  <div className="rounded-lg border p-4 space-y-2">
-                    <div className="flex items-center gap-2">
-                      <Check className="h-4 w-4 text-green-500" />
-                      <span className="text-sm font-medium">AI personalization complete</span>
-                    </div>
-                    <p className="text-sm text-muted-foreground">
-                      Your AI assistant has been personalized based on your preferences.
-                    </p>
-                    {preferences?.experience_level && (
-                      <p className="text-xs text-muted-foreground">
-                        Experience: <span className="capitalize">{preferences.experience_level.replace("_", " ")}</span>
-                      </p>
-                    )}
-                    {preferences?.primary_goal && (
-                      <p className="text-xs text-muted-foreground">
-                        Goal: <span className="capitalize">{preferences.primary_goal.replace("_", " ")}</span>
+                  {/* Experience Level */}
+                  <div className="space-y-2">
+                    <Label htmlFor="ai-experience">Experience Level</Label>
+                    {isEditingAI ? (
+                      <select
+                        id="ai-experience"
+                        value={aiExperienceLevel}
+                        onChange={(e) => setAiExperienceLevel(e.target.value)}
+                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                      >
+                        <option value="">Select experience level</option>
+                        <option value="first_timer">First Timer</option>
+                        <option value="returning">Had Tanks Before</option>
+                        <option value="experienced">Experienced Keeper</option>
+                        <option value="expert">Expert</option>
+                      </select>
+                    ) : (
+                      <p className="text-sm capitalize">
+                        {preferences?.experience_level?.replace(/_/g, " ") || "Not set"}
                       </p>
                     )}
                   </div>
+
+                  {/* Primary Goal */}
+                  <div className="space-y-2">
+                    <Label htmlFor="ai-goal">Primary Goal</Label>
+                    {isEditingAI ? (
+                      <select
+                        id="ai-goal"
+                        value={aiPrimaryGoal}
+                        onChange={(e) => setAiPrimaryGoal(e.target.value)}
+                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                      >
+                        <option value="">Select your goal</option>
+                        <option value="low_maintenance">Low-Maintenance Setup</option>
+                        <option value="planted_tank">Planted Tank / Aquascaping</option>
+                        <option value="specific_fish">Specific Fish Species</option>
+                        <option value="reef_tank">Reef Tank</option>
+                      </select>
+                    ) : (
+                      <p className="text-sm capitalize">
+                        {preferences?.primary_goal?.replace(/_/g, " ") || "Not set"}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Current Challenges */}
+                  <div className="space-y-2">
+                    <Label>Current Challenges</Label>
+                    {isEditingAI ? (
+                      <div className="space-y-2 rounded-lg border p-3">
+                        {[
+                          { value: "keeping_alive", label: "Keeping fish alive" },
+                          { value: "water_quality", label: "Water quality issues" },
+                          { value: "compatibility", label: "Finding compatible fish" },
+                          { value: "maintenance", label: "Maintenance routine" },
+                          { value: "chemistry", label: "Understanding water chemistry" },
+                          { value: "none", label: "No challenges yet" },
+                        ].map((challenge) => (
+                          <label
+                            key={challenge.value}
+                            className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-colors
+                              ${aiChallenges.includes(challenge.value) ? "bg-brand-cyan/10" : "hover:bg-gray-50"}
+                              ${challenge.value !== "none" && aiChallenges.includes("none") ? "opacity-50 cursor-not-allowed" : ""}`}
+                          >
+                            <Checkbox
+                              checked={aiChallenges.includes(challenge.value)}
+                              onChange={() => toggleChallenge(challenge.value)}
+                              disabled={challenge.value !== "none" && aiChallenges.includes("none")}
+                            />
+                            <span className="text-sm">{challenge.label}</span>
+                          </label>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-sm">
+                        {preferences?.current_challenges && preferences.current_challenges.length > 0
+                          ? preferences.current_challenges.includes("none")
+                            ? "No challenges"
+                            : preferences.current_challenges
+                                .map((c) => c.replace(/_/g, " "))
+                                .join(", ")
+                          : "Not set"}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* View Coaching History Link */}
+                  <div className="pt-2 border-t">
+                    <Button variant="outline" className="w-full" asChild>
+                      <Link href="/coaching">
+                        <Lightbulb className="mr-2 h-4 w-4" />
+                        View Coaching History
+                      </Link>
+                    </Button>
+                  </div>
+
+                  {/* Full Wizard Button */}
                   <Button
-                    variant="outline"
-                    className="w-full"
+                    variant="ghost"
+                    className="w-full text-muted-foreground"
                     onClick={() => setShowAIOnboardingWizard(true)}
                   >
                     <Sparkles className="mr-2 h-4 w-4" />
-                    Update AI Preferences
+                    Run Full Setup Wizard
                   </Button>
                 </>
               ) : (
