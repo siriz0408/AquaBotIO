@@ -1,6 +1,6 @@
 # AquaBotAI Memory System
 
-> **Last Updated:** February 12, 2026 | **Sprint:** 33
+> **Last Updated:** February 14, 2026 | **Sprint:** 34
 
 This is the team's collective memory. Every bug, decision, pattern, and mistake is documented here so we never repeat errors and always apply lessons learned.
 
@@ -10,14 +10,17 @@ This is the team's collective memory. Every bug, decision, pattern, and mistake 
 |----------|-------|-------------|
 | [bugs/](./bugs/) | 0 | Bug reports with severity, status, and fixes |
 | [decisions/](./decisions/) | 5 | Architecture and implementation decisions |
-| [patterns/](./patterns/) | 11 | Reusable solutions and approaches |
+| [patterns/](./patterns/) | 14 | Reusable solutions and approaches |
 | [mistakes/](./mistakes/) | 0 | Wrong turns and how we recovered |
 | [feedback/](./feedback/) | 0 | Sam's feedback and PM responses |
-| [sprints/](./sprints/) | 10 | Sprint summaries |
+| [sprints/](./sprints/) | 11 | Sprint summaries |
 
 ## Quick Reference
 
 ### Most Important Patterns
+- **P034-1:** Service Role Client for Admin Inserts — use getServiceRoleClient() for tables where users should only SELECT
+- **P034-2:** Graceful API Degradation — check for 404 and show empty state instead of error for parallel development
+- **P034-3:** Dual Empty State Pattern — show different CTAs based on user journey stage
 - **P033-1:** Proactive AI Coaching Pattern — scheduled Edge Function with context-aware AI tips
 - **P032-1:** AI Context Injection Pattern — fetch user preferences and inject into system prompt
 - **P031-1:** Branching Wizard Pattern — typed step state with conditional navigation based on answers
@@ -35,6 +38,9 @@ This is the team's collective memory. Every bug, decision, pattern, and mistake 
 None currently tracked.
 
 ### Recent Decisions
+- **D034-1:** Service role for history inserts — users can only SELECT from coaching_history
+- **D034-2:** Non-blocking history saves — log errors but still return coaching message
+- **D034-3:** Inline preferences editing — quick edit in settings vs. always opening wizard
 - **D029-1:** In-modal add flow over redirects — better UX, no context loss
 - **D028-1:** Use `unoptimized` for external GBIF images — bypasses domain restrictions
 - **D025-1:** Substrate dropdown with "Other" option — data consistency with flexibility
@@ -45,4 +51,4 @@ None currently tracked.
 
 ---
 
-*Memory system initialized Sprint 22. Updated Sprint 33.*
+*Memory system initialized Sprint 22. Updated Sprint 34.*

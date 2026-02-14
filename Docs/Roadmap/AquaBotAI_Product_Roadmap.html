@@ -56,7 +56,7 @@
       </div>
     </div>
   </div>
-  <div class="sprint-updated">Last updated: Feb 12, 2026 — Sprint 33: Daily AI Coaching Complete | Edge Function + API endpoint for personalized coaching tips | Push notifications with quiet hours | Both feedback items addressed</div>
+  <div class="sprint-updated">Last updated: Feb 14, 2026 — Sprint 34: Coaching History + Preferences UI | coaching_history table + API | Coaching page + settings editor | Navigation link added</div>
 </div>
 
 <div class="tabs" id="tabs">
@@ -529,6 +529,51 @@
 <div class="panel" id="sprints">
 <h2 style="font-size:1.2rem;margin-bottom:8px">📋 Sprint History</h2>
 <p style="font-size:0.82rem;color:var(--text2);margin-bottom:20px">Complete history of development sprints. What was built, outcomes, and metrics.</p>
+
+<!-- Sprint 34 (Complete) -->
+<div style="background:var(--surface);border:2px solid var(--green);border-radius:12px;margin-bottom:16px;overflow:hidden">
+  <div style="background:linear-gradient(90deg,rgba(34,197,94,0.2),transparent);padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+    <div>
+      <h3 style="font-size:1rem;font-weight:700;margin-bottom:2px">Sprint 34: Coaching History + Preferences UI</h3>
+      <span style="font-size:0.75rem;color:var(--text2)">Feb 14, 2026</span>
+    </div>
+    <span class="status-badge status-complete">Complete</span>
+  </div>
+  <div style="padding:20px">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:16px">
+      <div style="text-align:center;padding:12px;background:var(--bg);border-radius:8px">
+        <div style="font-size:0.7rem;color:var(--text2);text-transform:uppercase">Files Created</div>
+        <div style="font-size:1.3rem;font-weight:800;color:var(--green)">7</div>
+        <div style="font-size:0.72rem;color:var(--text2)">Backend + Frontend</div>
+      </div>
+      <div style="text-align:center;padding:12px;background:var(--bg);border-radius:8px">
+        <div style="font-size:0.7rem;color:var(--text2);text-transform:uppercase">Lines Added</div>
+        <div style="font-size:1.3rem;font-weight:800;color:var(--cyan)">~1,696</div>
+        <div style="font-size:0.72rem;color:var(--text2)">History + UI</div>
+      </div>
+      <div style="text-align:center;padding:12px;background:var(--bg);border-radius:8px">
+        <div style="font-size:0.7rem;color:var(--text2);text-transform:uppercase">Modified</div>
+        <div style="font-size:1.3rem;font-weight:800;color:var(--purple)">6</div>
+        <div style="font-size:0.72rem;color:var(--text2)">Existing files</div>
+      </div>
+    </div>
+    <h4 style="font-size:0.8rem;font-weight:700;color:var(--text);margin-bottom:8px">What Was Built</h4>
+    <div style="font-size:0.82rem;color:var(--text2);line-height:1.8">
+      <span style="display:block">✅ <strong>Backend: coaching_history table</strong> — RLS-enabled table with SELECT-only for users</span>
+      <span style="display:block">✅ <strong>Backend: History API</strong> — GET /api/ai/coaching/history with pagination</span>
+      <span style="display:block">✅ <strong>Backend: Cron scheduling docs</strong> — 4 options for different Supabase tiers</span>
+      <span style="display:block">✅ <strong>Frontend: /coaching page</strong> — View past coaching tips with relative dates</span>
+      <span style="display:block">✅ <strong>Frontend: AI Preferences Editor</strong> — Edit experience, goal, challenges in settings</span>
+      <span style="display:block">✅ <strong>Frontend: Nav link</strong> — Lightbulb icon in TopBar and DesktopNavbar</span>
+    </div>
+    <h4 style="font-size:0.8rem;font-weight:700;color:var(--text);margin-bottom:8px;margin-top:12px">Patterns Discovered</h4>
+    <div style="font-size:0.82rem;color:var(--text2);line-height:1.8">
+      <span style="display:block">📝 P034-1: Service Role Client for Admin Inserts</span>
+      <span style="display:block">📝 P034-2: Graceful API Degradation for parallel dev</span>
+      <span style="display:block">📝 P034-3: Dual Empty State Pattern</span>
+    </div>
+  </div>
+</div>
 
 <!-- Sprint 33 (Complete) -->
 <div style="background:var(--surface);border:2px solid var(--green);border-radius:12px;margin-bottom:16px;overflow:hidden">
@@ -1744,6 +1789,34 @@
   <span style="width:10px;height:10px;background:var(--yellow);border-radius:50%"></span>
   Ready to Test
 </h3>
+
+<!-- Sprint 34 - Coaching History + Preferences UI -->
+<div style="background:var(--surface);border:2px solid var(--yellow);border-radius:12px;margin-bottom:12px">
+  <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+    <div>
+      <h4 style="font-size:0.9rem;font-weight:700">📚 Sprint 34: Coaching History + Preferences UI</h4>
+      <span style="font-size:0.75rem;color:var(--text2)">Sprint 34 | Added Feb 14, 2026 | UI + Backend</span>
+    </div>
+    <span class="status-badge status-progress">Priority Test</span>
+  </div>
+  <div style="padding:16px 20px;font-size:0.82rem;color:var(--text2)">
+    <p style="margin-bottom:12px"><strong>What to test:</strong></p>
+    <ul style="padding-left:16px;line-height:1.8">
+      <li><strong>Coaching Page:</strong> Navigate to /coaching via lightbulb icon in nav — shows empty state or history</li>
+      <li><strong>AI Preferences Editor:</strong> Go to Settings → AI Personalization — edit experience level, primary goal, challenges</li>
+      <li><strong>Full Flow:</strong> 1) Complete AI onboarding, 2) Call POST /api/ai/coaching, 3) Refresh /coaching — tip should appear</li>
+      <li><strong>History Pagination:</strong> GET /api/ai/coaching/history?limit=10&offset=0 returns past tips</li>
+    </ul>
+    <div style="margin-top:12px;padding:12px;background:rgba(34,197,94,0.1);border-radius:8px;border:1px solid rgba(34,197,94,0.3)">
+      <strong style="color:var(--green)">⚠️ Run migration first:</strong>
+      <p style="margin-top:4px">npx supabase db push — creates coaching_history table</p>
+    </div>
+    <div style="margin-top:12px;padding:12px;background:var(--bg);border-radius:8px">
+      <strong>Sam's Notes:</strong>
+      <textarea id="test-notes-s34" data-feature="s34" placeholder="Add your Sprint 34 testing notes here..." onblur="saveTestingNotes('s34',this)" style="width:100%;margin-top:8px;padding:8px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.8rem;min-height:60px;resize:vertical"></textarea>
+    </div>
+  </div>
+</div>
 
 <!-- Sprint 33 - Daily AI Coaching -->
 <div style="background:var(--surface);border:2px solid var(--yellow);border-radius:12px;margin-bottom:12px">
