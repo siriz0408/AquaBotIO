@@ -81,7 +81,8 @@ export function useCoachingHistory(limit = 10): UseCoachingHistoryReturn {
           throw new Error(result.error?.message || "Failed to fetch coaching history");
         }
 
-        const messages: CoachingMessage[] = result.data || [];
+        // API returns {data: {history: [...], pagination: {...}}}
+        const messages: CoachingMessage[] = result.data?.history || [];
 
         if (append) {
           setData((prev) => [...prev, ...messages]);
