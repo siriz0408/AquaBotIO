@@ -2,9 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { motion } from "framer-motion";
 import { Fish, Home, FlaskConical, Calendar, MessageSquare, Settings, Bell, Lightbulb } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTank } from "@/context/tank-context";
+import { useReducedMotion, springBounce } from "@/lib/animations";
 
 interface NavLink {
   id: string;
@@ -39,6 +41,7 @@ interface DesktopNavbarProps {
 export function DesktopNavbar({ className, hasNotifications = false }: DesktopNavbarProps) {
   const pathname = usePathname();
   const { activeTank } = useTank();
+  const prefersReducedMotion = useReducedMotion();
 
   const getHref = (link: NavLink): string => {
     if (typeof link.href === "function") {
@@ -88,14 +91,29 @@ export function DesktopNavbar({ className, hasNotifications = false }: DesktopNa
                 key={link.id}
                 href={href}
                 className={cn(
-                  "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors",
+                  "relative flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors",
                   active
-                    ? "bg-brand-cyan/10 text-brand-cyan"
+                    ? "text-brand-cyan"
                     : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
                 )}
               >
-                <Icon className="h-4 w-4" />
-                <span>{link.label}</span>
+                {active && (
+                  prefersReducedMotion ? (
+                    <span
+                      className="absolute inset-0 bg-brand-cyan/10 rounded-lg"
+                      aria-hidden="true"
+                    />
+                  ) : (
+                    <motion.span
+                      layoutId="desktopNavIndicator"
+                      className="absolute inset-0 bg-brand-cyan/10 rounded-lg"
+                      aria-hidden="true"
+                      transition={springBounce}
+                    />
+                  )
+                )}
+                <Icon className="relative h-4 w-4" />
+                <span className="relative">{link.label}</span>
               </Link>
             );
           })}

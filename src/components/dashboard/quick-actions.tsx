@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { FlaskConical, Plus, CalendarPlus } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useReducedMotion, cardTap, springTap } from "@/lib/animations";
 
 interface QuickAction {
   icon: typeof FlaskConical;
@@ -17,6 +19,8 @@ interface QuickActionsProps {
 }
 
 export function QuickActions({ tankId, className }: QuickActionsProps) {
+  const prefersReducedMotion = useReducedMotion();
+
   const actions: QuickAction[] = [
     {
       icon: FlaskConical,
@@ -42,21 +46,26 @@ export function QuickActions({ tankId, className }: QuickActionsProps) {
     <div className={cn("px-4", className)}>
       <div className="grid grid-cols-3 gap-3">
         {actions.map((action) => (
-          <Link
+          <motion.div
             key={action.label}
-            href={action.href}
-            className="bg-white rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow flex flex-col items-center gap-2 active:scale-95"
+            whileTap={!prefersReducedMotion ? cardTap : undefined}
+            transition={springTap}
           >
-            <div
-              className="w-12 h-12 rounded-xl flex items-center justify-center"
-              style={{ backgroundColor: `${action.color}15` }}
+            <Link
+              href={action.href}
+              className="bg-white rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow flex flex-col items-center gap-2"
             >
-              <action.icon className="w-6 h-6" style={{ color: action.color }} />
-            </div>
-            <span className="text-xs font-medium text-gray-700 text-center leading-tight">
-              {action.label}
-            </span>
-          </Link>
+              <div
+                className="w-12 h-12 rounded-xl flex items-center justify-center"
+                style={{ backgroundColor: `${action.color}15` }}
+              >
+                <action.icon className="w-6 h-6" style={{ color: action.color }} />
+              </div>
+              <span className="text-xs font-medium text-gray-700 text-center leading-tight">
+                {action.label}
+              </span>
+            </Link>
+          </motion.div>
         ))}
       </div>
     </div>

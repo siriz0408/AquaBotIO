@@ -3,9 +3,11 @@
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
+import { motion, type HTMLMotionProps } from "framer-motion"
 
 import { cn } from "@/lib/utils"
 import { triggerHaptic } from "@/hooks/use-haptic-feedback"
+import { useReducedMotion, springTap, buttonTap } from "@/lib/animations"
 
 const buttonVariants = cva(
   // Base styles with improved disabled state for WCAG AA contrast
@@ -45,11 +47,14 @@ export interface ButtonProps
   asChild?: boolean
   /** Disable haptic feedback on click */
   noHaptic?: boolean
+  /** Disable motion animations */
+  noMotion?: boolean
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, noHaptic = false, onClick, disabled, ...props }, ref) => {
-    const Comp = asChild ? Slot : "button"
+  ({ className, variant, size, asChild = false, noHaptic = false, noMotion = false, onClick, disabled, ...props }, ref) => {
+    const prefersReducedMotion = useReducedMotion()
+    const shouldAnimate = !noMotion && !prefersReducedMotion && !disabled && !asChild
 
     const handleClick = React.useCallback(
       (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -61,8 +66,35 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       [noHaptic, onClick]
     )
 
+    // Use Slot for asChild, otherwise use motion.button or regular button
+    if (asChild) {
+      return (
+        <Slot
+          className={cn(buttonVariants({ variant, size, className }))}
+          ref={ref}
+          onClick={handleClick}
+          {...props}
+        />
+      )
+    }
+
+    if (shouldAnimate) {
+      return (
+        <motion.button
+          className={cn(buttonVariants({ variant, size, className }))}
+          ref={ref}
+          onClick={handleClick}
+          disabled={disabled}
+          aria-disabled={disabled}
+          whileTap={buttonTap}
+          transition={springTap}
+          {...(props as HTMLMotionProps<"button">)}
+        />
+      )
+    }
+
     return (
-      <Comp
+      <button
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
         onClick={handleClick}

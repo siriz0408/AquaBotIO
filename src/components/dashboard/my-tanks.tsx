@@ -2,8 +2,10 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 import { Plus, Fish, Droplets, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useReducedMotion, cardHover, cardTap, springBounce } from "@/lib/animations";
 
 interface Tank {
   id: string;
@@ -43,16 +45,20 @@ function TankCard({
   onSelect: () => void;
 }) {
   const router = useRouter();
+  const prefersReducedMotion = useReducedMotion();
 
   return (
-    <button
+    <motion.button
       onClick={onSelect}
       className={cn(
-        "group relative w-full text-left rounded-2xl border-2 bg-white shadow-sm transition-all duration-200 hover:shadow-md overflow-hidden",
+        "group relative w-full text-left rounded-2xl border-2 bg-white shadow-sm transition-colors overflow-hidden",
         isSelected
           ? "border-brand-cyan shadow-brand-cyan/10"
           : "border-transparent hover:border-brand-cyan/30"
       )}
+      whileHover={!prefersReducedMotion ? cardHover : undefined}
+      whileTap={!prefersReducedMotion ? cardTap : undefined}
+      transition={springBounce}
     >
       {/* Tank Image or Gradient */}
       <div className="relative h-28 w-full bg-gradient-to-br from-brand-navy/80 to-brand-teal/60 overflow-hidden">
@@ -106,7 +112,7 @@ function TankCard({
           <ChevronRight className="h-3 w-3" />
         </div>
       </div>
-    </button>
+    </motion.button>
   );
 }
 

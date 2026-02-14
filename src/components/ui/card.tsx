@@ -1,6 +1,10 @@
+"use client"
+
 import * as React from "react"
+import { motion, type HTMLMotionProps } from "framer-motion"
 
 import { cn } from "@/lib/utils"
+import { useReducedMotion, cardHover, cardTap, springBounce } from "@/lib/animations"
 
 const Card = React.forwardRef<
   HTMLDivElement,
@@ -16,6 +20,41 @@ const Card = React.forwardRef<
   />
 ))
 Card.displayName = "Card"
+
+export interface MotionCardProps extends Omit<HTMLMotionProps<"div">, "ref"> {
+  /** Disable hover animation */
+  noHover?: boolean
+  /** Disable tap animation */
+  noTap?: boolean
+}
+
+/**
+ * Card with hover lift and tap feedback animations.
+ * Respects prefers-reduced-motion.
+ */
+const MotionCard = React.forwardRef<HTMLDivElement, MotionCardProps>(
+  ({ className, noHover = false, noTap = false, ...props }, ref) => {
+    const prefersReducedMotion = useReducedMotion()
+
+    // Disable animations if user prefers reduced motion
+    const shouldAnimate = !prefersReducedMotion
+
+    return (
+      <motion.div
+        ref={ref}
+        className={cn(
+          "rounded-xl border bg-card text-card-foreground shadow",
+          className
+        )}
+        whileHover={shouldAnimate && !noHover ? cardHover : undefined}
+        whileTap={shouldAnimate && !noTap ? cardTap : undefined}
+        transition={springBounce}
+        {...props}
+      />
+    )
+  }
+)
+MotionCard.displayName = "MotionCard"
 
 const CardHeader = React.forwardRef<
   HTMLDivElement,
@@ -73,4 +112,4 @@ const CardFooter = React.forwardRef<
 ))
 CardFooter.displayName = "CardFooter"
 
-export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent }
+export { Card, MotionCard, CardHeader, CardFooter, CardTitle, CardDescription, CardContent }

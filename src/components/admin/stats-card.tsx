@@ -1,6 +1,8 @@
 "use client";
 
+import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { useReducedMotion, cardHover, springBounce } from "@/lib/animations";
 import type { LucideIcon } from "lucide-react";
 
 interface StatsCardProps {
@@ -24,12 +26,16 @@ export function StatsCard({
   trend,
   className,
 }: StatsCardProps) {
+  const prefersReducedMotion = useReducedMotion();
+
   return (
-    <div
+    <motion.div
       className={cn(
         "rounded-xl border border-slate-800 bg-slate-900/50 p-6",
         className
       )}
+      whileHover={!prefersReducedMotion ? cardHover : undefined}
+      transition={springBounce}
     >
       <div className="flex items-start justify-between">
         <div className="space-y-1">
@@ -59,7 +65,7 @@ export function StatsCard({
           <span className="text-xs text-slate-500">{trend.label}</span>
         </div>
       )}
-    </div>
+    </motion.div>
   );
 }
 

@@ -87,10 +87,9 @@ export async function GET(request: NextRequest) {
 
     // ---- SUBSCRIPTION STATS ----
 
-    // Count by tier
-    const { data: tierCounts } = await supabase
-      .from("subscriptions")
-      .select("tier");
+    // Count by tier using database aggregation (GROUP BY)
+    // This is O(1) memory vs O(n) when fetching all rows
+    const { data: tierCounts } = await supabase.rpc("get_subscription_tier_counts");
 
     const tierDistribution = {
       free: 0,
@@ -99,10 +98,11 @@ export async function GET(request: NextRequest) {
       pro: 0,
     };
 
-    (tierCounts || []).forEach((sub) => {
-      const tier = sub.tier as keyof typeof tierDistribution;
+    // Map RPC results to tier distribution
+    (tierCounts || []).forEach((row: { tier: string; count: number }) => {
+      const tier = row.tier as keyof typeof tierDistribution;
       if (tier in tierDistribution) {
-        tierDistribution[tier]++;
+        tierDistribution[tier] = Number(row.count);
       }
     });
 
@@ -119,46 +119,31 @@ export async function GET(request: NextRequest) {
       .eq("status", "past_due");
 
     // ---- AI USAGE STATS ----
+    // Use database aggregation (SUM) instead of fetching rows and summing in JS
 
     const todayDate = today.toISOString().split("T")[0];
     const weekAgoDate = weekAgo.toISOString().split("T")[0];
     const monthAgoDate = monthAgo.toISOString().split("T")[0];
 
-    // Messages today
-    const { data: todayUsage } = await supabase
-      .from("ai_usage")
-      .select("message_count")
-      .eq("date", todayDate)
-      .eq("feature", "chat");
+    // Run all AI usage queries in parallel using RPC with SUM aggregation
+    const [todayUsageResult, weekUsageResult, monthUsageResult] = await Promise.all([
+      supabase.rpc("get_ai_usage_stats", {
+        start_date: todayDate,
+        end_date: todayDate,
+      }),
+      supabase.rpc("get_ai_usage_stats", {
+        start_date: weekAgoDate,
+        end_date: todayDate,
+      }),
+      supabase.rpc("get_ai_usage_stats", {
+        start_date: monthAgoDate,
+        end_date: todayDate,
+      }),
+    ]);
 
-    const messagesToday = (todayUsage || []).reduce(
-      (sum, row) => sum + (row.message_count || 0),
-      0
-    );
-
-    // Messages this week
-    const { data: weekUsage } = await supabase
-      .from("ai_usage")
-      .select("message_count")
-      .gte("date", weekAgoDate)
-      .eq("feature", "chat");
-
-    const messagesThisWeek = (weekUsage || []).reduce(
-      (sum, row) => sum + (row.message_count || 0),
-      0
-    );
-
-    // Messages this month
-    const { data: monthUsage } = await supabase
-      .from("ai_usage")
-      .select("message_count")
-      .gte("date", monthAgoDate)
-      .eq("feature", "chat");
-
-    const messagesThisMonth = (monthUsage || []).reduce(
-      (sum, row) => sum + (row.message_count || 0),
-      0
-    );
+    const messagesToday = todayUsageResult.data?.[0]?.total_messages || 0;
+    const messagesThisWeek = weekUsageResult.data?.[0]?.total_messages || 0;
+    const messagesThisMonth = monthUsageResult.data?.[0]?.total_messages || 0;
 
     // ---- REVENUE ESTIMATE ----
     // This is a placeholder - actual revenue should come from Stripe

@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { BottomTabBar } from "@/components/navigation/bottom-tab-bar";
 import { DesktopNavbar } from "@/components/navigation/desktop-navbar";
+import { PageTransition } from "@/components/navigation/page-transition";
 import { SkipLink } from "@/components/accessibility";
 
 export default async function DashboardLayout({
@@ -24,7 +25,9 @@ export default async function DashboardLayout({
       <DesktopNavbar />
       {/* Main content landmark (WCAG 1.3.1) */}
       <main id="main-content" tabIndex={-1} className="outline-none">
-        {children}
+        <PageTransition>
+          {children}
+        </PageTransition>
       </main>
       {/* Mobile Navigation - hidden on desktop */}
       <BottomTabBar />

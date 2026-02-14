@@ -2,9 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { motion } from "framer-motion";
 import { Home, FlaskConical, Fish, Calendar, MessageSquare } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTank } from "@/context/tank-context";
+import { useReducedMotion, springBounce } from "@/lib/animations";
 
 interface Tab {
   id: string;
@@ -39,6 +41,7 @@ interface BottomTabBarProps {
 export function BottomTabBar({ className, hasUnreadChat = false }: BottomTabBarProps) {
   const pathname = usePathname();
   const { activeTank } = useTank();
+  const prefersReducedMotion = useReducedMotion();
 
   const getHref = (tab: Tab): string => {
     if (typeof tab.href === "function") {
@@ -100,10 +103,19 @@ export function BottomTabBar({ className, hasUnreadChat = false }: BottomTabBarP
               <Icon className="w-5 h-5" aria-hidden="true" />
               <span className="text-xs font-medium">{tab.label}</span>
               {active && (
-                <div
-                  className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 bg-brand-teal rounded-full"
-                  aria-hidden="true"
-                />
+                prefersReducedMotion ? (
+                  <div
+                    className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 bg-brand-teal rounded-full"
+                    aria-hidden="true"
+                  />
+                ) : (
+                  <motion.div
+                    layoutId="bottomTabIndicator"
+                    className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 bg-brand-teal rounded-full"
+                    aria-hidden="true"
+                    transition={springBounce}
+                  />
+                )
               )}
             </Link>
           );
