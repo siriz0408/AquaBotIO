@@ -1,12 +1,12 @@
 # Bugs Index
 
-> Active: 1 | Resolved: 16 | Last updated: 2026-02-10
+> Active: 0 | Resolved: 17 | Last updated: 2026-02-14
 
 Naming: `B{NNN}-{kebab-title}.md`
 
 | ID | Severity | Status | Domain | Title | Assigned To |
 |----|----------|--------|--------|-------|-------------|
-| B023-4 | P0 | PENDING VERIFICATION | storage | Tank photos bucket missing in remote Supabase | Backend |
+| B023-4 | P0 | RESOLVED | storage | Tank photos bucket missing in remote Supabase (fixed Sprint 29) | Backend |
 | B024-1 | P1 | RESOLVED | ui/css | All dashboard pages left-justified, not centered | Frontend |
 | B024-2 | P1 | RESOLVED | ui/chat | AI chat code flash during streaming (incomplete blocks visible) | Frontend |
 | B024-3 | P1 | RESOLVED | api/chat | AI chat requires tank — blocks users without tanks | Backend |

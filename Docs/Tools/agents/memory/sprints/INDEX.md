@@ -1,11 +1,20 @@
 # Sprints Index
 
-> Total sprints: 19 (+ docs audit) | Last updated: 2026-02-09
+> Total sprints: 35 (+ docs audit) | Last updated: 2026-02-14
 
 Naming: `sprint_{NN}_summary.md`
 
 | Sprint | Date | Goals | Outcome | Carries |
 |--------|------|-------|---------|---------
+| Sprint 35 | 2026-02-14 | Interaction Design + SQL Performance | COMPLETE | Animation system, RPC functions, page transitions ✅ |
+| Sprint 34 | 2026-02-14 | Coaching History + Preferences UI | COMPLETE | coaching_history table, coaching page, settings editor ✅ |
+| Sprint 33 | 2026-02-13 | Daily AI Coaching Edge Function | COMPLETE | Edge function + API endpoint ✅ |
+| Sprint 32 | 2026-02-12 | AI Onboarding Phase 2 | COMPLETE | Integration with onboarding flow ✅ |
+| Sprint 31 | 2026-02-11 | AI Onboarding Wizard Phase 1 | COMPLETE | Wizard UI components ✅ |
+| Sprint 30 | 2026-02-11 | Livestock Edit + AI Onboarding Spec | COMPLETE | Edit UI, spec created ✅ |
+| Sprint 29 | 2026-02-10 | Bug Fixes from Feedback | COMPLETE | B023-4 storage bucket fix, self-healing upload ✅ |
+| Sprint 28 | 2026-02-10 | Species Images | COMPLETE | External images from GBIF/iNaturalist ✅ |
+| Sprint 27 | 2026-02-10 | Species Database Upgrade | COMPLETE | 94 species, enhanced schema, AI tools ✅ |
 | Sprint 19 | 2026-02-09 | AI Chat Embedded Widgets | COMPLETE | 3 widgets, quarantine API, parser updates ✅ |
 | Sprint 18 | 2026-02-09 | Push Notifications Infrastructure | COMPLETE | VAPID keys configured, migration applied ✅ |
 | Sprint 17 | 2026-02-09 | Auth Fix + Google OAuth | COMPLETE | Auth fix deployed, Google OAuth enabled |

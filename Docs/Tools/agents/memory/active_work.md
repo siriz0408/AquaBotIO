@@ -1,8 +1,8 @@
 # Active Work Board
 
-> Last updated: 2026-02-10 | Updated by: PM Orchestrator | Sprint 24 COMPLETE ✅
+> Last updated: 2026-02-14 | Updated by: PM Orchestrator | Sprint 35 COMPLETE ✅
 
-## MILESTONE: MVP Launch-Ready ✅ → Phase 2 Complete ✅ → Pricing Strategy ✅ → Free Tools ✅ → Push Notifications ✅ → AI Widgets ✅
+## MILESTONE: MVP Launch-Ready ✅ → Phase 2 Complete ✅ → AI Coaching ✅ → Interaction Design ✅
 
 | Feature | Status | Progress |
 |---------|--------|----------|
@@ -101,6 +101,15 @@
 | **Sprint 19** | **COMPLETE** | **AI Chat Embedded Widgets: Water Change Calculator, Quarantine Checklist, Parameter Troubleshooting** |
 | **Sprint 20-22** | **COMPLETE** | **Admin Portal, Push Notifications polish, Pricing fixes** |
 | **Sprint 23** | **COMPLETE** | **P0 Bug Fixes: notification settings, admin hook, onboarding tank context, storage bucket** |
+| **Sprint 35** | **COMPLETE** | **Interaction Design: animation system, page transitions, button/card feedback, navigation indicators, SQL performance RPC functions** |
+| **Sprint 34** | **COMPLETE** | **Coaching History: coaching_history table, coaching page, settings editor, preferences UI** |
+| **Sprint 33** | **COMPLETE** | **Daily AI Coaching: Edge Function + API endpoint** |
+| **Sprint 32** | **COMPLETE** | **AI Onboarding Phase 2: Integration with onboarding flow** |
+| **Sprint 31** | **COMPLETE** | **AI Onboarding Wizard Phase 1: Wizard UI components** |
+| **Sprint 30** | **COMPLETE** | **Livestock Edit + AI Onboarding Spec** |
+| **Sprint 29** | **COMPLETE** | **Bug Fixes: B023-4 storage bucket fix with self-healing upload** |
+| **Sprint 28** | **COMPLETE** | **Species Images: External images from GBIF/iNaturalist** |
+| **Sprint 27** | **COMPLETE** | **Species Database Upgrade: 94 species, enhanced schema, AI tools** |
 | **Sprint 24** | **COMPLETE** | **UX Polish: page centering, dashboard My Tanks, chat without tank, code flash fix, action normalization** |
 
 ## Sprint 24 Deliverables (UX Polish + Chat Improvements)
