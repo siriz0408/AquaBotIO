@@ -3,13 +3,7 @@
 import { useEffect, useRef } from "react";
 import { MessageBubble } from "./message-bubble";
 import type { ActionPayload } from "./action-confirmation";
-
-interface Message {
-  id: string;
-  role: "user" | "assistant" | "system";
-  content: string;
-  created_at: string;
-}
+import type { Message } from "./chat-container";
 
 interface MessageListProps {
   messages: Message[];
@@ -74,6 +68,9 @@ export function MessageList({
           onActionConfirm={onActionConfirm}
           onActionCancel={onActionCancel}
           isPendingAction={isPendingAction}
+          type={message.type}
+          photoUrl={message.photoUrl}
+          diagnosisData={message.diagnosisData}
         />
       ))}
       {isLoading && (

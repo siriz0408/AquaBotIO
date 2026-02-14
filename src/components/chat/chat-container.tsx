@@ -10,12 +10,17 @@ import { useTank } from "@/context/tank-context";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import type { ActionPayload } from "./action-confirmation";
+import type { PhotoDiagnosisData } from "./messages/photo-diagnosis-card";
 
-interface Message {
+export interface Message {
   id: string;
   role: "user" | "assistant" | "system";
   content: string;
   created_at: string;
+  // Photo diagnosis support
+  type?: "text" | "photo" | "diagnosis";
+  photoUrl?: string;
+  diagnosisData?: PhotoDiagnosisData;
 }
 
 interface ChatContainerProps {
@@ -330,6 +335,118 @@ export function ChatContainer({
     setMessages((prev) => [...prev, cancelMessage]);
   }, []);
 
+  // Handle photo send for diagnosis
+  const handlePhotoSend = useCallback(
+    async (file: File, optionalMessage?: string) => {
+      if (!tankId) {
+        toast.error("Please select a tank first", {
+          description: "Photo diagnosis needs tank context for personalized treatment recommendations",
+        });
+        return;
+      }
+
+      // Create a preview URL for the user's photo message
+      const photoPreviewUrl = URL.createObjectURL(file);
+
+      // Add user photo message
+      const userPhotoMessage: Message = {
+        id: `photo-${Date.now()}`,
+        role: "user",
+        content: optionalMessage || "Analyze this photo",
+        created_at: new Date().toISOString(),
+        type: "photo",
+        photoUrl: photoPreviewUrl,
+      };
+      setMessages((prev) => [...prev, userPhotoMessage]);
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        // Build form data for photo diagnosis API
+        const formData = new FormData();
+        formData.append("image", file);
+        formData.append("tank_id", tankId);
+        formData.append("diagnosis_type", "both"); // Species ID + Disease
+
+        const response = await fetch("/api/ai/photo-diagnosis", {
+          method: "POST",
+          body: formData,
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          // Build diagnosis data for the card
+          const diagnosisData: PhotoDiagnosisData = {
+            imageUrl: data.data.photoUrl || photoPreviewUrl,
+            diagnosisType: data.data.diagnosisType,
+            speciesResult: data.data.speciesResult,
+            diseaseResult: data.data.diseaseResult,
+          };
+
+          // Add AI diagnosis message
+          const diagnosisMessage: Message = {
+            id: data.data.id || `diagnosis-${Date.now()}`,
+            role: "assistant",
+            content: "", // Content rendered by PhotoDiagnosisCard
+            created_at: new Date().toISOString(),
+            type: "diagnosis",
+            diagnosisData,
+          };
+          setMessages((prev) => [...prev, diagnosisMessage]);
+
+          // Refresh usage indicator
+          window.dispatchEvent(new Event("chat-message-sent"));
+
+          // Show remaining diagnoses if applicable
+          if (data.data.usage?.remaining_today !== undefined) {
+            toast.success("Photo analyzed!", {
+              description: `${data.data.usage.remaining_today} diagnoses remaining today`,
+            });
+          }
+        } else {
+          // Handle errors
+          if (data.error?.code === "TIER_REQUIRED") {
+            toast.error("Upgrade required", {
+              description: "Photo diagnosis requires Plus or Pro plan",
+              action: {
+                label: "Upgrade",
+                onClick: () => (window.location.href = "/settings/billing"),
+              },
+            });
+          } else if (data.error?.code === "DAILY_LIMIT_REACHED") {
+            toast.error("Daily limit reached", {
+              description: data.error.message,
+              action: {
+                label: "Upgrade",
+                onClick: () => (window.location.href = "/settings/billing"),
+              },
+            });
+          } else {
+            toast.error("Analysis failed", {
+              description: data.error?.message || "Please try again",
+            });
+          }
+          // Remove the photo message on failure
+          setMessages((prev) => prev.filter((m) => m.id !== userPhotoMessage.id));
+          // Clean up preview URL
+          URL.revokeObjectURL(photoPreviewUrl);
+        }
+      } catch (err) {
+        console.error("Photo diagnosis error:", err);
+        toast.error("Network error", {
+          description: "Please check your connection and try again",
+        });
+        // Remove the photo message on failure
+        setMessages((prev) => prev.filter((m) => m.id !== userPhotoMessage.id));
+        URL.revokeObjectURL(photoPreviewUrl);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [tankId]
+  );
+
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
@@ -389,6 +506,7 @@ export function ChatContainer({
       {/* Input */}
       <ChatInput
         onSend={handleSend}
+        onPhotoSend={handlePhotoSend}
         isLoading={isLoading || isStreaming}
         disabled={false}
         showQuickActions={messages.length === 0}

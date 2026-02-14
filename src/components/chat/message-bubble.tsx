@@ -1,9 +1,11 @@
 "use client";
 
+import Image from "next/image";
 import { cn } from "@/lib/utils";
-import { Bot, User } from "lucide-react";
+import { Bot, User, Camera } from "lucide-react";
 import { RichMessage } from "./rich-message";
 import type { ActionPayload } from "./action-confirmation";
+import { PhotoDiagnosisCard, type PhotoDiagnosisData } from "./messages/photo-diagnosis-card";
 
 interface MessageBubbleProps {
   role: "user" | "assistant" | "system";
@@ -14,6 +16,10 @@ interface MessageBubbleProps {
   onActionConfirm?: (action: ActionPayload) => Promise<void>;
   onActionCancel?: () => void;
   isPendingAction?: boolean;
+  // Photo diagnosis support
+  type?: "text" | "photo" | "diagnosis";
+  photoUrl?: string;
+  diagnosisData?: PhotoDiagnosisData;
 }
 
 export function MessageBubble({
@@ -25,9 +31,65 @@ export function MessageBubble({
   onActionConfirm,
   onActionCancel,
   isPendingAction,
+  type = "text",
+  photoUrl,
+  diagnosisData,
 }: MessageBubbleProps) {
   const isUser = role === "user";
 
+  // Render photo diagnosis card (full-width, no bubble wrapper)
+  if (type === "diagnosis" && diagnosisData) {
+    return (
+      <PhotoDiagnosisCard
+        data={diagnosisData}
+        timestamp={timestamp ? new Date(timestamp) : new Date()}
+        className="mb-4"
+      />
+    );
+  }
+
+  // Render user photo message
+  if (type === "photo" && photoUrl) {
+    return (
+      <div className="flex gap-3 mb-4 flex-row-reverse">
+        {/* Avatar */}
+        <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-primary text-primary-foreground">
+          <User className="w-4 h-4" />
+        </div>
+
+        {/* Photo message */}
+        <div className="max-w-[85%] rounded-2xl overflow-hidden bg-primary text-primary-foreground rounded-tr-sm">
+          {/* Photo */}
+          <div className="relative w-64 h-48">
+            <Image
+              src={photoUrl}
+              alt="Photo for analysis"
+              fill
+              className="object-cover"
+              sizes="256px"
+            />
+            <div className="absolute bottom-2 right-2 bg-black/50 backdrop-blur-sm rounded-full px-2 py-1 flex items-center gap-1">
+              <Camera className="w-3 h-3 text-white" />
+              <span className="text-xs text-white font-medium">Analyzing...</span>
+            </div>
+          </div>
+          {/* Caption */}
+          {content && (
+            <div className="px-4 py-2 text-sm">
+              {content}
+            </div>
+          )}
+          {timestamp && (
+            <div className="text-xs px-4 pb-2 opacity-60 text-right">
+              {formatTime(timestamp)}
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // Regular text message
   return (
     <div
       className={cn(
