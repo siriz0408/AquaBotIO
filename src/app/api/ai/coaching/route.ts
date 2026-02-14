@@ -4,6 +4,7 @@ import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import { successResponse, errorResponse } from "@/lib/api/response";
 import { sendPushNotification, createAIInsightPayload } from "@/lib/notifications/push";
 import { generateCoachingMessage, type CoachingContext } from "@/lib/ai/coaching";
+import { createWideEvent, logger } from "@/lib/logging";
 import { z } from "zod";
 
 /**
@@ -43,6 +44,10 @@ const coachingRequestSchema = z.object({
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export async function POST(request: NextRequest) {
+  // Initialize wide event for structured logging
+  const wideEvent = createWideEvent(request);
+  wideEvent.withAction("ai", "coaching");
+
   try {
     // Initialize Supabase client
     const supabase = await createClient();
@@ -54,8 +59,13 @@ export async function POST(request: NextRequest) {
     } = await supabase.auth.getUser();
 
     if (authError || !user) {
+      wideEvent.withStatus(401);
+      logger.info(wideEvent.build());
       return errorResponse("AUTH_REQUIRED", "You must be logged in to use AI coaching");
     }
+
+    // Add user to wide event
+    wideEvent.with({ user_id: user.id });
 
     // Parse and validate request body
     let body: unknown = {};
@@ -65,6 +75,8 @@ export async function POST(request: NextRequest) {
         body = JSON.parse(text);
       }
     } catch {
+      wideEvent.withStatus(400).with({ error_type: "INVALID_JSON" });
+      logger.info(wideEvent.build());
       return errorResponse("INVALID_INPUT", "Invalid JSON in request body");
     }
 
@@ -73,10 +85,14 @@ export async function POST(request: NextRequest) {
       const errors = validation.error.issues
         .map((issue) => `${issue.path.join(".")}: ${issue.message}`)
         .join("; ");
+      wideEvent.withStatus(400).with({ error_type: "VALIDATION_ERROR" });
+      logger.info(wideEvent.build());
       return errorResponse("INVALID_INPUT", errors);
     }
 
     const { tank_id, dry_run } = validation.data;
+    wideEvent.with({ dry_run });
+    if (tank_id) wideEvent.withTank(tank_id);
 
     // Check and increment AI usage (rate limiting)
     const { data: canUse, error: usageError } = await supabase.rpc(
@@ -88,7 +104,8 @@ export async function POST(request: NextRequest) {
     );
 
     if (usageError) {
-      console.error("Error checking AI usage:", usageError);
+      wideEvent.withStatus(500).withError(usageError);
+      logger.error(wideEvent.build());
       return errorResponse("INTERNAL_SERVER_ERROR", "Failed to check usage limits");
     }
 
@@ -101,6 +118,11 @@ export async function POST(request: NextRequest) {
         .single();
 
       const tier = subscription?.tier || "free";
+      wideEvent.withStatus(429).with({
+        subscription_tier: tier,
+        rate_limited: true,
+      });
+      logger.info(wideEvent.build());
       return errorResponse(
         "DAILY_LIMIT_REACHED",
         `You've reached your daily AI message limit. ${tier !== "pro" ? "Upgrade your plan for more messages." : ""}`
@@ -124,6 +146,8 @@ export async function POST(request: NextRequest) {
     const { data: tanks, error: tankError } = await tankQuery;
 
     if (tankError || !tanks || tanks.length === 0) {
+      wideEvent.withStatus(404).with({ error_type: "TANK_NOT_FOUND" });
+      logger.info(wideEvent.build());
       return errorResponse(
         "NOT_FOUND",
         tank_id ? "Tank not found or you don't have access" : "No tanks found. Create a tank first."
@@ -131,6 +155,7 @@ export async function POST(request: NextRequest) {
     }
 
     const tank = tanks[0];
+    wideEvent.withTank(tank.id);
 
     // Fetch context data in parallel
     const [userPrefsResult, parametersResult, livestockResult, tasksResult] = await Promise.all([
@@ -172,6 +197,14 @@ export async function POST(request: NextRequest) {
     const livestockCount = livestockResult.count || 0;
     const pendingTasksCount = tasksResult.count || 0;
 
+    // Add context to wide event
+    wideEvent.with({
+      subscription_tier: userPrefs?.experience_level,
+      livestock_count: livestockCount,
+      pending_tasks_count: pendingTasksCount,
+      has_parameters: !!latestParams,
+    });
+
     // Build coaching context
     const context: CoachingContext = {
       user: {
@@ -203,12 +236,20 @@ export async function POST(request: NextRequest) {
     try {
       result = await generateCoachingMessage(context);
     } catch (error) {
-      console.error("Failed to generate coaching message:", error);
+      wideEvent.withStatus(503).withError(error);
+      logger.error(wideEvent.build());
       return errorResponse(
         "AI_UNAVAILABLE",
         "The AI service is temporarily unavailable. Please try again."
       );
     }
+
+    // Add AI usage to wide event
+    wideEvent.withAI({
+      model: "claude-haiku-4-5-20251001",
+      inputTokens: result.input_tokens,
+      outputTokens: result.output_tokens,
+    });
 
     // Update token usage
     await supabase.rpc("update_ai_token_usage", {
@@ -234,13 +275,16 @@ export async function POST(request: NextRequest) {
         .single();
 
       if (historyError) {
-        // Log error but don't fail the request - history is non-critical
-        console.error("Failed to save coaching history:", historyError);
+        // Log warning but don't fail the request - history is non-critical
+        wideEvent.with({ history_save_error: historyError.message });
       } else {
         historyId = historyEntry?.id || null;
+        wideEvent.with({ history_id: historyId });
       }
     } catch (historyError) {
-      console.error("Error saving coaching history:", historyError);
+      wideEvent.with({
+        history_save_error: historyError instanceof Error ? historyError.message : "unknown",
+      });
     }
 
     // Send push notification (unless dry_run)
@@ -249,7 +293,15 @@ export async function POST(request: NextRequest) {
       const payload = createAIInsightPayload(result.message, tank.name);
       const pushResults = await sendPushNotification(user.id, payload, "ai_insight");
       notificationSent = pushResults.some((r) => r.success);
+      wideEvent.with({
+        notification_sent: notificationSent,
+        notification_attempts: pushResults.length,
+      });
     }
+
+    // Success - emit wide event
+    wideEvent.withStatus(200).with({ outcome: "success" });
+    logger.info(wideEvent.build());
 
     return successResponse({
       message: result.message,
@@ -263,7 +315,8 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error("Coaching API error:", error);
+    wideEvent.withStatus(500).withError(error);
+    logger.error(wideEvent.build());
     return errorResponse(
       "INTERNAL_SERVER_ERROR",
       "An unexpected error occurred. Please try again."
