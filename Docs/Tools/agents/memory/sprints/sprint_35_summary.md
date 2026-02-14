@@ -1,4 +1,4 @@
-# Sprint 35 Summary — Interaction Design + SQL Performance
+# Sprint 35 Summary — Interaction Design + SQL Performance + Photo Diagnosis
 
 > Date: 2026-02-14 | Status: COMPLETE
 
@@ -6,6 +6,7 @@
 1. Commit animation enhancements from previous session
 2. Commit SQL performance optimizations
 3. Update bug index (B023-4 already fixed in Sprint 29)
+4. Wire up Photo Diagnosis in chat interface (Spec 09)
 
 ## Deliverables
 
@@ -38,8 +39,29 @@
 ### Accessibility
 All animations respect `prefers-reduced-motion` media query. Components render static versions when reduced motion is preferred.
 
+### Photo Diagnosis Chat Integration (Spec 09)
+**Files Modified:**
+- `src/components/chat/chat-container.tsx` — Added `onPhotoSend` handler, extended Message interface
+- `src/components/chat/message-list.tsx` — Pass photo/diagnosis props to MessageBubble
+- `src/components/chat/message-bubble.tsx` — Render photo messages and PhotoDiagnosisCard
+
+**What It Does:**
+- User taps camera icon → picks photo → photo appears in chat with "Analyzing..." badge
+- API calls `/api/ai/photo-diagnosis` with Claude Vision
+- AI diagnosis result appears as rich card with species ID, disease diagnosis, treatment steps
+- Handles tier gating (Plus/Pro only), daily limits, errors with toast notifications
+- Refreshes usage indicator after each diagnosis
+
+**Pre-existing Backend (already complete):**
+- API: `src/app/api/ai/photo-diagnosis/route.ts` (POST/GET/PATCH)
+- AI: `src/lib/ai/photo-diagnosis.ts` (Claude Vision integration)
+- DB: `photo_diagnoses` table with RLS, `photo-diagnosis` storage bucket
+- RPCs: `check_and_increment_photo_diagnosis_usage`, `get_photo_diagnosis_usage_info`
+- UI: `PhotoUploadButton`, `PhotoDiagnosisCard`, `PhotoPreview` components
+
 ## Commits
 - `384a876` - Sprint 35: Interaction Design Enhancements + SQL Performance
+- `5980a18` - Wire up photo diagnosis in chat interface
 
 ## Verification
 - TypeScript: PASS

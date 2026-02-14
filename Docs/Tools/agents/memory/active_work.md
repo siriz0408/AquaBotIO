@@ -101,7 +101,7 @@
 | **Sprint 19** | **COMPLETE** | **AI Chat Embedded Widgets: Water Change Calculator, Quarantine Checklist, Parameter Troubleshooting** |
 | **Sprint 20-22** | **COMPLETE** | **Admin Portal, Push Notifications polish, Pricing fixes** |
 | **Sprint 23** | **COMPLETE** | **P0 Bug Fixes: notification settings, admin hook, onboarding tank context, storage bucket** |
-| **Sprint 35** | **COMPLETE** | **Interaction Design: animation system, page transitions, button/card feedback, navigation indicators, SQL performance RPC functions** |
+| **Sprint 35** | **COMPLETE** | **Interaction Design + Photo Diagnosis: animation system, SQL RPC functions, photo diagnosis chat integration (Spec 09)** |
 | **Sprint 34** | **COMPLETE** | **Coaching History: coaching_history table, coaching page, settings editor, preferences UI** |
 | **Sprint 33** | **COMPLETE** | **Daily AI Coaching: Edge Function + API endpoint** |
 | **Sprint 32** | **COMPLETE** | **AI Onboarding Phase 2: Integration with onboarding flow** |
@@ -150,7 +150,7 @@
 2. ~~Push notification infrastructure~~ — ✅ DONE (Sprint 18) — **FULLY CONFIGURED**
 3. Email digest for daily alert summary
 4. Cron job for automatic daily trend analysis
-5. Photo Diagnosis (Claude Vision)
+5. ~~Photo Diagnosis (Claude Vision)~~ — ✅ DONE (Sprint 35) — **Chat integration complete**
 6. Equipment Tracking
 
 ### Sprint 18 Action Items — ALL COMPLETE ✅
