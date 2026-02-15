@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Fish, ArrowLeft, Loader2, User, Bell, CreditCard, Shield, Check, AlertTriangle, LogOut, Sparkles, Bot, Lightbulb } from "lucide-react";
+import { Fish, ArrowLeft, Loader2, User, Bell, CreditCard, Shield, Check, AlertTriangle, LogOut, Sparkles, Bot, Lightbulb, KeyRound } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import { useUser } from "@/lib/hooks/use-user";
 import { AIOnboardingWizard } from "@/components/onboarding";
 import { useOnboardingStatus } from "@/hooks/use-onboarding-status";
+import { ChangePasswordDialog } from "@/components/settings/change-password-dialog";
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -31,6 +32,7 @@ export default function SettingsPage() {
   const [deleteConfirmText, setDeleteConfirmText] = useState("");
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [showAIOnboardingWizard, setShowAIOnboardingWizard] = useState(false);
+  const [showChangePassword, setShowChangePassword] = useState(false);
 
   // AI Preferences inline editing state
   const [isEditingAI, setIsEditingAI] = useState(false);
@@ -196,6 +198,12 @@ export default function SettingsPage() {
         onComplete={() => {
           refreshPreferences();
         }}
+      />
+
+      {/* Change Password Dialog */}
+      <ChangePasswordDialog
+        open={showChangePassword}
+        onOpenChange={setShowChangePassword}
       />
 
       {/* Header */}
@@ -613,8 +621,13 @@ export default function SettingsPage() {
                 Sign Out
               </Button>
 
-              <Button variant="outline" className="w-full" disabled>
-                Change Password (Coming Soon)
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={() => setShowChangePassword(true)}
+              >
+                <KeyRound className="mr-2 h-4 w-4" />
+                Change Password
               </Button>
 
               <div className="border-t pt-4">
