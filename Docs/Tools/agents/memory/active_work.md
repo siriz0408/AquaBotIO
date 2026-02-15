@@ -1,6 +1,6 @@
 # Active Work Board
 
-> Last updated: 2026-02-15 | Updated by: PM Orchestrator | Sprint 39 COMPLETE ✅
+> Last updated: 2026-02-15 | Updated by: PM Orchestrator | Sprint 41 COMPLETE ✅
 
 ## MILESTONE: MVP Launch-Ready ✅ → Phase 2 Complete ✅ → AI Coaching ✅ → Interaction Design ✅ → Equipment Tracking ✅ → Multi-Tank Comparison ✅ → Navigation Polish ✅ → Email Reports ✅
 
@@ -103,6 +103,8 @@
 | **Sprint 19** | **COMPLETE** | **AI Chat Embedded Widgets: Water Change Calculator, Quarantine Checklist, Parameter Troubleshooting** |
 | **Sprint 20-22** | **COMPLETE** | **Admin Portal, Push Notifications polish, Pricing fixes** |
 | **Sprint 23** | **COMPLETE** | **P0 Bug Fixes: notification settings, admin hook, onboarding tank context, storage bucket** |
+| **Sprint 41** | **COMPLETE** | **Deployment & Verification: Git push, Vercel production deploy, Edge Functions verified, cron jobs active** |
+| **Sprint 40** | **COMPLETE** | **Scheduled Cron Jobs: send-weekly-reports Edge Function, run-daily-trend-analysis Edge Function, email_reports_enabled column** |
 | **Sprint 39** | **COMPLETE** | **Email Reports (Spec 11 R-104): Resend integration, React Email template, tank health digest, Pro tier gating, settings UI** |
 | **Sprint 38** | **COMPLETE** | **Navigation & Discoverability: Compare page links (desktop/mobile), dashboard feature promo, Alerts tab in tank detail** |
 | **Sprint 37** | **COMPLETE** | **Multi-Tank Comparison Dashboard (Spec 11 R-105): Health score algorithm, aggregate view, comparison charts, AI insights, Pro tier** |
@@ -154,10 +156,10 @@
 ### P1 Enhancements (After Launch)
 1. ~~Free Tools (Spec 16)~~ — ✅ DONE (Sprint 16)
 2. ~~Push notification infrastructure~~ — ✅ DONE (Sprint 18) — **FULLY CONFIGURED**
-3. Email digest for daily alert summary
-4. Cron job for automatic daily trend analysis
+3. ~~Email digest for daily alert summary~~ — ✅ DONE (Sprint 39/40) — **Weekly reports + cron**
+4. ~~Cron job for automatic daily trend analysis~~ — ✅ DONE (Sprint 40) — **Edge Functions ready**
 5. ~~Photo Diagnosis (Claude Vision)~~ — ✅ DONE (Sprint 35) — **Chat integration complete**
-6. Equipment Tracking
+6. ~~Equipment Tracking~~ — ✅ DONE (Sprint 36) — **Full CRUD + tier gating**
 
 ### Sprint 18 Action Items — ALL COMPLETE ✅
 - [x] Generate VAPID keys: `npx web-push generate-vapid-keys`
