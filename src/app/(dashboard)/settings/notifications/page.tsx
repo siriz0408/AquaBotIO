@@ -17,6 +17,7 @@ import { resolveUserTier } from "@/lib/hooks/use-tier-limits";
 interface NotificationPreferences {
   push_enabled: boolean;
   email_enabled: boolean;
+  email_reports_enabled: boolean;
   reminder_timing: "day_before" | "morning_of" | "1_hour_before";
   quiet_hours_enabled: boolean;
   quiet_hours_start: string;
@@ -30,6 +31,7 @@ interface NotificationPreferences {
 const DEFAULT_PREFERENCES: NotificationPreferences = {
   push_enabled: false,
   email_enabled: true,
+  email_reports_enabled: true,
   reminder_timing: "morning_of",
   quiet_hours_enabled: false,
   quiet_hours_start: "22:00:00",
@@ -132,6 +134,7 @@ export default function NotificationSettingsPage() {
           setPreferences({
             push_enabled: data.push_enabled ?? false,
             email_enabled: data.email_enabled ?? true,
+            email_reports_enabled: data.email_reports_enabled ?? true,
             reminder_timing: reminder_timing,
             quiet_hours_enabled: data.quiet_hours_enabled ?? false,
             quiet_hours_start: data.quiet_hours_start ?? "22:00:00",
@@ -206,6 +209,7 @@ export default function NotificationSettingsPage() {
             user_id: user.id,
             push_enabled: isSubscribed,
             email_enabled: preferences.email_enabled,
+            email_reports_enabled: preferences.email_reports_enabled,
             maintenance_reminders: preferences.maintenance_reminders,
             parameter_alerts: preferences.parameter_alerts,
             ai_insights: preferences.ai_insights,
@@ -534,9 +538,9 @@ export default function NotificationSettingsPage() {
                     </div>
                     <Switch
                       id="email-reports"
-                      checked={preferences.email_enabled}
+                      checked={preferences.email_reports_enabled}
                       onCheckedChange={(checked) =>
-                        updatePreference("email_enabled", checked)
+                        updatePreference("email_reports_enabled", checked)
                       }
                     />
                   </div>
