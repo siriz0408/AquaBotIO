@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 import Link from "next/link";
 import { AlertTriangle, CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -62,10 +63,11 @@ function TankHealthCard({ tank }: { tank: TankHealthData }) {
         <Card className={`overflow-hidden transition-all hover:shadow-lg hover:-translate-y-1 ${colors.border} border-2`}>
           <div className="relative h-32">
             {tank.photo_url ? (
-              <img
+              <Image
                 src={tank.photo_url}
                 alt={tank.name}
-                className="w-full h-full object-cover"
+                fill
+                className="object-cover"
               />
             ) : (
               <div className="w-full h-full bg-gradient-to-br from-brand-cyan/20 to-brand-navy/20 flex items-center justify-center">

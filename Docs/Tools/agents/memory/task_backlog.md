@@ -182,32 +182,31 @@
 - **Reference:** `Docs/Tools/agents/memory/active_work.md` Sprint 14b
 
 ### Photo Diagnosis (Spec 09)
-- **Status:** `PENDING`
+- **Status:** `COMPLETED` ✅ (Sprint 35)
 - **Priority:** P1 — Phase 3
 - **Effort:** 2 sprints
 - **Description:** Claude Vision API for species ID and disease diagnosis
 - **Reference:** `Docs/AquaBotAI_Specs/09_Photo_Diagnosis_Spec.md`
 
 ### Equipment Tracking (Spec 10)
-- **Status:** `PENDING`
+- **Status:** `COMPLETED` ✅ (Sprint 36)
 - **Priority:** P1 — Phase 3
 - **Effort:** 3 sprints
 - **Description:** Equipment catalog, lifespan tracking, AI recommendations
 - **Reference:** `Docs/AquaBotAI_Specs/10_Equipment_Tracking_Recommendations_Spec.md`
 
 ### AI Chat Embedded Widgets (Spec 16)
-- **Status:** `PENDING`
+- **Status:** `COMPLETED` ✅ (Sprint 19)
 - **Priority:** P1 — Phase 2
 - **Effort:** 2 sprints
 - **Description:** Quarantine Checklist, Water Change Calculator, Parameter Troubleshooting widgets
 - **Reference:** `Docs/AquaBotAI_Specs/16_AI_Chat_Embedded_Widgets_Spec.md`
-- **Note:** Static versions needed for Task 18.1 (Free Tools)
 
 ### Interactive Dashboards & Reports (Spec 11)
-- **Status:** `PENDING`
+- **Status:** `COMPLETED` ✅ (Sprints 37-40)
 - **Priority:** P1 — Phase 3
 - **Effort:** 2 sprints
-- **Description:** Email reports, multi-tank comparison, health score
+- **Description:** Email reports, multi-tank comparison, health score, cron jobs
 - **Reference:** `Docs/AquaBotAI_Specs/11_Interactive_Dashboards_Reports_Spec.md`
 
 ---
