@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
-import { Fish, Home, FlaskConical, Calendar, MessageSquare, Settings, Bell, Lightbulb } from "lucide-react";
+import { Fish, Home, FlaskConical, Calendar, MessageSquare, Settings, Bell, Lightbulb, BarChart3 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTank } from "@/context/tank-context";
 import { useReducedMotion, springBounce } from "@/lib/animations";
@@ -121,6 +121,13 @@ export function DesktopNavbar({ className, hasNotifications = false }: DesktopNa
 
         {/* Right Actions - min 44px touch targets */}
         <div className="flex items-center gap-1">
+          <Link
+            href="/compare"
+            className="p-3 rounded-lg hover:bg-gray-100 transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
+            title="Compare Tanks"
+          >
+            <BarChart3 className="h-5 w-5 text-gray-600" />
+          </Link>
           <Link
             href="/coaching"
             className="p-3 rounded-lg hover:bg-gray-100 transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"

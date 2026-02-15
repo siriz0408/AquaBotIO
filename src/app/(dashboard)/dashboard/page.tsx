@@ -17,6 +17,7 @@ import {
   LivestockSummary,
   FreeToolsPromo,
   MyTanks,
+  ProFeaturesPromo,
 } from "@/components/dashboard";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -205,6 +206,9 @@ export default function DashboardPage() {
           selectedTankId={selectedTankId}
           onSelectTank={setSelectedTankId}
         />
+
+        {/* Pro Features Promo (Compare tanks, etc.) */}
+        <ProFeaturesPromo tankCount={tanks.length} />
 
         {/* Parameter Cards - Horizontal Scroll */}
         <ParameterCards />

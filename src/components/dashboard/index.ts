@@ -7,3 +7,4 @@ export { UpcomingMaintenance } from "./upcoming-maintenance";
 export { LivestockSummary } from "./livestock-summary";
 export { FreeToolsPromo } from "./free-tools-promo";
 export { MyTanks } from "./my-tanks";
+export { ProFeaturesPromo } from "./pro-features-promo";
