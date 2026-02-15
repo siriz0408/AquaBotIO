@@ -1,6 +1,6 @@
 # AquaBotAI Implementation Status & System Changes
 
-> **Version:** 1.8 | **Last Updated:** February 10, 2026 | **Sprint:** 22 Complete | **MVP:** 100%
+> **Version:** 1.9 | **Last Updated:** February 15, 2026 | **Sprint:** 43 Complete | **MVP:** 100%
 
 ---
 
@@ -23,8 +23,8 @@ AquaBotAI has been built from spec through 7 sprint cycles. This document maps e
 | `04_Species_Database_Livestock_Spec.md` | Species & Livestock | DONE | 100% | 180 species seeded, search, filters, livestock list, add-to-tank, compatibility API |
 | `05_Maintenance_Scheduling_Spec.md` | Maintenance Scheduling | **DONE** | **100%** | CRUD, recurring tasks, completion tracking, summary widget, push notification Edge Function |
 | `09_Photo_Diagnosis_Spec.md` | Photo Diagnosis | **DONE** | **100%** | Claude Vision species ID + disease diagnosis, PhotoDiagnosisCard, tier gating (Plus:10/Pro:30), treatment plans |
-| `10_Equipment_Tracking_Recommendations_Spec.md` | Equipment Tracking | NOT STARTED | 0% | P2 feature |
-| `11_Interactive_Dashboards_Reports_Spec.md` | Enhanced Dashboards | NOT STARTED | 0% | P1 feature |
+| `10_Equipment_Tracking_Recommendations_Spec.md` | Equipment Tracking | **DONE** | **100%** | Full CRUD, lifespan tracking, status alerts, Plus+ tier gating (Sprint 36) |
+| `11_Interactive_Dashboards_Reports_Spec.md` | Enhanced Dashboards | **DONE** | **100%** | Multi-tank comparison, health scores, email reports, comparison charts (Sprints 37-40) |
 | `12_API_Integration_Spec.md` | API Integration | PARTIAL | 60% | Core REST APIs built. Missing: Edge Functions, OpenAPI spec, public API |
 | `13_Admin_Portal_Management_Spec.md` | Admin Portal | **DONE** | **100%** | Phase 1 MVP: 4 tables (admin_users, admin_audit_log, feature_flags, tier_config), 3 roles, RLS, admin UI at /admin |
 | `16_AI_Chat_Embedded_Widgets_Spec.md` | AI Chat Embedded Widgets | **DONE** | **100%** | QuarantineChecklist, WaterChangeCalculator, ParameterTroubleshooting widgets in chat |
@@ -200,9 +200,9 @@ AquaBotAI has been built from spec through 7 sprint cycles. This document maps e
 ### P2 — Nice to Have
 10. ~~**Photo Diagnosis** — Claude Vision integration~~ ✅ Done in Sprint 20
 11. ~~**Admin Portal** — User/content management~~ ✅ Done in Sprint 21
-12. **Email notifications** — Resend integration (3 TODOs in webhook handlers)
-13. **Change Password** — Settings page placeholder
-14. **Subscription management** — Stripe Customer Portal link
+12. ~~**Email notifications** — Resend integration~~ ✅ Done in Sprints 39-40 (weekly reports + cron jobs)
+13. ~~**Change Password** — Settings page placeholder~~ ✅ Done in Sprint 42 (API + dialog)
+14. ~~**Subscription management** — Stripe Customer Portal link~~ ✅ Done in Sprint 43 (Settings links to /billing)
 
 ---
 
@@ -230,12 +230,29 @@ AquaBotAI has been built from spec through 7 sprint cycles. This document maps e
 | 20 | Feb 10 | P1 | **Photo Diagnosis** — Claude Vision species ID + disease diagnosis, PhotoDiagnosisCard, tier gating |
 | 21 | Feb 10 | P2 | **Admin Portal Phase 1** — 4 tables (admin_users, admin_audit_log, feature_flags, tier_config), 3 roles, RLS, admin UI (/admin), audit logging, feature flag management |
 | 22 | Feb 10 | Polish | **Maintenance Push Notifications** — `send-maintenance-reminders` Edge Function, cron-ready, 24-hour lookahead, respects notification preferences |
+| 23 | Feb 10 | Fixes | **P0 Bug Fixes** — notification settings, admin hook, onboarding tank context, storage bucket |
+| 24 | Feb 10 | UX | **UX Polish** — page centering, dashboard My Tanks, chat without tank, code flash fix |
+| 27-28 | Feb 12 | Data | **Species Database Upgrade** — 94 species, external images from GBIF/iNaturalist |
+| 29 | Feb 12 | Fix | **Storage Bucket Fix** — self-healing upload with auto-bucket creation |
+| 30-32 | Feb 13 | AI | **AI Onboarding** — Wizard UI, integration with onboarding flow |
+| 33-34 | Feb 13 | Coach | **Daily AI Coaching** — Edge Function, coaching history, preferences UI |
+| 35 | Feb 14 | Design | **Interaction Design** — animation system, SQL RPC functions, photo diagnosis chat |
+| 36 | Feb 14 | Feature | **Equipment Tracking** — DB schema, lifespan tracking, API CRUD, UI, tier gating |
+| 37 | Feb 14 | Feature | **Multi-Tank Comparison** — health grid, comparison charts, AI insights, Pro tier |
+| 38 | Feb 14 | Nav | **Navigation Polish** — Compare page links, dashboard promo, Alerts tab |
+| 39 | Feb 15 | Email | **Email Reports** — Resend integration, React Email template, settings UI |
+| 40 | Feb 15 | Cron | **Scheduled Cron Jobs** — send-weekly-reports, run-daily-trend-analysis Edge Functions |
+| 41 | Feb 15 | Deploy | **Deployment** — Git push, Vercel production deploy, Edge Functions verified |
+| 42 | Feb 15 | Auth | **Change Password** — API endpoint, dialog component, Settings integration |
+| 43 | Feb 15 | Billing | **Subscription Management** — Settings page link to /billing |
 
 ### Edge Functions (Remote)
 | Function | Status |
 |----------|--------|
 | `analyze-parameter-trends` | Active (Sprint 12) — Proactive parameter alerts |
 | `send-maintenance-reminders` | Active (Sprint 22) — Push notifications for due maintenance tasks |
+| `send-weekly-reports` | Active (Sprint 40) — Weekly email reports for Pro users |
+| `run-daily-trend-analysis` | Active (Sprint 40) — Daily cron for Plus+/Pro trend analysis |
 
 ---
 
