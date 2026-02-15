@@ -3,6 +3,11 @@ import Stripe from "stripe";
 import { createClient } from "@supabase/supabase-js";
 import { getTierForPriceId } from "./client";
 import type { Database } from "@/types/database";
+import {
+  sendWelcomeEmail,
+  sendPaymentFailedEmail,
+  sendCancellationEmail,
+} from "@/lib/email/transactional";
 
 /**
  * Webhook event handlers for Stripe events
@@ -94,7 +99,21 @@ export async function handleCheckoutCompleted(
     return { success: false, error: error.message };
   }
 
-  // TODO: Send welcome email via Resend
+  // Send welcome email
+  try {
+    const { data: userData } = await (supabase
+      .from("users") as any)
+      .select("email, full_name")
+      .eq("id", userId)
+      .single();
+
+    if (userData?.email) {
+      await sendWelcomeEmail(userData.email, userData.full_name, tier);
+    }
+  } catch (emailError) {
+    // Non-fatal, log and continue
+    console.error("Error sending welcome email:", emailError);
+  }
 
   return { success: true };
 }
@@ -170,7 +189,29 @@ export async function handleInvoicePaymentFailed(invoice: Stripe.Invoice) {
     return { success: false, error: error.message };
   }
 
-  // TODO: Send payment failed email via Resend
+  // Send payment failed email
+  try {
+    const { data: subData } = await (supabase
+      .from("subscriptions") as any)
+      .select("user_id")
+      .eq("stripe_customer_id", customerId)
+      .single();
+
+    if (subData?.user_id) {
+      const { data: userData } = await (supabase
+        .from("users") as any)
+        .select("email, full_name")
+        .eq("id", subData.user_id)
+        .single();
+
+      if (userData?.email) {
+        await sendPaymentFailedEmail(userData.email, userData.full_name);
+      }
+    }
+  } catch (emailError) {
+    // Non-fatal, log and continue
+    console.error("Error sending payment failed email:", emailError);
+  }
 
   return { success: true };
 }
@@ -244,7 +285,29 @@ export async function handleSubscriptionDeleted(
     return { success: false, error: error.message };
   }
 
-  // TODO: Send cancellation email via Resend
+  // Send cancellation email
+  try {
+    const { data: subData } = await (supabase
+      .from("subscriptions") as any)
+      .select("user_id")
+      .eq("stripe_customer_id", customerId)
+      .single();
+
+    if (subData?.user_id) {
+      const { data: userData } = await (supabase
+        .from("users") as any)
+        .select("email, full_name")
+        .eq("id", subData.user_id)
+        .single();
+
+      if (userData?.email) {
+        await sendCancellationEmail(userData.email, userData.full_name);
+      }
+    }
+  } catch (emailError) {
+    // Non-fatal, log and continue
+    console.error("Error sending cancellation email:", emailError);
+  }
 
   return { success: true };
 }

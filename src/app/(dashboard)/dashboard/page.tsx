@@ -33,6 +33,13 @@ interface Tank {
   created_at: string;
 }
 
+interface TankHealthData {
+  [tankId: string]: {
+    overall: number;
+    status: string;
+  };
+}
+
 interface UserProfile {
   id: string;
   email: string;
@@ -48,6 +55,7 @@ export default function DashboardPage() {
   const [selectedTankId, setSelectedTankId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [showOnboardingWizard, setShowOnboardingWizard] = useState(false);
+  const [tankHealthData, setTankHealthData] = useState<TankHealthData>({});
 
   const {
     hasCompletedAIOnboarding,
@@ -95,6 +103,25 @@ export default function DashboardPage() {
         if (userTanks && userTanks.length > 0) {
           setTanks(userTanks);
           setSelectedTankId(userTanks[0].id);
+
+          // Fetch health scores for all tanks
+          try {
+            const healthResponse = await fetch("/api/tanks/health");
+            const healthResult = await healthResponse.json();
+            if (healthResult.success && healthResult.data?.tanks) {
+              const healthMap: TankHealthData = {};
+              for (const tankHealth of healthResult.data.tanks) {
+                healthMap[tankHealth.id] = {
+                  overall: tankHealth.healthScore.overall,
+                  status: tankHealth.healthScore.status,
+                };
+              }
+              setTankHealthData(healthMap);
+            }
+          } catch (healthError) {
+            console.error("Error fetching health scores:", healthError);
+            // Non-fatal, continue with default scores
+          }
         }
       } catch (error) {
         console.error("Error loading dashboard data:", error);
@@ -158,7 +185,7 @@ export default function DashboardPage() {
           type={selectedTank.type}
           volumeGallons={selectedTank.volume_gallons}
           photoUrl={selectedTank.photo_url}
-          healthScore={85} // TODO: Calculate from actual parameters
+          healthScore={tankHealthData[selectedTank.id]?.overall ?? 75}
         />
       )}
 
