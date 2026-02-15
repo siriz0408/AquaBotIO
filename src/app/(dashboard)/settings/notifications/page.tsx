@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Fish, ArrowLeft, Loader2, Bell, BellOff, CheckCircle2, AlertCircle } from "lucide-react";
+import { Fish, ArrowLeft, Loader2, Bell, BellOff, CheckCircle2, AlertCircle, Mail, Crown, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -12,6 +12,7 @@ import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
 import { useUser } from "@/lib/hooks/use-user";
 import { usePushNotifications } from "@/hooks/use-push-notifications";
+import { resolveUserTier } from "@/lib/hooks/use-tier-limits";
 
 interface NotificationPreferences {
   push_enabled: boolean;
@@ -57,6 +58,47 @@ export default function NotificationSettingsPage() {
   const [isLoadingPrefs, setIsLoadingPrefs] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
+  const [tier, setTier] = useState<string | null>(null);
+  const [isSendingReport, setIsSendingReport] = useState(false);
+
+  // Fetch user tier
+  useEffect(() => {
+    const fetchTier = async () => {
+      if (!user) return;
+      try {
+        const userTier = await resolveUserTier(supabase, user.id);
+        setTier(userTier);
+      } catch (err) {
+        console.error("Error fetching tier:", err);
+      }
+    };
+    if (user) {
+      fetchTier();
+    }
+  }, [user, supabase]);
+
+  // Send test report
+  const handleSendTestReport = async () => {
+    setIsSendingReport(true);
+    try {
+      const response = await fetch("/api/reports/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({}),
+      });
+      const data = await response.json();
+      if (data.success) {
+        toast.success("Report sent! Check your email.");
+      } else {
+        toast.error(data.error?.message || "Failed to send report");
+      }
+    } catch (err) {
+      console.error("Error sending report:", err);
+      toast.error("Failed to send report");
+    } finally {
+      setIsSendingReport(false);
+    }
+  };
 
   // Fetch notification preferences
   useEffect(() => {
@@ -458,6 +500,88 @@ export default function NotificationSettingsPage() {
                       {formatTime(preferences.quiet_hours_end)}
                     </p>
                   </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Email Reports Card - Pro Only */}
+          <Card className="shadow-sm border-gray-200">
+            <CardHeader>
+              <div className="flex items-center gap-2">
+                <Mail className="h-5 w-5 text-brand-cyan" />
+                <CardTitle>Email Reports</CardTitle>
+                {tier !== "pro" && (
+                  <span className="ml-auto flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700">
+                    <Crown className="h-3 w-3" />
+                    Pro
+                  </span>
+                )}
+              </div>
+              <CardDescription>
+                Receive weekly tank health digests via email
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {tier === "pro" ? (
+                <>
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <Label htmlFor="email-reports">Weekly email digest</Label>
+                      <p className="text-sm text-muted-foreground">
+                        AI-generated health report for all your tanks
+                      </p>
+                    </div>
+                    <Switch
+                      id="email-reports"
+                      checked={preferences.email_enabled}
+                      onCheckedChange={(checked) =>
+                        updatePreference("email_enabled", checked)
+                      }
+                    />
+                  </div>
+
+                  <div className="rounded-lg border border-dashed p-4">
+                    <div className="flex items-start gap-3">
+                      <Send className="h-5 w-5 text-muted-foreground mt-0.5" />
+                      <div className="flex-1">
+                        <p className="text-sm font-medium">Send a test report</p>
+                        <p className="text-sm text-muted-foreground mb-3">
+                          See what the weekly digest looks like
+                        </p>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={handleSendTestReport}
+                          disabled={isSendingReport}
+                        >
+                          {isSendingReport ? (
+                            <>
+                              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                              Sending...
+                            </>
+                          ) : (
+                            <>
+                              <Send className="mr-2 h-4 w-4" />
+                              Send Test Report
+                            </>
+                          )}
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <div className="flex flex-col items-center py-4 text-center">
+                  <div className="rounded-full bg-amber-100 p-3 mb-3">
+                    <Crown className="h-6 w-6 text-amber-600" />
+                  </div>
+                  <p className="text-sm text-muted-foreground mb-3">
+                    Upgrade to Pro to receive weekly AI-generated tank health reports via email
+                  </p>
+                  <Button asChild size="sm">
+                    <Link href="/settings/billing">Upgrade to Pro</Link>
+                  </Button>
                 </div>
               )}
             </CardContent>
