@@ -1,5 +1,5 @@
 # Column Name Mismatch Between water_parameters and parameter_thresholds
-B004 | 2026-02-08 | Impact: MEDIUM | Status: OPEN | Domain: db
+B004 | 2026-02-08 | Impact: MEDIUM | Status: RESOLVED | Domain: db
 
 **Summary:** `water_parameters` uses `gh_dgh`/`kh_dgh`/`salinity` but `parameter_thresholds` uses `gh_ppm`/`kh_ppm`/`salinity_ppt`.
 
