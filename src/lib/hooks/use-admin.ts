@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { TIER_PRICING } from "@/lib/validation/billing";
 import type {
   AdminRole,
   AdminDashboardStats,
@@ -152,9 +153,11 @@ export function useAdminStats() {
       // Approximate cost: $0.003 per 1K input tokens, $0.015 per 1K output tokens (using average)
       const aiCostToday = (aiTokensToday / 1000) * 0.009;
 
-      // Calculate MRR (Monthly Recurring Revenue)
-      // Prices: Starter $3.99, Plus $7.99, Pro $14.99
-      const mrr = starterSubscribers * 399 + plusSubscribers * 799 + proSubscribers * 1499;
+      // Calculate MRR (Monthly Recurring Revenue) using centralized pricing
+      const mrr =
+        starterSubscribers * TIER_PRICING.starter.price +
+        plusSubscribers * TIER_PRICING.plus.price +
+        proSubscribers * TIER_PRICING.pro.price;
 
       // Calculate ARPU
       const totalPaying = proSubscribers + plusSubscribers + starterSubscribers;

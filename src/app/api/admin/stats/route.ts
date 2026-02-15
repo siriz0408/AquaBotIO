@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { successResponse, errorResponse } from "@/lib/api/response";
 import { checkAdminAuth, canManageUsers } from "@/middleware/admin";
+import { TIER_PRICING } from "@/lib/validation/billing";
 
 /**
  * GET /api/admin/stats
@@ -147,18 +148,11 @@ export async function GET(request: NextRequest) {
 
     // ---- REVENUE ESTIMATE ----
     // This is a placeholder - actual revenue should come from Stripe
-    // Calculate estimated MRR based on subscription counts
-    const tierPrices = {
-      free: 0,
-      starter: 399, // cents
-      plus: 799,
-      pro: 1499,
-    };
-
+    // Calculate estimated MRR based on subscription counts using centralized pricing
     const estimatedMRR =
-      tierDistribution.starter * tierPrices.starter +
-      tierDistribution.plus * tierPrices.plus +
-      tierDistribution.pro * tierPrices.pro;
+      tierDistribution.starter * TIER_PRICING.starter.price +
+      tierDistribution.plus * TIER_PRICING.plus.price +
+      tierDistribution.pro * TIER_PRICING.pro.price;
 
     // Build response
     const stats = {
