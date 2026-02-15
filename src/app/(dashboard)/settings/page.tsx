@@ -327,10 +327,12 @@ export default function SettingsPage() {
                 )}
               </div>
 
-              <Button variant="outline" className="w-full" disabled>
-                {subscription?.tier === "free" || subscription?.status === "trialing"
-                  ? "Upgrade Plan (Coming Soon)"
-                  : "Manage Subscription (Coming Soon)"}
+              <Button variant="outline" className="w-full" asChild>
+                <Link href="/billing">
+                  {subscription?.tier === "free" || subscription?.status === "trialing"
+                    ? "Upgrade Plan"
+                    : "Manage Subscription"}
+                </Link>
               </Button>
             </CardContent>
           </Card>

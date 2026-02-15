@@ -1,6 +1,6 @@
 # Active Work Board
 
-> Last updated: 2026-02-15 | Updated by: PM Orchestrator | Sprint 42 COMPLETE ✅
+> Last updated: 2026-02-15 | Updated by: PM Orchestrator | Sprint 43 COMPLETE ✅
 
 ## MILESTONE: MVP Launch-Ready ✅ → Phase 2 Complete ✅ → AI Coaching ✅ → Interaction Design ✅ → Equipment Tracking ✅ → Multi-Tank Comparison ✅ → Navigation Polish ✅ → Email Reports ✅
 
@@ -103,6 +103,7 @@
 | **Sprint 19** | **COMPLETE** | **AI Chat Embedded Widgets: Water Change Calculator, Quarantine Checklist, Parameter Troubleshooting** |
 | **Sprint 20-22** | **COMPLETE** | **Admin Portal, Push Notifications polish, Pricing fixes** |
 | **Sprint 23** | **COMPLETE** | **P0 Bug Fixes: notification settings, admin hook, onboarding tank context, storage bucket** |
+| **Sprint 43** | **COMPLETE** | **Subscription Management: Settings page link to /billing (API already existed)** |
 | **Sprint 42** | **COMPLETE** | **Change Password: API endpoint, dialog component, Settings page integration** |
 | **Sprint 41** | **COMPLETE** | **Deployment & Verification: Git push, Vercel production deploy, Edge Functions verified, cron jobs active** |
 | **Sprint 40** | **COMPLETE** | **Scheduled Cron Jobs: send-weekly-reports Edge Function, run-daily-trend-analysis Edge Function, email_reports_enabled column** |
