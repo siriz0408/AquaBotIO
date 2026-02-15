@@ -51,6 +51,7 @@ export default function TankDetailPage() {
     if (pathname?.includes("/livestock")) return "livestock";
     if (pathname?.includes("/maintenance")) return "maintenance";
     if (pathname?.includes("/equipment")) return "equipment";
+    if (pathname?.includes("/alerts")) return "alerts";
     if (pathname?.includes("/chat")) return "chat";
     return "overview";
   }, [pathname]);
@@ -295,6 +296,14 @@ export default function TankDetailPage() {
               className={`rounded-b-none border-b-2 ${activeTab === "equipment" ? "border-brand-cyan bg-brand-cyan/10 text-brand-navy" : "border-transparent"}`}
             >
               <Link href={`/tanks/${tankId}/equipment`}>Equipment</Link>
+            </Button>
+            <Button
+              variant={activeTab === "alerts" ? "secondary" : "ghost"}
+              size="sm"
+              asChild
+              className={`rounded-b-none border-b-2 ${activeTab === "alerts" ? "border-brand-cyan bg-brand-cyan/10 text-brand-navy" : "border-transparent"}`}
+            >
+              <Link href={`/tanks/${tankId}/alerts`}>Alerts</Link>
             </Button>
             <Button
               variant={activeTab === "chat" ? "secondary" : "ghost"}
